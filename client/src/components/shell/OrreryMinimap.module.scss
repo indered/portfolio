@@ -1,0 +1,128 @@
+// ── Orrery Minimap — orbital dot strip ────────────────────────────────────────
+// Fixed at bottom-center of viewport. 7 dots sized proportionally to planet mass.
+// Labels appear above each dot when the pill is hovered.
+
+.orrery {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  z-index: 9;
+  pointer-events: auto;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  // Reveal labels when pill is hovered
+  &:hover .label {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+// ── Individual dot ──────────────────────────────────────────────────────────
+.dot {
+  position: relative;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: var(--dot-color);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.28;
+  transition: opacity 0.25s, transform 0.25s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.75;
+    transform: scale(1.5);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+// Active planet — full brightness + gentle pulse
+.active {
+  opacity: 1;
+  animation: pulse 2.4s ease-in-out infinite;
+  cursor: default;
+
+  &:hover {
+    transform: none;
+  }
+}
+
+// Target planet during transit — fills in with a brightening animation
+.transitioning {
+  opacity: 0.5;
+  animation: fillIn 1.05s ease-in-out forwards;
+}
+
+// ── Label (icon + name) — hidden by default, shown on pill hover ─────────────
+.label {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.labelIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.labelName {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+}
+
+// ── Animations ───────────────────────────────────────────────────────────────
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--dot-color);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 4px transparent;
+    opacity: 0.9;
+  }
+}
+
+@keyframes fillIn {
+  from {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}

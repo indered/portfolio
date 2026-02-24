@@ -1,10 +1,11 @@
 @use 'variables';
 @use 'mixins';
+@use 'persona-themes';
 
 // ============================================
-// Font Imports
+// Font Imports (includes Caveat for handwriting)
 // ============================================
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 // ============================================
 // CSS Reset & Base Styles
@@ -25,25 +26,73 @@ html {
 }
 
 body {
-  font-family: var(--font-primary);
+  font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: 1.6;
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
   min-height: 100vh;
-  transition: background-color var(--transition-slow), color var(--transition-slow);
+  cursor: none;
+  @include mixins.theme-transition;
+
+  // Restore default cursor on touch devices
+  @media (hover: none) {
+    cursor: auto;
+
+    a, button {
+      cursor: auto;
+    }
+  }
+}
+
+// ============================================
+// Selection Colors
+// ============================================
+::selection {
+  background: var(--color-accent-1);
+  color: #ffffff;
+}
+
+[data-theme='dark'] ::selection {
+  background: var(--color-accent-1);
+  color: #0a0a0f;
+}
+
+// ============================================
+// Scrollbar Styling
+// ============================================
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-secondary);
+  border-radius: var(--border-radius-full);
+
+  &:hover {
+    background: var(--color-accent-1);
+  }
+}
+
+[data-theme='dark'] {
+  scrollbar-color: var(--color-text-secondary) var(--color-bg-secondary);
 }
 
 // ============================================
 // Base Element Styles
 // ============================================
 a {
-  color: var(--color-accent);
+  color: var(--color-accent-1);
   text-decoration: none;
   transition: color var(--transition-fast);
+  cursor: none;
 
   &:hover {
-    color: var(--color-accent-hover);
+    color: var(--color-accent-2);
   }
 }
 
@@ -54,7 +103,7 @@ video {
 }
 
 button {
-  cursor: pointer;
+  cursor: none;
   font: inherit;
 }
 
@@ -93,6 +142,14 @@ pre {
   border: 0;
 }
 
+.handwriting {
+  @include mixins.handwriting;
+}
+
+.mono {
+  @include mixins.mono-text;
+}
+
 // ============================================
 // App Root
 // ============================================
@@ -100,4 +157,26 @@ pre {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+// ============================================
+// Sun name-ring rotation (injected from Html inside R3F canvas)
+// ============================================
+@keyframes rotateSunRing {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+// ============================================
+// Reduced Motion
+// ============================================
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

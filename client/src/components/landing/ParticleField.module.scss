@@ -1,0 +1,6 @@
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-particles);
+  pointer-events: none;
+}

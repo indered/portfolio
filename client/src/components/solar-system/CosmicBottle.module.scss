@@ -1,0 +1,148 @@
+// ─── CosmicBottle overlay — aged parchment note card ─────────────────────────
+
+.cosmicOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+// ─── Note card ────────────────────────────────────────────────────────────────
+
+.noteCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+
+  // Aged parchment base
+  background: linear-gradient(160deg, #fdf6e3 0%, #f5e6c8 100%);
+
+  // Faint ruled-paper texture underneath the parchment
+  background-image:
+    linear-gradient(160deg, #fdf6e3 0%, #f5e6c8 100%),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 28px,
+      rgba(180, 140, 80, 0.10) 28px,
+      rgba(180, 140, 80, 0.10) 29px
+    );
+  background-blend-mode: multiply;
+
+  // Card sizing and shape
+  max-width: 440px;
+  width: 90vw;
+  padding: 3.5rem 2.5rem 2.5rem;
+  border-radius: 4px;
+
+  // Torn / deckled edge shadow trick
+  box-shadow:
+    0 2px 0 #c9a96e,
+    0 6px 24px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -1px 0 rgba(150, 100, 40, 0.2) inset;
+
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: #2c1810;
+  text-align: center;
+  line-height: 1.7;
+}
+
+// ─── Wax seal ─────────────────────────────────────────────────────────────────
+
+.waxSeal {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+.sealSvg {
+  display: block;
+}
+
+// ─── Note body text ───────────────────────────────────────────────────────────
+
+.noteText {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: #2c1810;
+  margin: 0;
+  max-width: 32ch;
+  line-height: 1.75;
+}
+
+// ─── Cosmic emphasis line ─────────────────────────────────────────────────────
+
+.cosmicLine {
+  font-size: 1.45rem;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  color: #1a0d08;
+  margin: 0.25rem 0;
+  // Subtle warm ink effect
+  text-shadow: 0 1px 2px rgba(180, 100, 30, 0.25);
+}
+
+// ─── Signature ────────────────────────────────────────────────────────────────
+
+.signature {
+  font-family: 'Caveat', 'Brush Script MT', cursive;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3d1a0a;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+// ─── Coordinates ─────────────────────────────────────────────────────────────
+
+.coords {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: #7a5c3a;
+  margin: 0;
+  opacity: 0.75;
+}
+
+// ─── Close button ─────────────────────────────────────────────────────────────
+
+.closeBtn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.35rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.88rem;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #3d1a0a;
+  background: transparent;
+  border: 1px solid rgba(100, 60, 20, 0.4);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+
+  &:hover {
+    background: rgba(100, 60, 20, 0.08);
+    border-color: rgba(100, 60, 20, 0.75);
+    color: #1a0d08;
+  }
+
+  &:active {
+    background: rgba(100, 60, 20, 0.14);
+  }
+}

@@ -1,0 +1,178 @@
+// ── PlanetDock — macOS-style magnifying planet dock ───────────────────────────
+// Fixed at bottom-center. Glass pill. 7 sphere items with Framer Motion scale.
+// Labels appear above the hovered item. White dot beneath active planet.
+
+@use '../../styles/mixins' as *;
+
+// ── Dock container ────────────────────────────────────────────────────────────
+
+.dock {
+  position: fixed;
+  bottom: max(20px, calc(16px + env(safe-area-inset-bottom, 0px)));
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  z-index: 9;
+  pointer-events: auto;
+}
+
+// ── Glass pill background ─────────────────────────────────────────────────────
+
+.pill {
+  display: flex;
+  align-items: flex-end;   // items grow upward from the same bottom baseline
+  gap: 16px;
+  padding: 10px 22px 12px;
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+// ── Per-item wrapper — positions label + sphere + dot as a column ─────────────
+
+.itemWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  // itemWrapper itself does NOT have a fixed size; the sphere's Framer scale
+  // handles size. We use flex-end on .pill so growth goes upward.
+}
+
+// ── Sphere button ─────────────────────────────────────────────────────────────
+
+.sphere {
+  position: relative;
+  width: var(--sphere-size, 52px);
+  height: var(--sphere-size, 52px);
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // box-shadow and background are set inline (dynamic color per planet)
+  transition: box-shadow 0.3s ease;
+  transform-origin: bottom center; // grows upward, like macOS dock
+
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  // Active state — brighter ring around the sphere
+  &[data-active] {
+    outline: 2px solid rgba(255, 255, 255, 0.55);
+    outline-offset: 2px;
+  }
+
+  // Target-during-travel — pulsing ring
+  &[data-target] {
+    animation: targetPulse 0.9s ease-in-out infinite;
+  }
+}
+
+// ── Emoji icon — centred over the sphere ─────────────────────────────────────
+
+.icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  // Slight drop-shadow so the emoji reads on dark sphere backgrounds
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+// ── Label — floats above the hovered item ─────────────────────────────────────
+
+.label {
+  position: absolute;
+  // Sits above the sphere — sphere is BASE_SIZE 52px, label pinned to bottom
+  // of itemWrapper (which is flex-column). We position absolutely so it floats
+  // above without displacing neighbour items.
+  bottom: calc(var(--sphere-size, 52px) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1;
+
+  // Glass backing for legibility
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 5px 10px 6px;
+}
+
+.labelIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.labelName {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1;
+}
+
+// ── Active indicator dot — beneath the sphere ─────────────────────────────────
+
+.activeDot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
+}
+
+// ── Animations ────────────────────────────────────────────────────────────────
+
+@keyframes targetPulse {
+  0%, 100% {
+    outline: 2px solid rgba(255, 255, 255, 0.2);
+    outline-offset: 2px;
+  }
+  50% {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 4px;
+  }
+}
+
+// ── Responsive — hide on touch-only devices (they use the bleed gutters) ──────
+
+@include responsive('tablet') {
+  .dock {
+    bottom: max(14px, calc(10px + env(safe-area-inset-bottom, 0px)));
+  }
+
+  .pill {
+    gap: 12px;
+    padding: 8px 16px 10px;
+  }
+}
+
+@include responsive('mobile') {
+  // On very small screens the dock is hidden; mobile uses MobileHub navigation
+  .dock {
+    display: none;
+  }
+}

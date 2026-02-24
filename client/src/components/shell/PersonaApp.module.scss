@@ -1,0 +1,341 @@
+@use '../../styles/mixins' as *;
+
+.personaApp {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-bg-primary);
+  @include theme-transition;
+  // clip guard: the directional pull transition translates this element
+  // to ±100vw. Since it is position:fixed it cannot cause a scrollbar, but
+  // clip ensures no edge-bleed artefacts on Safari during the slide.
+  clip-path: inset(0);
+}
+
+// ── Planetary atmosphere — fixed, persists as you scroll ──────────────────────
+// The planet's energy bleeds through the top of the screen even after landing.
+// pointer-events: none so it never blocks clicks.
+.atmosphereGlow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 260px;
+  pointer-events: none;
+  z-index: 7; // above content (5), below header (z-nav), below bleed gutters (8)
+  background: radial-gradient(
+    ellipse 90% 100% at 50% 0%,
+    color-mix(in srgb, var(--persona-color, #888) 18%, transparent) 0%,
+    color-mix(in srgb, var(--persona-color, #888) 6%, transparent) 55%,
+    transparent 100%
+  );
+  // Fades in with the persona page
+  animation: atmosphereFadeIn 0.8s ease forwards;
+
+  @keyframes atmosphereFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  @include glass-effect;
+  @include flex-between;
+  padding: var(--space-xs) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--persona-color, var(--color-accent-1));
+    box-shadow: 0 0 18px 3px var(--persona-color, var(--color-accent-1));
+    opacity: 0.9;
+  }
+}
+
+.backButton {
+  @include button-reset;
+  @include flex-center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+  }
+
+  &:hover {
+    color: var(--color-text-primary);
+    border-color: var(--persona-color, var(--color-accent-1));
+    background: rgba(255, 255, 255, 0.04);
+
+    svg {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+.personaTitle {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  @include flex-center;
+  gap: var(--space-xs);
+}
+
+.realName {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+
+  &::before { content: '·'; margin: 0 var(--space-2xs); }
+}
+
+.headerNav {
+  @include flex-center;
+  gap: var(--space-xs);
+}
+
+.headerNavBtn {
+  @include button-reset;
+  font-size: var(--font-size-sm);
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+    color: var(--color-text-primary);
+    background: var(--color-bg-tertiary);
+  }
+}
+
+// ── Bleed zone gutters ────────────────────────────────────────────────────────
+// Edge columns that simulate the cockpit-window effect.
+// Dark gradient frames the persona content; a glowing planet orb floats in the darkness.
+.bleedGutter {
+  @include button-reset;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 76px;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  // Resting: dim but always visible. Hover: fully lit.
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.25;
+  }
+}
+
+.bleedLeft {
+  left: 0;
+  background: linear-gradient(to right,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.35) 60%,
+    transparent 100%
+  );
+  align-items: flex-start;
+  padding-left: 12px;
+}
+
+.bleedRight {
+  right: 0;
+  background: linear-gradient(to left,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.35) 60%,
+    transparent 100%
+  );
+  align-items: flex-end;
+  padding-right: 12px;
+}
+
+// Arrow — always visible, brightens on hover
+.bleedArrow {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.25s ease;
+
+  .bleedLeft & { transform: translateX(-2px); }
+  .bleedRight & { transform: translateX(2px); }
+
+  .bleedGutter:hover & {
+    opacity: 1;
+    transform: translateX(0) !important;
+  }
+}
+
+// Glowing planet orb — the centrepiece of the bleed gutter
+.bleedOrb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: radial-gradient(
+    circle at 35% 32%,
+    rgba(255, 255, 255, 0.85) 0%,
+    var(--glow-color) 28%,
+    rgba(0, 0, 0, 0.2) 70%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 20px 6px var(--glow-color),
+    inset 0 0 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  .bleedGutter:hover & {
+    transform: scale(1.18);
+    box-shadow:
+      0 0 36px 14px var(--glow-color),
+      inset 0 0 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Meta info — always visible at rest, full opacity on hover
+.bleedMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.7;
+  transform: translateY(0);
+  transition: opacity 0.25s ease;
+
+  .bleedGutter:hover & {
+    opacity: 1;
+  }
+}
+
+.bleedIcon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.bleedName {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.bleedDist {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  color: var(--glow-color);
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+// ── Content ───────────────────────────────────────────────────────────────────
+.content {
+  min-height: 100dvh;
+  // Leave room for the dock on desktop, safe area on iOS
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+// ── Attribution footer ────────────────────────────────────────────────────────
+.attribution {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+  user-select: none;
+  transition: opacity var(--transition-slow);
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.attributionDot {
+  margin: 0 0.5em;
+  opacity: 0.5;
+}
+
+.attributionName {
+  color: var(--persona-color, var(--color-accent-1));
+  opacity: 0.9;
+}
+
+.attributionClaude {
+  background: linear-gradient(90deg, #cc785c, #d4956a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.9;
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+@include responsive('tablet') {
+  .bleedGutter { display: none; }
+  .header { padding: var(--space-xs) var(--space-md); }
+  .realName { display: none; }
+}
+
+@include responsive('mobile') {
+  .header { padding: var(--space-xs) var(--space-sm); }
+
+  // Keep headerNav visible on mobile — it's the only persistent nav for touch
+  // users (dock is hidden, bleed gutters are hidden, swipe also works).
+  .headerNav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .headerNavBtn {
+    // Larger touch targets
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 1.1rem;
+    opacity: 0.75;
+    min-width: 44px;
+    min-height: 44px;
+    @include flex-center;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

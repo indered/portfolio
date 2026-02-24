@@ -1,0 +1,343 @@
+@use '../../styles/mixins' as *;
+
+// ============================================================
+// SocialLinksSection — The Connector
+// Monochrome card grid. Brand color appears ONLY on hover.
+// Stripe / Linear contact page aesthetic.
+// Background: #141210 (near-black warm)
+// Cards: #1E1C18 (warm dark surface)
+// ============================================================
+
+// ── Local tokens ─────────────────────────────────────────────
+$bg:        #141210;
+$surface:   #1E1C18;
+$border:    rgba(255, 255, 255, 0.07);
+$border-2:  rgba(255, 255, 255, 0.04);
+$text:      #E8E4DE;
+$text-2:    #8A8278;
+$text-3:    #5A564E;
+// $green is only used for dotPulse keyframe + status indicator below
+
+// ── Keyframes ────────────────────────────────────────────────
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--persona-color) 50%, transparent); }
+  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--persona-color) 0%, transparent); }
+}
+
+// ── Root ─────────────────────────────────────────────────────
+.social {
+  background: var(--color-bg-primary, #{$bg});
+  min-height: 100vh;
+  padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+
+  @include responsive('tablet') {
+    padding: var(--space-2xl) var(--space-md) var(--space-3xl);
+    gap: var(--space-2xl);
+  }
+
+  @include responsive('mobile') {
+    padding: var(--space-xl) var(--space-sm) var(--space-3xl);
+    gap: var(--space-xl);
+  }
+}
+
+// ── Hero — Current Status ─────────────────────────────────────
+.hero {
+  max-width: 680px;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.statusLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: var(--space-xs);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--persona-color);
+  flex-shrink: 0;
+  animation: dotPulse 2.4s ease-in-out infinite;
+}
+
+.statusText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-2;
+}
+
+.heroName {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: $text;
+  line-height: 1;
+  margin: 0;
+}
+
+.heroLocation {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: $text-3;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.heroRule {
+  width: 32px;
+  height: 1px;
+  background: $border;
+  margin-top: var(--space-sm);
+}
+
+// ── Cards Grid ────────────────────────────────────────────────
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  max-width: 720px;
+  margin-inline: auto;
+  width: 100%;
+
+  @include responsive('mobile') {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+  }
+}
+
+// ── Individual Social Card ─────────────────────────────────────
+// --hover-color is set inline via style prop
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: var(--border-radius-lg);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.18s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+
+  // Radial glow on hover — uses brand color custom prop
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    background: radial-gradient(
+      ellipse at 0% 50%,
+      color-mix(in srgb, var(--hover-color, #fff) 8%, transparent) 0%,
+      transparent 70%
+    );
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: color-mix(in srgb, var(--hover-color, #555) 45%, transparent);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--hover-color, #555) 20%, transparent),
+        0 12px 40px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+
+      &::after {
+        opacity: 1;
+      }
+
+      .cardCta {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      border-color: color-mix(in srgb, var(--hover-color, #555) 45%, transparent);
+    }
+  }
+
+  @include responsive('mobile') {
+    padding: var(--space-md);
+    gap: 14px;
+  }
+}
+
+// Icon — brand color, always visible
+.cardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-md);
+  background: $border-2;
+}
+
+// Card body: platform + handle + desc
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardPlatform {
+  font-family: var(--font-display);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: $text;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardHandle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: $text-3;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardDesc {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: $text-3;
+  line-height: 1.45;
+
+  @include responsive('mobile') {
+    display: none;
+  }
+}
+
+// Ghost CTA — appears on hover via opacity
+.cardCta {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: $text-2;
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+
+  @include responsive('mobile') {
+    display: none;
+  }
+}
+
+// ── Email Block ───────────────────────────────────────────────
+.emailBlock {
+  max-width: 520px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.emailLabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $text-3;
+}
+
+.emailRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.emailAddress {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: $text;
+  text-decoration: none;
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.copyBtn {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid $border;
+  background: $surface;
+  color: $text-2;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $text;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+.emailMeta {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: $text-3;
+}

@@ -1,0 +1,452 @@
+@use '../../styles/mixins' as *;
+
+// ============================================================
+// ThinkerSection — Literary magazine / long-form essay style
+// Palette: warm cream, no neons, Cormorant Garamond display
+// ============================================================
+
+// Local palette tokens — unified brand dark palette
+$text-primary:      #E8E4DE;
+$text-body:         #C8C4BC;
+$text-muted:        #8A8278;
+$text-faint:        rgba(232, 228, 222, 0.35);
+$accent:            #8b7355;                        // thinker planet color — warm brown
+$accent-pale:       rgba(139, 115, 85, 0.15);       // dark-compatible tint
+$bg-primary:        #141210;
+$border-subtle:     rgba(255, 255, 255, 0.07);
+$border-rule:       rgba(255, 255, 255, 0.09);
+
+// ============================================================
+// Root wrapper
+// ============================================================
+.thinker {
+  position: relative;
+  background: var(--color-bg-primary, #{$bg-primary});
+  color: var(--color-text-primary, #{$text-body});
+  overflow-x: hidden;
+
+  max-width: 760px;
+  margin-inline: auto;
+  padding-block: var(--space-3xl) var(--space-3xl);
+  padding-inline: var(--space-3xl);
+
+  @include responsive('tablet') {
+    padding-inline: var(--space-xl);
+    padding-block: var(--space-2xl) var(--space-2xl);
+  }
+
+  @include responsive('mobile') {
+    padding-inline: 20px;
+    padding-block: var(--space-xl) var(--space-xl);
+  }
+}
+
+// ============================================================
+// Magazine dateline
+// ============================================================
+.dateline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: $text-faint;
+  margin-bottom: var(--space-sm);
+
+  @include responsive('mobile') {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+}
+
+.datelineSep {
+  opacity: 0.5;
+}
+
+.datelineRule {
+  width: 100%;
+  height: 1px;
+  background: $border-rule;
+  margin-bottom: var(--space-2xl);
+
+  @include responsive('mobile') {
+    margin-bottom: var(--space-xl);
+  }
+}
+
+// ============================================================
+// Header block
+// ============================================================
+.header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+
+  @include responsive('mobile') {
+    margin-bottom: var(--space-2xl);
+  }
+}
+
+.title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: $text-primary;
+  margin-bottom: var(--space-lg);
+  letter-spacing: -0.01em;
+}
+
+// The <br> is only meaningful on wider screens
+.titleBreak {
+  @include responsive('mobile') {
+    display: none;
+  }
+}
+
+.subtitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+  font-style: italic;
+  color: $text-muted;
+  line-height: 1.65;
+  max-width: 560px;
+  margin-inline: auto;
+  margin-bottom: var(--space-2xl);
+}
+
+.headerRule {
+  width: 48px;
+  height: 1px;
+  background: $accent;
+  margin-inline: auto;
+  opacity: 0.45;
+}
+
+// ============================================================
+// Essay body — readable serif prose
+// ============================================================
+.essay {
+  position: relative;
+  z-index: 1;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.05rem, 2vw, 1.175rem);
+  line-height: 1.95;
+  color: $text-body;
+
+  p {
+    margin-bottom: var(--space-xl);
+  }
+
+  em {
+    font-style: italic;
+    color: $text-primary;
+  }
+
+  strong {
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  @include responsive('tablet') {
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
+
+  @include responsive('mobile') {
+    font-size: 1rem; // minimum 16px assumed as root is 16px
+    line-height: 1.8;
+  }
+}
+
+// ============================================================
+// Drop cap — decorative first letter
+// ============================================================
+.dropCap::first-letter {
+  float: left;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 4.8em;
+  line-height: 0.78;
+  padding-right: 0.1em;
+  padding-top: 0.06em;
+  color: $accent;
+  font-weight: 600;
+}
+
+// ============================================================
+// Pull-quotes — centered, dramatic quotation mark
+// ============================================================
+.pullQuote {
+  position: relative;
+  margin: var(--space-3xl) 0;
+  padding: var(--space-2xl) var(--space-2xl) var(--space-xl);
+  text-align: center;
+
+  // No card background — just the text
+  background: none;
+  border: none;
+
+  // Thin horizontal rules above and below to bracket the quote
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 1px;
+    background: $accent;
+    opacity: 0.25;
+    margin-inline: auto;
+  }
+
+  &::before {
+    margin-bottom: var(--space-xl);
+  }
+
+  &::after {
+    margin-top: var(--space-xl);
+  }
+
+  @include responsive('mobile') {
+    padding: var(--space-xl) 0;
+    margin: var(--space-2xl) 0;
+  }
+}
+
+// The large pale opening quotation mark — absolute, behind text
+.pullQuoteMark {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(72px, 12vw, 120px);
+  line-height: 1;
+  color: $accent-pale;
+  user-select: none;
+  pointer-events: none;
+  // Recedes behind the text
+  z-index: 0;
+
+  @include responsive('mobile') {
+    font-size: 72px;
+    top: 4px;
+    left: -4px;
+  }
+}
+
+.pullQuoteText {
+  position: relative;
+  z-index: 1;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.35rem, 3.2vw, 1.8rem);
+  font-style: italic;
+  color: $text-primary;
+  line-height: 1.5;
+  margin: 0 0 var(--space-md);
+  letter-spacing: 0.01em;
+}
+
+.pullQuoteAttribution {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $text-muted;
+
+  // Thin rule before the attribution
+  &::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: $accent;
+    opacity: 0.4;
+    margin: 0 auto var(--space-sm);
+  }
+}
+
+// ============================================================
+// Section divider — line + crosshair ornament
+// ============================================================
+.dividerWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: var(--space-3xl) 0;
+
+  @include responsive('mobile') {
+    margin: var(--space-2xl) 0;
+  }
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(139, 115, 85, 0.3),
+    transparent
+  );
+}
+
+.dividerOrnament {
+  color: $accent;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// ============================================================
+// Special prose treatments
+// ============================================================
+
+// The pivot line — most prominent line on the page
+.pivotLine {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-style: italic;
+  color: $text-primary;
+  text-align: center;
+  letter-spacing: 0.01em;
+  padding-block: var(--space-xl);
+  margin-bottom: var(--space-xl) !important;
+
+  @include responsive('mobile') {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    padding-block: var(--space-lg);
+  }
+}
+
+// The closing single line ("And I did.")
+.closingLine {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  color: $accent;
+  font-style: italic;
+  margin-top: var(--space-sm) !important;
+}
+
+// ============================================================
+// Reading list colophon
+// ============================================================
+.readingList {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-4xl);
+  padding-top: var(--space-2xl);
+  border-top: 1px solid $border-subtle;
+
+  @include responsive('mobile') {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-xl);
+  }
+}
+
+.readingListHeading {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: $text-muted;
+  margin-bottom: var(--space-xl);
+  font-weight: 400;
+}
+
+.readingListGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+
+  @include responsive('mobile') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bookEntry {
+  padding: var(--space-md) 0;
+  border-top: 1px solid $border-subtle;
+
+  // Add right padding on even children (left column) to create gutter
+  &:nth-child(odd) {
+    padding-right: var(--space-xl);
+  }
+
+  &:nth-child(even) {
+    padding-left: var(--space-xl);
+    border-left: 1px solid $border-subtle;
+  }
+
+  @include responsive('mobile') {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    border-left: none !important;
+  }
+}
+
+.bookTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  color: $text-primary;
+  margin: 0 0 2px;
+  line-height: 1.4;
+}
+
+.bookAuthor {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: $text-muted;
+  margin: 0 0 4px;
+  letter-spacing: 0.02em;
+}
+
+.bookNote {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12px;
+  color: $text-body;
+  margin: 0;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+// ============================================================
+// Footer colophon
+// ============================================================
+.colophon {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-3xl);
+  text-align: center;
+}
+
+.colophonRule {
+  width: 100%;
+  max-width: 320px;
+  height: 1px;
+  margin: 0 auto var(--space-xl);
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(139, 115, 85, 0.3),
+    transparent
+  );
+}
+
+.colophonText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: $text-muted;
+  line-height: 1.8;
+  opacity: 0.8;
+}

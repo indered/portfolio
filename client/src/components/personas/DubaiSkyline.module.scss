@@ -1,0 +1,33 @@
+@use '../../styles/mixins' as *;
+
+.skylineWrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  margin-top: var(--space-xl);
+  overflow: hidden;
+
+  @include mobile {
+    height: 140px;
+  }
+}
+
+.skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  position: absolute;
+  bottom: var(--space-sm);
+  right: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-persona-runner);
+  opacity: 0.5;
+}

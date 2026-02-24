@@ -1,0 +1,703 @@
+@use '../../styles/mixins' as *;
+
+// ============================================================
+// MusicSection — Strings & Frequencies
+// Boiler Room meets Bandcamp. Dark, intimate, typographically rich.
+// Palette: amber-gold guitar + slate DJ, deep warm black bg
+// ============================================================
+
+// Local tokens — unified brand dark palette
+$bg:           #141210;
+$bg-card:      #1E1C18;
+$bg-elevated:  #252018;
+$text-primary: #E8E4DE;
+$text-sec:     #8A8278;
+$guitar:       #C8973C;   // warm gold — persona accent
+$guitar-dim:   rgba(200, 151, 60, 0.18);
+$guitar-mid:   rgba(200, 151, 60, 0.35);
+$dj:           #94A3B8;   // slate — vinyl under club lighting
+$dj-dim:       rgba(148, 163, 184, 0.14);
+$dj-mid:       rgba(148, 163, 184, 0.32);
+$border:       rgba(255, 255, 255, 0.08);
+$card-border:  rgba(200, 151, 60, 0.15);
+
+// ============================================================
+// KEYFRAMES
+// ============================================================
+
+@keyframes eqBounce {
+  0%, 100% { transform: scaleY(0.2); }
+  50%       { transform: scaleY(1); }
+}
+
+@keyframes waveAnim {
+  0%   { transform: scaleY(0.25); }
+  50%  { transform: scaleY(1); }
+  100% { transform: scaleY(0.25); }
+}
+
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes stringVib {
+  0%, 100% { transform: scaleX(1); }
+  25%       { transform: scaleX(1.001); }
+  75%       { transform: scaleX(0.999); }
+}
+
+// ============================================================
+// ROOT
+// ============================================================
+
+.music {
+  position: relative;
+  background: var(--color-bg-primary, #{$bg});
+  padding-bottom: var(--space-3xl);
+  overflow-x: hidden;
+}
+
+// ============================================================
+// SECTION 1 — HERO
+// ============================================================
+
+.hero {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+  text-align: center;
+  background: $bg;
+
+  @include responsive('tablet') {
+    min-height: 220px;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
+  }
+
+  @include responsive('mobile') {
+    min-height: 180px;
+    padding: var(--space-lg) var(--space-md) var(--space-md);
+  }
+}
+
+.heroInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  max-width: 680px;
+}
+
+.heroEyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.heroEyebrowText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-sec;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: $text-primary;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.heroSubtitle {
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: $text-sec;
+  margin: 0;
+  max-width: 500px;
+
+  @include responsive('mobile') {
+    font-size: var(--font-size-base);
+  }
+}
+
+// ============================================================
+// WAVEFORM DIVIDER
+// ============================================================
+
+.waveformDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 56px;
+  margin: var(--space-xl) auto;
+  max-width: 680px;
+  opacity: 0.15;
+  padding: 0 var(--space-lg);
+
+  @include responsive('mobile') {
+    height: 40px;
+    gap: 2px;
+    max-width: 100%;
+  }
+}
+
+.waveBar {
+  display: block;
+  width: 5px;
+  height: var(--bar-base-h, 18px);
+  background: $guitar;
+  border-radius: 3px;
+  transform-origin: center bottom;
+  animation: waveAnim 1.4s ease-in-out infinite;
+  animation-delay: var(--bar-delay, 0s);
+
+  &:nth-child(3n) {
+    background: $dj;
+  }
+
+  @include responsive('mobile') {
+    width: 4px;
+  }
+}
+
+// ============================================================
+// SECTION 2 — INSTRUMENT GRID
+// ============================================================
+
+.instrumentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  max-width: 1100px;
+  margin: 0 auto var(--space-2xl);
+  padding: 0 var(--space-lg);
+
+  @include responsive('tablet') {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    padding: 0 var(--space-md);
+  }
+
+  @include responsive('mobile') {
+    grid-template-columns: 1fr;
+    padding: 0 var(--space-sm);
+    gap: var(--space-sm);
+  }
+}
+
+// Shared panel styles
+.panelGuitar,
+.panelDj {
+  background: $bg-card;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid $border;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  @include responsive('mobile') {
+    min-height: 200px;
+  }
+}
+
+.panelGuitar {
+  border-color: rgba(200, 151, 60, 0.18);
+}
+
+.panelDj {
+  border-color: rgba(148, 163, 184, 0.14);
+}
+
+// Panel header strip
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid $border;
+}
+
+.panelAccentLine {
+  display: block;
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  flex-shrink: 0;
+
+  &[data-accent='guitar'] { background: $guitar; }
+  &[data-accent='dj']     { background: $dj; }
+}
+
+.panelLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  &[data-accent='guitar'] { color: $guitar; }
+  &[data-accent='dj']     { color: $dj; }
+}
+
+// Panel body layout
+.panelBody {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  flex: 1;
+
+  @include responsive('mobile') {
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+}
+
+// Guitar visual
+.guitarVisual {
+  flex-shrink: 0;
+  width: 70px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  @include responsive('tablet') {
+    width: 54px;
+  }
+
+  @include responsive('mobile') {
+    width: 100%;
+    max-height: 160px;
+    align-items: center;
+  }
+}
+
+.guitarSvg {
+  width: 100%;
+  max-width: 70px;
+  height: auto;
+  overflow: visible;
+
+  @include responsive('mobile') {
+    max-width: 54px;
+    max-height: 160px;
+  }
+}
+
+.guitarNeck {
+  fill: #8B6914;
+}
+
+.guitarFret {
+  fill: #c4a040;
+}
+
+.guitarString {
+  stroke: $guitar;
+  stroke-width: 0.9;
+  opacity: 0.75;
+  animation: stringVib calc(0.45s + var(--str-i, 0) * 0.06s) ease-in-out infinite;
+  transform-origin: center;
+}
+
+.guitarBody {
+  fill: #7a5510;
+  stroke: #a07020;
+  stroke-width: 1;
+}
+
+.guitarBodyInner {
+  fill: #8B6914;
+}
+
+.guitarHole {
+  fill: #0E0C0A;
+  stroke: #c4a040;
+  stroke-width: 1;
+}
+
+.guitarHoleInner {
+  fill: none;
+  stroke: rgba(200, 151, 60, 0.3);
+  stroke-width: 1;
+}
+
+.guitarBridge {
+  fill: #c4a040;
+}
+
+.guitarHead {
+  fill: #7a5510;
+  stroke: #a07020;
+  stroke-width: 1;
+}
+
+.guitarPeg {
+  fill: #c4a040;
+}
+
+// DJ caricature zone
+.djCaricatureZone {
+  flex-shrink: 0;
+  width: 200px;
+  height: 300px;
+  border: 1px dashed rgba(148, 163, 184, 0.3);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: rgba(148, 163, 184, 0.03);
+  position: relative;
+
+  @include responsive('tablet') {
+    width: 160px;
+    height: 240px;
+  }
+
+  @include responsive('mobile') {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+.djSilhouette {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+}
+
+.djCaricatureCaption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: $dj;
+  opacity: 0.4;
+  text-align: center;
+  margin: 0;
+  text-transform: uppercase;
+  padding: 0 var(--space-sm);
+  line-height: 1.4;
+}
+
+// Panel content (text side)
+.panelContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.panelTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+
+  &[data-accent='guitar'] { color: $guitar; }
+  &[data-accent='dj']     { color: $dj; }
+}
+
+.panelDesc {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  color: $text-sec;
+  margin: 0;
+}
+
+// Fact list
+.panelFacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panelFact {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: baseline;
+  font-size: var(--font-size-xs);
+  min-height: 44px; // touch target
+  align-items: center;
+
+  @include responsive('mobile') {
+    flex-direction: column;
+    gap: 2px;
+    min-height: unset;
+    align-items: flex-start;
+  }
+}
+
+.factKey {
+  font-family: var(--font-mono);
+  color: $text-sec;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  min-width: 88px;
+}
+
+.factVal {
+  color: $text-primary;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+
+  &[data-accent='dj'] { color: $dj; }
+}
+
+// Genre pills
+.genrePills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.genrePill {
+  padding: 4px 12px;
+  border-radius: var(--border-radius-full);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+
+  &[data-accent='guitar'] {
+    border: 1px solid rgba(200, 151, 60, 0.3);
+    color: $guitar;
+    background: rgba(200, 151, 60, 0.06);
+
+    &:hover {
+      background: rgba(200, 151, 60, 0.14);
+      border-color: rgba(200, 151, 60, 0.55);
+    }
+  }
+
+  &[data-accent='dj'] {
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: $dj;
+    background: rgba(148, 163, 184, 0.05);
+
+    &:hover {
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+  }
+}
+
+// ============================================================
+// SECTION 3 — YOUTUBE PLAYLIST
+// ============================================================
+
+.playlistSection {
+  max-width: 700px;
+  margin: 0 auto var(--space-3xl);
+  padding: 0 var(--space-lg);
+
+  @include responsive('mobile') {
+    padding: 0 var(--space-sm);
+  }
+}
+
+.playlistHeaderRow {
+  @include flex-between;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  align-items: flex-end;
+
+  @include responsive('mobile') {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+}
+
+.playlistTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.playlistEyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-sec;
+  margin: 0 0 4px;
+}
+
+.playlistTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.playlistMeta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: $text-sec;
+  margin: 0;
+  opacity: 0.7;
+  white-space: nowrap;
+
+  @include responsive('mobile') {
+    white-space: normal;
+  }
+}
+
+// YouTube embed wrapper — 16:9 aspect ratio trick
+.ytEmbedWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $bg-card;
+  border: 1px solid rgba(200, 151, 60, 0.12);
+}
+
+// YouTube placeholder (shown until real iframe connected)
+.ytPlaceholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  background: $bg-card;
+}
+
+.ytLogo {
+  // Wrapper for the SVG YouTube logo
+}
+
+.ytLabel {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  color: $text-primary;
+  margin: 0;
+  font-weight: 600;
+}
+
+.ytNote {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: $text-sec;
+  margin: 0;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.playlistFootnote {
+  margin-top: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: $text-sec;
+  opacity: 0.55;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+// ============================================================
+// VINYL ACCENT (small decorative)
+// ============================================================
+
+.vinylAccent {
+  flex-shrink: 0;
+}
+
+.vinylAccentDisc {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle, #241F1A 0%, #0E0C0A 55%, #1A1714 100%);
+  border: 1px solid rgba(200, 151, 60, 0.2);
+  animation: vinylSpin 10s linear infinite;
+  will-change: transform;
+}
+
+.vinylAccentLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 38%;
+  height: 38%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #7a5510 0%, #4a3010 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vinylAccentHole {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $bg;
+}
+
+.vinylAccentReflection {
+  position: absolute;
+  top: 8%;
+  left: 12%;
+  width: 30%;
+  height: 20%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transform: rotate(-30deg);
+}
+
+// ============================================================
+// EQUALIZER
+// ============================================================
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.eqBar {
+  display: block;
+  width: 3px;
+  border-radius: 2px;
+  background: $guitar;
+  transform-origin: bottom center;
+  animation: eqBounce linear infinite;
+
+  &:nth-child(1) { height: 65%;  animation-duration: 0.7s;  animation-delay: 0.0s; }
+  &:nth-child(2) { height: 100%; animation-duration: 0.52s; animation-delay: 0.11s; }
+  &:nth-child(3) { height: 50%;  animation-duration: 0.86s; animation-delay: 0.05s; }
+  &:nth-child(4) { height: 80%;  animation-duration: 0.62s; animation-delay: 0.18s; }
+}

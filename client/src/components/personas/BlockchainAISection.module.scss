@@ -1,0 +1,799 @@
+@use '../../styles/mixins' as *;
+
+// ============================================
+// BlockchainAISection — Founder / Arc Protocol
+// Palette: off-white #F8F7F4, charcoal #161412,
+//          amber #D97706, forest green #1A4A2E
+// Mood: YC portfolio meets McKinsey — no glow, no particles
+// ============================================
+
+// ── Local tokens — unified brand dark palette ──────────────────────────────
+$bg:         #141210;
+$bg-2:       #1E1C18;
+$bg-3:       #252018;
+$text:       #E8E4DE;
+$text-2:     #8A8278;
+$amber:      #D97706;                    // persona color — blockchain amber
+$amber-pale: rgba(217, 119, 6, 0.12);   // tinted glow
+$green:      #22c55e;                    // semantic success / active status only
+$card-bg:    #1E1C18;
+$border:     rgba(255, 255, 255, 0.08);
+$border-2:   rgba(255, 255, 255, 0.05);
+$shadow:     rgba(0, 0, 0, 0.24);
+
+// ── Keyframes ─────────────────────────────────────────────────────────────────
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+// ── Root Container ────────────────────────────────────────────────────────────
+.blockchain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-primary, #{$bg});
+  color: var(--color-text-primary, #{$text});
+  min-height: 100vh;
+  padding: var(--space-4xl) var(--space-3xl);
+
+  @include tablet {
+    padding: var(--space-3xl) var(--space-xl);
+    gap: var(--space-3xl);
+  }
+
+  @include mobile {
+    padding: var(--space-2xl) var(--space-md);
+    gap: var(--space-2xl);
+  }
+}
+
+// ── Background layer — light grid only ───────────────────────────────────────
+.bgLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bgGrid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+// ── Shared section header row ─────────────────────────────────────────────────
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.sectionHeaderLine {
+  flex: 1;
+  height: 1px;
+  background: $border;
+}
+
+// ── Section label ─────────────────────────────────────────────────────────────
+.sectionLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-2;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── HERO ──────────────────────────────────────────────────────────────────────
+.hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: flex-start;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.heroEyebrow {
+  display: flex;
+  align-items: center;
+}
+
+.eyebrowText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $amber;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: $text;
+
+  @include tablet {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+  }
+}
+
+// Status badge — understated, no glow animation
+.statusBadge {
+  @include flex-center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--border-radius-full);
+  background: $amber-pale;
+  border: 1px solid rgba($amber, 0.3);
+  align-self: flex-start;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  color: $text;
+  min-height: 44px;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $amber;
+  flex-shrink: 0;
+  animation: statusBlink 2.4s ease-in-out infinite;
+}
+
+.statusText {
+  color: $amber;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.statusSep {
+  color: $text-2;
+  opacity: 0.5;
+}
+
+.statusDetail {
+  color: $text-2;
+}
+
+// Tagline
+.heroTagline {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: $text-2;
+  max-width: 52ch;
+}
+
+// DIFC / legitimacy badges
+.contextBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.contextBadge {
+  @include flex-center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  background: rgba($green, 0.06);
+  border: 1px solid rgba($green, 0.2);
+  color: $green;
+  white-space: nowrap;
+  min-height: 44px;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  &:hover {
+    background: rgba($green, 0.1);
+    border-color: rgba($green, 0.35);
+  }
+}
+
+.contextBadgeIcon {
+  font-size: 0.5em;
+  color: $green;
+  opacity: 0.8;
+}
+
+// Pull quote — right column
+.heroPullQuote {
+  position: relative;
+  padding: var(--space-xl) var(--space-xl) var(--space-xl) var(--space-2xl);
+  background: $card-bg;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid $border;
+  border-left: 3px solid $amber;
+  box-shadow: 0 2px 16px $shadow;
+  align-self: flex-start;
+}
+
+.pullQuoteGlyph {
+  position: absolute;
+  top: -0.1em;
+  left: var(--space-sm);
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  color: $amber;
+  opacity: 0.1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.pullQuoteText {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.4vw, 1rem);
+  font-style: italic;
+  line-height: 1.65;
+  color: $text-2;
+  position: relative;
+  z-index: 1;
+}
+
+// ── KEY METRICS STRIP ─────────────────────────────────────────────────────────
+.metricsStrip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.metricsRule {
+  height: 1px;
+  background: $border;
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+
+  @include mobile {
+    gap: var(--space-md);
+  }
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.metricValue {
+  font-family: var(--font-mono);
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  color: $text;
+  line-height: 1;
+
+  @include mobile {
+    font-size: clamp(1.3rem, 5vw, 2rem);
+  }
+}
+
+.metricLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-2;
+}
+
+// ── VENTURES PORTFOLIO ────────────────────────────────────────────────────────
+.venturesSection {
+  position: relative;
+  z-index: 1;
+}
+
+.venturesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ventureCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: $card-bg;
+  border: 1px solid $border;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 1px 8px $shadow;
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+  cursor: default;
+
+  &:hover {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.ventureCardTop {
+  @include flex-between;
+  gap: var(--space-sm);
+}
+
+.ventureCardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.ventureType {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $text-2;
+}
+
+// Status pills
+.statusPill {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+}
+
+.pillActive {
+  background: rgba($green, 0.1);
+  color: $green;
+  border: 1px solid rgba($green, 0.25);
+}
+
+.pillExited {
+  background: $bg-3;
+  color: $text-2;
+  border: 1px solid $border;
+}
+
+.pillStealth {
+  background: $amber-pale;
+  color: $amber;
+  border: 1px solid rgba($amber, 0.3);
+}
+
+.ventureYear {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  color: $text-2;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.ventureName {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.ventureDesc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: $text-2;
+  margin: 0;
+}
+
+// ── NETWORK DIAGRAM ───────────────────────────────────────────────────────────
+.networkSection {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.networkHeader {
+  @include flex-between;
+  gap: var(--space-lg);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+}
+
+.networkStats {
+  display: flex;
+  gap: var(--space-xl);
+
+  @include mobile {
+    gap: var(--space-lg);
+  }
+}
+
+.networkStat {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: $text-2;
+  opacity: 0.6;
+  letter-spacing: 0.04em;
+
+  em {
+    font-style: normal;
+    color: $amber;
+    font-weight: 600;
+    margin-right: 3px;
+  }
+}
+
+.networkCanvas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xl);
+  background: $card-bg;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid $border;
+  padding: var(--space-2xl);
+  overflow: hidden;
+  box-shadow: 0 1px 8px $shadow;
+
+  @include tablet {
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+  }
+}
+
+// SVG network — neutral gray palette
+.networkSvg {
+  flex: 1;
+  min-width: 0;
+  max-width: 500px;
+  height: auto;
+  position: relative;
+
+  @include tablet {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.networkEdge {
+  stroke: #C4BBB0;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.nodeGroup {
+  cursor: default;
+
+  &:hover .hexOuter {
+    opacity: 1;
+    stroke: $amber;
+  }
+
+  &:hover .hexInner {
+    fill: $amber;
+    opacity: 0.6;
+  }
+}
+
+.hexOuter {
+  fill: none;
+  stroke: #C4BBB0;
+  stroke-width: 1;
+  opacity: 0.7;
+  transition: stroke var(--transition-fast), opacity var(--transition-fast);
+}
+
+.hexInner {
+  fill: #C4BBB0;
+  opacity: 0.5;
+  transition: fill var(--transition-fast), opacity var(--transition-fast);
+}
+
+// ── Pitch Card (Arc Protocol whitepaper) ──────────────────────────────────────
+.pitchCard {
+  flex-shrink: 0;
+  width: 220px;
+  padding: var(--space-lg);
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  box-shadow: 0 2px 12px $shadow;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  cursor: default;
+
+  @include tablet {
+    width: 100%;
+  }
+}
+
+.pitchCardHeader {
+  @include flex-between;
+}
+
+.pitchCardLabel {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: $amber;
+  text-transform: uppercase;
+}
+
+.pitchCardAccent {
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: $amber;
+  opacity: 0.6;
+  transform: rotate(45deg);
+}
+
+.pitchCardTitle {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text;
+  line-height: 1.2;
+}
+
+.pitchCardSubtitle {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: $text-2;
+  letter-spacing: 0.02em;
+}
+
+.pitchCardLines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pitchCardLine {
+  display: block;
+  height: 3px;
+  background: $bg-3;
+  border-radius: 2px;
+}
+
+.pitchCardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: var(--space-sm);
+  border-top: 1px solid $border;
+}
+
+.pitchCardFooterItem {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: $text-2;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+// ── STARTUP DESCRIPTION + VISION ──────────────────────────────────────────────
+.startupSpread {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-3xl);
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+.startupLeft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.startupDescription {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.4vw, 1rem);
+  line-height: 1.75;
+  color: $text-2;
+}
+
+// Vision quote card
+.visionQuote {
+  background: $card-bg;
+  border: 1px solid $border;
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  box-shadow: 0 1px 8px $shadow;
+  margin: 0;
+}
+
+.visionQuoteInner {
+  position: relative;
+  padding-left: var(--space-lg);
+}
+
+.visionQuoteGlyph {
+  position: absolute;
+  top: -0.3em;
+  left: -0.1em;
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  color: $amber;
+  opacity: 0.08;
+  pointer-events: none;
+  user-select: none;
+}
+
+.visionText {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-style: italic;
+  line-height: 1.7;
+  color: $text;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.visionQuoteAttrib {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: var(--space-sm);
+  border-top: 1px solid $border;
+}
+
+.visionQuoteAuthor {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text;
+}
+
+.visionQuoteRole {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: $text-2;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+// ── FOCUS AREAS ───────────────────────────────────────────────────────────────
+.focusSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.focusTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.focusTile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  background: $card-bg;
+  border: 1px solid $border;
+  border-top: 2px solid $amber;
+  border-radius: var(--border-radius-lg);
+  cursor: default;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+  min-height: 44px;
+
+  &:hover {
+    border-top-color: $amber;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.focusTileNumber {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: $amber;
+  letter-spacing: 0.1em;
+}
+
+.focusTileLabel {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+// ── Bottom Divider ────────────────────────────────────────────────────────────
+.sectionDivider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--persona-color) 40%, transparent) 30%,
+    color-mix(in srgb, var(--persona-color) 60%, transparent) 50%,
+    color-mix(in srgb, var(--persona-color) 40%, transparent) 70%,
+    transparent
+  );
+  transform-origin: left;
+  position: relative;
+  z-index: 1;
+}

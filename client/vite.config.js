@@ -12,4 +12,18 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-motion': ['motion/react'],
+          'vendor-particles': ['@tsparticles/react', '@tsparticles/slim'],
+          'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
+          'vendor-r3f-post': ['@react-three/postprocessing'],
+          'vendor-gsap': ['gsap'],
+        },
+      },
+    },
+  },
 })

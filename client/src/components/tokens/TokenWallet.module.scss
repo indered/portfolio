@@ -1,0 +1,249 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+.wrapper {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  z-index: var(--z-nav);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-sm);
+
+  @include mixins.responsive('mobile') {
+    bottom: var(--space-md);
+    right: var(--space-md);
+  }
+}
+
+// --- Collapsed Pill ---
+.pill {
+  @include mixins.button-reset;
+  @include mixins.glass-effect;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-full);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  position: relative;
+  box-shadow: 0 4px 20px var(--color-shadow);
+  transition: box-shadow var(--transition-fast);
+
+  &:hover {
+    box-shadow: 0 6px 24px var(--color-shadow);
+  }
+
+  [data-theme='dark'] & {
+    &:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+    }
+  }
+}
+
+.coinIcon {
+  color: var(--color-accent-1);
+  flex-shrink: 0;
+}
+
+.pillCount {
+  min-width: 1.4em;
+  text-align: center;
+}
+
+// Coin burst — individual particles that fly in and converge to the coin icon
+.coinParticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe066, #d4a00a);
+  box-shadow: 0 0 6px rgba(220, 160, 10, 0.7), 0 0 14px rgba(220, 160, 10, 0.3);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.floatingPlus {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-1);
+  pointer-events: none;
+
+  [data-theme='dark'] & {
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+  }
+}
+
+// --- Expanded Card ---
+.card {
+  @include mixins.glass-effect;
+  width: 280px;
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg);
+  box-shadow: 0 8px 32px var(--color-shadow);
+
+  [data-theme='dark'] & {
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.08);
+  }
+
+  @include mixins.responsive('mobile') {
+    width: calc(100vw - var(--space-xl) * 2);
+    max-width: 280px;
+  }
+}
+
+.cardHeader {
+  @include mixins.flex-between;
+  margin-bottom: var(--space-md);
+}
+
+.cardTitle {
+  font-family: var(--font-handwriting);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.closeBtn {
+  @include mixins.button-reset;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  line-height: 1;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+// --- Session Block ---
+.sessionBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.sessionLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sessionCount {
+  font-family: var(--font-display);
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-accent-1);
+  line-height: 1.1;
+
+  [data-theme='dark'] & {
+    text-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+  }
+}
+
+// --- Recent Action ---
+.recentAction {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  justify-content: center;
+}
+
+.actionDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-1);
+  flex-shrink: 0;
+
+  [data-theme='dark'] & {
+    box-shadow: 0 0 6px var(--color-accent-1);
+  }
+}
+
+// --- Divider ---
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin-bottom: var(--space-md);
+}
+
+// --- Global Stats ---
+.globalStats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.statRow {
+  @include mixins.flex-between;
+}
+
+.statLabel {
+  font-family: var(--font-body);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+// --- Cause Block ---
+.causeBlock {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+
+  [data-theme='dark'] & {
+    background: rgba(0, 255, 204, 0.04);
+    border: 1px solid rgba(0, 255, 204, 0.1);
+  }
+}
+
+.causeMonth {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-accent-1);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.causeTitle {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-top: var(--space-2xs);
+  margin-bottom: var(--space-xs);
+}
+
+.causeDesc {
+  font-family: var(--font-body);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}

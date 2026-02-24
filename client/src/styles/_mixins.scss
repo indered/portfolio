@@ -1,5 +1,5 @@
 // ============================================
-// Reusable Mixins
+// Mixins: The Mahesh Multiverse
 // ============================================
 
 // --- Responsive Breakpoints ---
@@ -8,29 +8,31 @@ $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
 
-@mixin mobile {
-  @media (max-width: #{$breakpoint-sm}) {
-    @content;
+@mixin responsive($breakpoint) {
+  @if $breakpoint == 'mobile' {
+    @media (max-width: #{$breakpoint-sm}) {
+      @content;
+    }
+  } @else if $breakpoint == 'tablet' {
+    @media (max-width: #{$breakpoint-md}) {
+      @content;
+    }
+  } @else if $breakpoint == 'desktop' {
+    @media (min-width: #{$breakpoint-lg}) {
+      @content;
+    }
+  } @else if $breakpoint == 'wide' {
+    @media (min-width: #{$breakpoint-xl}) {
+      @content;
+    }
   }
 }
 
-@mixin tablet {
-  @media (max-width: #{$breakpoint-md}) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: #{$breakpoint-lg}) {
-    @content;
-  }
-}
-
-@mixin wide {
-  @media (min-width: #{$breakpoint-xl}) {
-    @content;
-  }
-}
+// Legacy aliases
+@mixin mobile { @include responsive('mobile') { @content; } }
+@mixin tablet { @include responsive('tablet') { @content; } }
+@mixin desktop { @include responsive('desktop') { @content; } }
+@mixin wide { @include responsive('wide') { @content; } }
 
 // --- Layout ---
 @mixin flex-center {
@@ -52,7 +54,35 @@ $breakpoint-xl: 1280px;
   padding-inline: var(--space-lg);
 }
 
+@mixin section-padding {
+  padding-block: var(--space-4xl);
+  padding-inline: var(--space-lg);
+
+  @include responsive('tablet') {
+    padding-block: var(--space-3xl);
+  }
+
+  @include responsive('mobile') {
+    padding-block: var(--space-2xl);
+    padding-inline: var(--space-md);
+  }
+}
+
 // --- Typography ---
+@mixin handwriting {
+  font-family: var(--font-handwriting);
+  font-size: 1.4em;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@mixin mono-text {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
 @mixin heading($size: var(--font-size-2xl)) {
   font-family: var(--font-display);
   font-size: $size;
@@ -62,30 +92,74 @@ $breakpoint-xl: 1280px;
 }
 
 @mixin body-text {
-  font-family: var(--font-primary);
+  font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: 1.6;
   color: var(--color-text-secondary);
 }
 
 // --- Effects ---
-@mixin glass-effect {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border);
+@mixin neon-glow($color) {
+  [data-theme='dark'] & {
+    box-shadow:
+      0 0 5px $color,
+      0 0 20px rgba($color, 0.4),
+      0 0 40px rgba($color, 0.2);
+    text-shadow:
+      0 0 7px $color,
+      0 0 20px rgba($color, 0.5);
+  }
 }
 
-@mixin card {
+@mixin glass-effect {
+  background: var(--color-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-card-border);
+}
+
+@mixin card-base {
   background: var(--color-card-bg);
   border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 4px 24px var(--color-shadow);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border: 1px solid var(--color-card-border);
+  padding: var(--space-xl);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px var(--color-shadow);
+  // Light theme: clean shadow
+  box-shadow: 0 4px 24px var(--color-shadow);
+
+  // Hover effects only on pointer devices
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px var(--color-shadow);
+    }
   }
+
+  // Dark theme: glow border on hover
+  [data-theme='dark'] & {
+    box-shadow: none;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--color-accent-1);
+        box-shadow:
+          0 0 15px rgba(0, 255, 204, 0.1),
+          inset 0 0 15px rgba(0, 255, 204, 0.05);
+      }
+    }
+  }
+}
+
+@mixin theme-transition {
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme),
+    border-color var(--transition-theme),
+    box-shadow var(--transition-theme);
 }
 
 @mixin button-reset {
@@ -98,6 +172,39 @@ $breakpoint-xl: 1280px;
 }
 
 // --- Animations ---
+@mixin floating-animation($duration: 3s, $distance: 10px) {
+  animation: float $duration ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-#{$distance});
+    }
+  }
+}
+
+@mixin pulse-glow($color) {
+  [data-theme='dark'] & {
+    animation: pulseGlow 2s ease-in-out infinite;
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 5px $color,
+          0 0 15px rgba($color, 0.3);
+      }
+      50% {
+        box-shadow:
+          0 0 10px $color,
+          0 0 30px rgba($color, 0.5),
+          0 0 50px rgba($color, 0.2);
+      }
+    }
+  }
+}
+
 @mixin fade-in($duration: var(--transition-base)) {
   animation: fadeIn $duration forwards;
 }

@@ -1,0 +1,298 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+.section {
+  @include mixins.section-padding;
+  position: relative;
+}
+
+.container {
+  @include mixins.container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// --- Header ---
+.title {
+  font-family: var(--font-handwriting);
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+
+  [data-theme='dark'] & {
+    text-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+  }
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 560px;
+  line-height: 1.6;
+  margin-bottom: var(--space-2xl);
+}
+
+// --- Canvas ---
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  @include mixins.glass-effect;
+  padding: 2px;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  border-radius: calc(var(--border-radius-lg) - 2px);
+  background: var(--color-bg-secondary);
+  cursor: crosshair;
+  touch-action: none;
+
+  [data-theme='dark'] & {
+    background: #0d0d14;
+  }
+}
+
+// --- Particle Burst ---
+.particleBurst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-1);
+
+  [data-theme='dark'] & {
+    box-shadow: 0 0 8px var(--color-accent-1);
+  }
+}
+
+// --- Controls ---
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.colorPalette {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.colorSwatch {
+  @include mixins.button-reset;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--swatch-color);
+  border: 2px solid transparent;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &.activeSwatch {
+    border-color: var(--color-text-primary);
+    transform: scale(1.2);
+
+    [data-theme='dark'] & {
+      box-shadow: 0 0 12px var(--swatch-color);
+    }
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.clearBtn {
+  @include mixins.button-reset;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-primary);
+  }
+}
+
+// --- Submit Area ---
+.submitArea {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  width: 100%;
+  max-width: 600px;
+
+  @include mixins.responsive('tablet') {
+    flex-direction: column;
+  }
+}
+
+.nameInput {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--color-card-border);
+  background: var(--color-card-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: border-color var(--transition-fast);
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+  }
+
+  &:focus {
+    border-color: var(--color-accent-1);
+  }
+}
+
+.submitBtn {
+  @include mixins.button-reset;
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--border-radius-full);
+  background: var(--color-accent-1);
+  color: #0a0a0f;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 255, 204, 0.3);
+  }
+
+  [data-theme='light'] & {
+    background: var(--color-accent-1);
+    color: #fff;
+  }
+}
+
+// --- Messages ---
+.errorMsg {
+  color: #ef4444;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
+  text-align: center;
+}
+
+.apiWarning {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-sm);
+  text-align: center;
+  opacity: 0.7;
+}
+
+// --- Constellation ---
+.constellation {
+  margin-top: var(--space-3xl);
+  width: 100%;
+  max-width: 800px;
+}
+
+.constellationTitle {
+  font-family: var(--font-handwriting);
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+
+  [data-theme='dark'] & {
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+  }
+}
+
+.loadingText,
+.emptyText {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+.sigGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  justify-content: center;
+}
+
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--sig-color);
+
+    [data-theme='dark'] & {
+      box-shadow: 0 0 16px rgba(var(--sig-color), 0.3);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--sig-color) 30%, transparent);
+    }
+  }
+}
+
+.thumbCanvas {
+  display: block;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-bg-secondary);
+
+  [data-theme='dark'] & {
+    background: #0d0d14;
+  }
+}
+
+.thumbName {
+  font-family: var(--font-handwriting);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}

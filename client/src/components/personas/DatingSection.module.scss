@@ -1,0 +1,331 @@
+@use '../../styles/mixins' as *;
+
+// ============================================================
+// DatingSection — Editorial Dating Profile
+// Hinge prompts + photo grid + prose compatibility section.
+// Clean, intimate, typographically driven. NO gamification.
+// Palette: deep rose-black bg, warm rose accent
+// ============================================================
+
+$bg:       #141210;
+$surface:  #1E1C18;
+$border:   rgba(255, 255, 255, 0.07);
+$text:     #E8E4DE;
+$text-2:   #8A8278;
+$text-3:   rgba(232, 228, 222, 0.3);
+$rose:     #e0527a;                        // persona color — rose
+$rose-dim: rgba(224, 82, 122, 0.14);
+
+// ── Root ─────────────────────────────────────────────────────
+.container {
+  background: var(--color-bg-primary, #{$bg});
+  min-height: 100vh;
+  color: var(--color-text-primary, #{$text});
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  max-width: 600px;
+  margin-inline: auto;
+  padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
+
+  @include responsive('tablet') {
+    padding: var(--space-2xl) var(--space-md) var(--space-3xl);
+  }
+
+  @include responsive('mobile') {
+    padding: var(--space-xl) var(--space-sm) var(--space-3xl);
+    gap: var(--space-xl);
+  }
+}
+
+// ── Hero ─────────────────────────────────────────────────────
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-align: left;
+}
+
+.heroEyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $rose;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.heroName {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: $text;
+  margin: 0;
+}
+
+.heroAge {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 400;
+  color: $text-2;
+  margin: 0;
+  line-height: 1;
+}
+
+.heroOccupation {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: $text-2;
+  margin: 0;
+  line-height: 1.5;
+  margin-top: var(--space-xs);
+}
+
+.heroLocation {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: $text-3;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.heroPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--space-sm);
+}
+
+.pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: var(--border-radius-full);
+  background: $rose-dim;
+  border: 1px solid rgba(224, 82, 122, 0.22);
+  color: $text-2;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+// ── Dividers ─────────────────────────────────────────────────
+.divider {
+  border: none;
+  height: 1px;
+  background: $border;
+  margin: 0;
+}
+
+.dividerThin {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: var(--space-xl) 0;
+}
+
+// ── Prompt Block ─────────────────────────────────────────────
+// Hinge-style Q + A
+.promptBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  background: $surface;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid $border;
+  border-left: 3px solid $rose;
+}
+
+.promptQuestion {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $rose;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.promptAnswer {
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: $text;
+  margin: 0;
+
+  @include responsive('mobile') {
+    font-size: var(--font-size-base);
+  }
+}
+
+// ── Photo Grid ───────────────────────────────────────────────
+.photoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+
+  @include responsive('mobile') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photoGridSingle {
+  grid-template-columns: 1fr;
+}
+
+.photoSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  background: $surface;
+  border: 1px solid $border;
+  margin: 0;
+}
+
+.photoImage {
+  aspect-ratio: 4/5;
+  background-color: $surface;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--space-sm);
+  // subtle rose gradient overlay
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(13, 8, 16, 0.6) 100%
+    );
+    pointer-events: none;
+  }
+}
+
+.photoNum {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.25);
+  position: relative;
+  z-index: 1;
+}
+
+.photoCaption {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: $text-2;
+  padding: var(--space-md);
+  margin: 0;
+}
+
+// ── Compatibility Section ─────────────────────────────────────
+.compatSection {
+  display: flex;
+  flex-direction: column;
+  background: $surface;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid $border;
+  overflow: hidden;
+}
+
+.compatBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+}
+
+.compatHeading {
+  font-family: var(--font-display);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: $text;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.compatBody {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.72;
+  color: $text-2;
+  margin: 0;
+}
+
+// ── Stats Section ─────────────────────────────────────────────
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.statsSectionLabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $text-3;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+
+  @include responsive('mobile') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-lg) var(--space-md);
+  background: $surface;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid $border;
+  text-align: center;
+  min-height: 44px;
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: $rose;
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: $text;
+  line-height: 1.35;
+}
+
+.statSub {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: $text-3;
+  font-style: italic;
+  line-height: 1.35;
+}

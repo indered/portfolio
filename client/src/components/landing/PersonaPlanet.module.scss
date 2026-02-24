@@ -1,0 +1,97 @@
+@use '../../styles/mixins' as *;
+
+.planet {
+  @include button-reset;
+  @include flex-center;
+  position: relative;
+  width: var(--planet-size);
+  height: var(--planet-size);
+  border-radius: var(--border-radius-full);
+  @include glass-effect;
+  @include theme-transition;
+  box-shadow: 0 4px 16px var(--color-shadow);
+
+  [data-theme='dark'] & {
+    box-shadow:
+      0 0 8px var(--planet-color),
+      0 0 20px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      box-shadow:
+        0 0 12px var(--planet-color),
+        0 0 30px var(--planet-color),
+        0 0 50px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+.ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: var(--border-radius-full);
+  border: 2px solid var(--planet-color);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+
+  .planet:hover &,
+  .active & {
+    opacity: 1;
+  }
+}
+
+.icon {
+  font-size: calc(var(--planet-size) * 0.45);
+  line-height: 1;
+  @include flex-center;
+  user-select: none;
+}
+
+.pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--border-radius-full);
+  border: 2px solid var(--planet-color);
+  animation: pulseRing 1.5s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-xs) var(--space-sm);
+  pointer-events: none;
+  z-index: 20;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--color-card-border);
+  }
+}
