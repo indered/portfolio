@@ -10,8 +10,8 @@ services:
     runtime: node
     region: singapore  # Closest to Dubai
     plan: free
-    buildCommand: cd client && npm install --include=dev && npm run build && cd ../server && npm install
-    startCommand: cd server && npm start
+    buildCommand: NODE_ENV=development npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
