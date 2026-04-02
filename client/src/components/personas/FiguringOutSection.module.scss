@@ -1,0 +1,225 @@
+// ── Figuring Out — electrolyte brand placeholder ──────────────────────────────
+// Palette: very dark olive bg, sage green accent, warm cream text, earthy brown
+
+$fo-bg:       #14160F;
+$fo-surface:  #1C1F17;
+$fo-green:    #8BA370;
+$fo-green-dim:#5C7A4E;
+$fo-cream:    #EAE2D0;
+$fo-cream-dim:rgba(234, 226, 208, 0.55);
+$fo-muted:    rgba(234, 226, 208, 0.28);
+$fo-accent:   #A8C490;
+
+.section {
+  min-height: 100vh;
+  background: $fo-bg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 64px;
+  position: relative;
+  overflow: hidden;
+  gap: 0;
+}
+
+// ── Noise grain texture overlay ──────────────────────────────────────────────
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// ── Radial earthy glow ────────────────────────────────────────────────────────
+.section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 55% at 50% 48%, rgba(139, 163, 112, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+  width: 100%;
+}
+
+// ── Coming soon badge ─────────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px 5px 10px;
+  border: 1px solid rgba(139, 163, 112, 0.25);
+  border-radius: 100px;
+  margin-bottom: 40px;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $fo-green;
+  box-shadow: 0 0 6px $fo-green, 0 0 14px rgba(139, 163, 112, 0.4);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+.badgeText {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: $fo-green;
+  opacity: 0.8;
+}
+
+// ── Crystal motif ─────────────────────────────────────────────────────────────
+.crystal {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 36px;
+  opacity: 0.65;
+}
+
+// ── Brand name ────────────────────────────────────────────────────────────────
+.brandName {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(3.2rem, 9vw, 5.8rem);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: $fo-cream;
+  margin: 0 0 20px;
+  text-shadow: 0 0 60px rgba(168, 196, 144, 0.12);
+}
+
+// ── Eyebrow ───────────────────────────────────────────────────────────────────
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: $fo-green;
+  opacity: 0.7;
+  margin: 0 0 48px;
+}
+
+// ── Divider ───────────────────────────────────────────────────────────────────
+.divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 163, 112, 0.4), transparent);
+  margin: 0 auto 48px;
+}
+
+// ── Tagline ───────────────────────────────────────────────────────────────────
+.tagline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.65;
+  color: $fo-cream-dim;
+  max-width: 480px;
+  margin: 0 0 60px;
+}
+
+.taglineHighlight {
+  color: $fo-cream;
+  font-weight: 600;
+}
+
+// ── Waitlist ──────────────────────────────────────────────────────────────────
+.waitlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.waitlistLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $fo-muted;
+}
+
+.waitlistRow {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(139, 163, 112, 0.18);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.waitlistInput {
+  flex: 1;
+  padding: 11px 16px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: $fo-cream-dim;
+  letter-spacing: 0.04em;
+
+  &::placeholder {
+    color: $fo-muted;
+  }
+}
+
+.waitlistBtn {
+  padding: 11px 18px;
+  background: rgba(139, 163, 112, 0.12);
+  border: none;
+  border-left: 1px solid rgba(139, 163, 112, 0.18);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: $fo-green;
+  cursor: not-allowed;
+  opacity: 0.55;
+  transition: opacity 200ms ease;
+}
+
+// ── Bottom minerals ───────────────────────────────────────────────────────────
+.minerals {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18;
+}
+
+// ── Keyframes ─────────────────────────────────────────────────────────────────
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #8BA370, 0 0 14px rgba(139, 163, 112, 0.4); }
+  50%       { opacity: 0.5; box-shadow: 0 0 3px #8BA370, 0 0 6px rgba(139, 163, 112, 0.2); }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .section { padding: 60px 24px 48px; }
+  .brandName { margin-bottom: 16px; }
+}

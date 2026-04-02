@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import styles from './HubMasthead.module.scss';
 
@@ -30,12 +30,25 @@ function SplitReveal({ text, startDelay = 0, className }) {
   );
 }
 
+// ── Download icon ──────────────────────────────────────────────────────────────
+function IconDownload() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 // First hub visit → play full magazine reveal, then crossfade to compact logo
 // Subsequent visits → show compact logo immediately
 export default function HubMasthead({ visible }) {
   const [showBig, setShowBig]   = useState(false);
   const [showLogo, setShowLogo] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const logoRef = useRef(null);
 
   useEffect(() => {
     if (!visible) return;
@@ -52,6 +65,18 @@ export default function HubMasthead({ visible }) {
     }, 3000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [visible]);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleOutside(e) {
+      if (logoRef.current && !logoRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [menuOpen]);
 
   // MAHESH: 6 chars × 0.04s stagger, INDER starts after MAHESH + 0.08s gap
   const surnamDelay = 0.35 + 6 * 0.04 + 0.08;
@@ -96,20 +121,68 @@ export default function HubMasthead({ visible }) {
         )}
       </AnimatePresence>
 
-      {/* ── Compact logo — top right, permanent ──────────────────────────── */}
+      {/* ── Compact logo — top right, clickable ───────────────────────────── */}
       <AnimatePresence>
         {showLogo && (
           <motion.div
+            ref={logoRef}
             className={styles.logoCompact}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className={styles.logoMark}>MI</span>
-            <span className={styles.logoName}>Mahesh Inder</span>
-            <span className={styles.logoSub}>Full Stack · Dubai</span>
-            <span className={styles.logoRule} />
+            <button
+              className={styles.logoBtn}
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Mahesh Inder — download CV or cover letter"
+              aria-expanded={menuOpen}
+            >
+              <span className={styles.logoMark}>MI</span>
+              <span className={styles.logoName}>Mahesh Inder</span>
+              <span className={styles.logoSub}>Full Stack · Dubai</span>
+              <span className={styles.logoRule} />
+              <motion.span
+                className={styles.logoChevron}
+                animate={{ rotate: menuOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                aria-hidden="true"
+              >
+                ▾
+              </motion.span>
+            </button>
+
+            {/* Dropdown menu */}
+            <AnimatePresence>
+              {menuOpen && (
+                <motion.div
+                  className={styles.menu}
+                  initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                >
+                  <a
+                    href="/mahesh-inder-resume.pdf"
+                    download="Mahesh_Inder_Resume.pdf"
+                    className={styles.menuItem}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <IconDownload />
+                    Resume
+                  </a>
+                  <a
+                    href="/mahesh-inder-cover-letter.pdf"
+                    download="Mahesh_Inder_Cover_Letter.pdf"
+                    className={styles.menuItem}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <IconDownload />
+                    Cover Letter
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

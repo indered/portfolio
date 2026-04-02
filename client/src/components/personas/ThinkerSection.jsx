@@ -1,20 +1,4 @@
-import { motion } from 'motion/react';
 import styles from './ThinkerSection.module.scss';
-
-// Fade-in wrapper for each prose block
-function FadeIn({ children, delay = 0, className = '' }) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 function SectionDivider() {
   return (
@@ -34,16 +18,13 @@ function SectionDivider() {
   );
 }
 
-// Dramatic pull-quote with large absolute quotation mark
-function PullQuote({ children, attribution, delay = 0 }) {
+function PullQuote({ children, attribution }) {
   return (
-    <FadeIn delay={delay}>
-      <blockquote className={styles.pullQuote}>
-        <span className={styles.pullQuoteMark} aria-hidden="true">&ldquo;</span>
-        <p className={styles.pullQuoteText}>{children}</p>
-        <footer className={styles.pullQuoteAttribution}>{attribution}</footer>
-      </blockquote>
-    </FadeIn>
+    <blockquote className={styles.pullQuote}>
+      <span className={styles.pullQuoteMark} aria-hidden="true">&ldquo;</span>
+      <p className={styles.pullQuoteText}>{children}</p>
+      <footer className={styles.pullQuoteAttribution}>{attribution}</footer>
+    </blockquote>
   );
 }
 
@@ -82,22 +63,20 @@ const READING_LIST = [
 
 function ReadingList() {
   return (
-    <FadeIn delay={0.05}>
-      <section className={styles.readingList} aria-labelledby="reading-list-heading">
-        <h3 id="reading-list-heading" className={styles.readingListHeading}>
-          What shaped this mind
-        </h3>
-        <div className={styles.readingListGrid}>
-          {READING_LIST.map((book) => (
-            <div key={book.title} className={styles.bookEntry}>
-              <p className={styles.bookTitle}>{book.title}</p>
-              <p className={styles.bookAuthor}>{book.author}</p>
-              <p className={styles.bookNote}>{book.note}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </FadeIn>
+    <section className={styles.readingList} aria-labelledby="reading-list-heading">
+      <h3 id="reading-list-heading" className={styles.readingListHeading}>
+        What shaped this mind
+      </h3>
+      <div className={styles.readingListGrid}>
+        {READING_LIST.map((book) => (
+          <div key={book.title} className={styles.bookEntry}>
+            <p className={styles.bookTitle}>{book.title}</p>
+            <p className={styles.bookAuthor}>{book.author}</p>
+            <p className={styles.bookNote}>{book.note}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -106,131 +85,96 @@ export default function ThinkerSection() {
     <div className={styles.thinker}>
 
       {/* ── Magazine dateline ── */}
-      <FadeIn delay={0}>
-        <div className={styles.dateline} aria-label="Publication dateline">
-          <span>Vol.&thinsp;I</span>
-          <span className={styles.datelineSep}>&mdash;</span>
-          <span>Dubai, UAE</span>
-          <span className={styles.datelineSep}>&mdash;</span>
-          <span>February 2026</span>
-        </div>
-        <div className={styles.datelineRule} aria-hidden="true" />
-      </FadeIn>
+      <div className={styles.dateline} aria-label="Publication dateline">
+        <span>Vol.&thinsp;I</span>
+        <span className={styles.datelineSep}>&mdash;</span>
+        <span>Dubai, UAE</span>
+        <span className={styles.datelineSep}>&mdash;</span>
+        <span>February 2026</span>
+      </div>
+      <div className={styles.datelineRule} aria-hidden="true" />
 
       {/* ── Header ── */}
       <header className={styles.header}>
-        <FadeIn delay={0.1}>
-          <h2 className={styles.title}>
-            From the Gurudwara
-            <br className={styles.titleBreak} />
-            to the Cosmos
-          </h2>
-        </FadeIn>
+        <h2 className={styles.title}>
+          From the Gurudwara
+          <br className={styles.titleBreak} />
+          to the Cosmos
+        </h2>
 
-        <FadeIn delay={0.2}>
-          <p className={styles.subtitle}>
-            How Guru Nanak and Stephen Hawking helped a Sikh boy find his own answers.
-          </p>
-        </FadeIn>
+        <p className={styles.subtitle}>
+          How Guru Nanak and Stephen Hawking helped a Sikh boy find his own answers.
+        </p>
 
-        <FadeIn delay={0.3}>
-          <div className={styles.headerRule} aria-hidden="true" />
-        </FadeIn>
+        <div className={styles.headerRule} aria-hidden="true" />
       </header>
 
       {/* ── Essay body ── */}
       <article className={styles.essay}>
 
-        {/* Drop-cap paragraph */}
-        <FadeIn delay={0.1}>
-          <p className={styles.dropCap}>
-            I grew up in a Sikh family. We went to gurudwara on Sundays. I wore a kara.
-            I folded my hands and closed my eyes when everyone else did. I believed because
-            everyone around me believed. That was enough for a long time.
-          </p>
-        </FadeIn>
+        <p className={styles.dropCap}>
+          I grew up in a Sikh family. We went to gurudwara on Sundays. I wore a kara.
+          I folded my hands and closed my eyes when everyone else did. I believed because
+          everyone around me believed. That was enough for a long time.
+        </p>
 
-        <FadeIn delay={0}>
-          <p>
-            Then I started reading. Not what people told me about Guru Nanak — but what he
-            actually said. And the first thing that hit me was this:
-          </p>
-        </FadeIn>
+        <p>
+          Then I started reading. Not what people told me about Guru Nanak — but what he
+          actually said. And the first thing that hit me was this:
+        </p>
 
-        <PullQuote
-          attribution="— Guru Nanak, his first words after enlightenment"
-          delay={0.05}
-        >
+        <PullQuote attribution="— Guru Nanak, his first words after enlightenment">
           There is no Hindu. There is no Muslim.
         </PullQuote>
 
-        <FadeIn delay={0}>
-          <p>
-            He was not picking a side. He was saying — stop picking sides. Think for yourself.
-            Ask your own questions. Do not just believe because someone told you to. That was
-            500 years ago. And here I was, doing exactly what he told people not to do — believing
-            without asking.
-          </p>
-        </FadeIn>
+        <p>
+          He was not picking a side. He was saying — stop picking sides. Think for yourself.
+          Ask your own questions. Do not just believe because someone told you to. That was
+          500 years ago. And here I was, doing exactly what he told people not to do — believing
+          without asking.
+        </p>
 
         <SectionDivider />
 
-        <FadeIn delay={0}>
-          <p>
-            Then I found Stephen Hawking. I picked up <em>A Brief History of Time</em> because
-            the cover looked cool. I stayed because the words made my head spin in the best way.
-          </p>
-        </FadeIn>
+        <p>
+          Then I found Stephen Hawking. I picked up <em>A Brief History of Time</em> because
+          the cover looked cool. I stayed because the words made my head spin in the best way.
+        </p>
 
-        <PullQuote
-          attribution="— Stephen Hawking, The Grand Design"
-          delay={0.05}
-        >
+        <PullQuote attribution="— Stephen Hawking, The Grand Design">
           The universe doesn&apos;t need a creator. It can and will create itself from nothing.
         </PullQuote>
 
-        <FadeIn delay={0}>
-          <p>
-            That line changed something in me. Not overnight. Slowly. Like a tap dripping until
-            the glass is full. I started looking at the sky differently. Not as something someone
-            made — but as something that just is. And that felt more beautiful to me than any story
-            I was told as a kid.
-          </p>
-        </FadeIn>
+        <p>
+          That line changed something in me. Not overnight. Slowly. Like a tap dripping until
+          the glass is full. I started looking at the sky differently. Not as something someone
+          made — but as something that just is. And that felt more beautiful to me than any story
+          I was told as a kid.
+        </p>
 
         <SectionDivider />
 
-        <FadeIn delay={0}>
-          <p>
-            I am not angry at religion. I am grateful. Sikhism taught me good things — be kind, work
-            hard, share your food, treat everyone equal. Guru Nanak was a rebel. He questioned the
-            Brahmins. He questioned the Mullahs. He sat with the poor when kings invited him to dinner.
-          </p>
-        </FadeIn>
+        <p>
+          I am not angry at religion. I am grateful. Sikhism taught me good things — be kind, work
+          hard, share your food, treat everyone equal. Guru Nanak was a rebel. He questioned the
+          Brahmins. He questioned the Mullahs. He sat with the poor when kings invited him to dinner.
+        </p>
 
-        <FadeIn delay={0.05}>
-          <p>
-            He gave me the courage to question. Hawking showed me where questions lead.
-          </p>
-        </FadeIn>
+        <p>
+          He gave me the courage to question. Hawking showed me where questions lead.
+        </p>
 
-        <FadeIn delay={0.1}>
-          <p className={styles.pivotLine}>
-            One gave me the heart. The other gave me the head.
-          </p>
-        </FadeIn>
+        <p className={styles.pivotLine}>
+          One gave me the heart. The other gave me the head.
+        </p>
 
-        <FadeIn delay={0}>
-          <p>
-            Today I call myself an atheist. But not the angry kind. The grateful kind. I don&apos;t think
-            there&apos;s a god watching me. But I think Guru Nanak would be okay with that. Because he never
-            asked anyone to follow him. He asked everyone to think.
-          </p>
-        </FadeIn>
+        <p>
+          Today I call myself an atheist. But not the angry kind. The grateful kind. I don&apos;t think
+          there&apos;s a god watching me. But I think Guru Nanak would be okay with that. Because he never
+          asked anyone to follow him. He asked everyone to think.
+        </p>
 
-        <FadeIn delay={0.05}>
-          <p className={styles.closingLine}>And I did.</p>
-        </FadeIn>
+        <p className={styles.closingLine}>And I did.</p>
 
       </article>
 
@@ -238,14 +182,12 @@ export default function ThinkerSection() {
       <ReadingList />
 
       {/* ── Footer colophon ── */}
-      <FadeIn delay={0}>
-        <footer className={styles.colophon}>
-          <div className={styles.colophonRule} aria-hidden="true" />
-          <p className={styles.colophonText}>
-            Written in simple words, because big ideas don&apos;t need big words.
-          </p>
-        </footer>
-      </FadeIn>
+      <footer className={styles.colophon}>
+        <div className={styles.colophonRule} aria-hidden="true" />
+        <p className={styles.colophonText}>
+          Written in simple words, because big ideas don&apos;t need big words.
+        </p>
+      </footer>
 
     </div>
   );

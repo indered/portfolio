@@ -110,7 +110,7 @@
 }
 
 .cardTitle {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-display);
   font-size: var(--font-size-lg);
   color: var(--color-text-primary);
   font-weight: 600;
@@ -210,6 +210,14 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   font-weight: 500;
+}
+
+.conversionNote {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary, rgba(128, 128, 128, 0.6));
+  text-align: right;
+  margin: 0;
 }
 
 // --- Cause Block ---

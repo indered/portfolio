@@ -15,7 +15,7 @@
 
 // --- Header ---
 .title {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-serif);
   font-size: var(--font-size-3xl);
   font-weight: 600;
   color: var(--color-text-primary);
@@ -228,7 +228,7 @@
 }
 
 .constellationTitle {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-serif);
   font-size: var(--font-size-xl);
   color: var(--color-text-primary);
   text-align: center;
@@ -287,7 +287,7 @@
 }
 
 .thumbName {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-serif);
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   max-width: 100px;

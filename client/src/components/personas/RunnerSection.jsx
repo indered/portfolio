@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion, useInView } from 'motion/react';
+import { useInView } from 'motion/react';
 import { PERSONAS, RUNNING_STATS } from '../../lib/constants';
 import styles from './RunnerSection.module.scss';
 
@@ -57,7 +57,7 @@ function useCountUp(target, active, duration = 1600) {
 }
 
 // ── Stat item — number + unit + label, no box ──────────────────────────────────
-function Stat({ raw, label, decimals = 0, prefix = '', suffix = '', delay = 0 }) {
+function Stat({ raw, label, decimals = 0, prefix = '', suffix = '' }) {
   const ref = useRef();
   const inView = useInView(ref, { once: true, amount: 0.5 });
   const numeric = parseFloat(String(raw).replace(/[^0-9.]/g, ''));
@@ -72,20 +72,13 @@ function Stat({ raw, label, decimals = 0, prefix = '', suffix = '', delay = 0 })
         : count;
 
   return (
-    <motion.div
-      ref={ref}
-      className={styles.stat}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div ref={ref} className={styles.stat}>
       <div className={styles.statNumber}>
         {prefix}<span className={styles.statCount}>{display}</span>
         {suffix && <span className={styles.statSuffix}>{suffix}</span>}
       </div>
       <div className={styles.statLabel}>{label}</div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -93,15 +86,9 @@ function Stat({ raw, label, decimals = 0, prefix = '', suffix = '', delay = 0 })
 const TYPE_OPACITY = { EASY: 0.5, RECOVERY: 0.45, LONG: 0.85, TEMPO: 0.7 };
 
 // ── Run row ────────────────────────────────────────────────────────────────────
-function RunRow({ run, index }) {
+function RunRow({ run }) {
   return (
-    <motion.div
-      className={styles.row}
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div className={styles.row}>
       {/* Date */}
       <div className={styles.rowDate}>
         <span className={styles.rowDay}>{run.day}</span>
@@ -130,7 +117,7 @@ function RunRow({ run, index }) {
           {run.type}
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -139,77 +126,47 @@ export default function RunnerSection() {
   return (
     <div className={styles.runner}>
 
-      {/* ── HERO ──────────────────────────────────────────────── */}
+      {/* ── HERO */}
       <section className={styles.hero}>
-        <motion.div
-          className={styles.eyebrow}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className={styles.eyebrow}>
           <span className={styles.eyebrowDot} />
           Dubai, UAE — Marathon Runner
-        </motion.div>
+        </div>
 
-        <motion.h2
-          className={styles.title}
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65, delay: 0.08 }}
-        >
+        <h2 className={styles.title}>
           {persona.title}
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          className={styles.tagline}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.18 }}
-        >
+        <p className={styles.tagline}>
           {persona.tagline}
-        </motion.p>
+        </p>
 
-        <motion.div
-          className={styles.atmosphere}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.28 }}
-        >
+        <div className={styles.atmosphere}>
           5:15 AM · Palm Jumeirah · 28°C
-        </motion.div>
+        </div>
       </section>
 
-      {/* ── STATS ─────────────────────────────────────────────── */}
+      {/* ── STATS */}
       <section className={styles.statsRow}>
-        <Stat raw={RUNNING_STATS.totalDistance} label="total distance" suffix=" km" delay={0} />
+        <Stat raw={RUNNING_STATS.totalDistance} label="total distance" suffix=" km" />
         <div className={styles.statsDivider} />
-        <Stat raw={RUNNING_STATS.totalRuns} label="runs completed" delay={0.08} />
+        <Stat raw={RUNNING_STATS.totalRuns} label="runs completed" />
         <div className={styles.statsDivider} />
-        <Stat raw={RUNNING_STATS.longestRun} label="longest run" suffix=" km" decimals={1} delay={0.16} />
+        <Stat raw={RUNNING_STATS.longestRun} label="longest run" suffix=" km" decimals={1} />
         <div className={styles.statsDivider} />
-        <Stat raw={RUNNING_STATS.avgPace} label="avg pace / km" delay={0.24} />
+        <Stat raw={RUNNING_STATS.avgPace} label="avg pace / km" />
       </section>
 
-      {/* ── RUNS LOG ──────────────────────────────────────────── */}
+      {/* ── RUNS LOG */}
       <section className={styles.log}>
-        <motion.div
-          className={styles.logHeader}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className={styles.logHeader}>
           <span className={styles.logTitle}>Recent Runs</span>
           <span className={styles.logSub}>Before the desert heat rises</span>
-        </motion.div>
+        </div>
 
         <div className={styles.logList}>
-          {RUNS.map((run, i) => (
-            <RunRow key={run.day + run.month} run={run} index={i} />
+          {RUNS.map((run) => (
+            <RunRow key={run.day + run.month} run={run} />
           ))}
         </div>
       </section>

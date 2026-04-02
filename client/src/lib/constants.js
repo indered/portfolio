@@ -27,10 +27,10 @@ export const PERSONAS = {
   },
   blockchain: {
     id: 'blockchain',
-    title: 'The Founder',
-    icon: '🔗',
+    title: 'Figuring Out',
+    icon: '💧',
     color: 'var(--color-persona-blockchain)',
-    tagline: "Arc Protocol. Built in DIFC. Still not a unicorn — but give it a minute.",
+    tagline: "In the world where everyone is figuring out, at least we figured out the hydration right.",
     orbitRadius: 1,
     orbitSpeed: 30,
     orbitOffset: 103,
@@ -96,10 +96,10 @@ export const PLANET_CONFIG = {
     roughness: 0.55, metalness: 0.2,
   },
   blockchain: {
-    realName: 'Arc Protocol',
-    meshColor: '#E07C06', emissive: '#8a3d00', size: 0.92, orbitRadius: 7, orbitSpeed: 0.2,
-    hasRing: true, ringColor: '#F59E0B', ringOpacity: 0.55, hasAtmosphere: true, atmosphereColor: '#FCD34D', atmosphereOpacity: 0.16,
-    roughness: 0.2, metalness: 0.45,
+    realName: 'Figuring Out',
+    meshColor: '#8BA370', emissive: '#3D5C30', size: 0.92, orbitRadius: 7, orbitSpeed: 0.2,
+    hasRing: false, hasAtmosphere: true, atmosphereColor: '#B8D4A8', atmosphereOpacity: 0.18,
+    roughness: 0.55, metalness: 0.15,
   },
   music: {
     realName: 'Venus',
@@ -126,6 +126,29 @@ export const PLANET_CONFIG = {
     roughness: 0.7, metalness: 0.12,
   },
 };
+
+// --- Ordered persona IDs — used for drift navigation sequencing ---
+// Note: 'music' temporarily hidden, 'dating' moved to last position
+export const PERSONA_IDS = ['developer', 'runner', 'blockchain', 'social', 'thinker', 'dating'];
+
+// --- Gravitational Drift — horizontal lineup ---
+// Planets align on the X-axis when drift activates.
+// Camera performs a pure horizontal dolly (only x changes; y=5, z=16 fixed).
+// Sun stays at origin. Each scroll/swipe step = one planet to the right.
+export const DRIFT_POSITIONS = {
+  developer:  { pos: [ 6, 0, 0], cam: [ 6, 5, 16] },
+  runner:     { pos: [12, 0, 0], cam: [12, 5, 16] },
+  blockchain: { pos: [18, 0, 0], cam: [18, 5, 16] },
+  social:     { pos: [24, 0, 0], cam: [24, 5, 16] },
+  thinker:    { pos: [30, 0, 0], cam: [30, 5, 16] },
+  dating:     { pos: [36, 0, 0], cam: [36, 5, 16] },
+};
+
+// Derived — camera X positions in persona order. CameraController uses these
+// for its self-contained drift lerp (no React round-trips in the hot path).
+export const DRIFT_CAM_XS = PERSONA_IDS.map(id => DRIFT_POSITIONS[id].cam[0]); // [6,12,18,24,30,36,42]
+export const DRIFT_MIN_X  = DRIFT_CAM_XS[0];
+export const DRIFT_MAX_X  = DRIFT_CAM_XS[DRIFT_CAM_XS.length - 1];
 
 // --- Experience Timeline ---
 export const EXPERIENCE = [
@@ -378,17 +401,18 @@ export const ABOUT = {
 // --- Token / Gamification Config ---
 export const TOKEN_CONFIG = {
   actions: {
-    EXPLORE_SECTION: { tokens: 1, label: 'Explored a planet' },
-    TOGGLE_THEME: { tokens: 2, label: 'Shifted dimensions' },
-    LEAVE_SIGNATURE: { tokens: 5, label: 'Left a quantum mark' },
-    CLICK_PLANET: { tokens: 1, label: 'Discovered a planet' },
-    VIEW_PROJECT: { tokens: 1, label: 'Studied an artifact' },
-    PLAY_MUSIC: { tokens: 1, label: 'Tuned into frequencies' },
+    EXPLORE_SECTION: { tokens: 1, label: 'Explored a section' },
+    TOGGLE_THEME: { tokens: 2, label: 'Changed theme' },
+    LEAVE_SIGNATURE: { tokens: 5, label: 'Left a signature' },
+    CLICK_PLANET: { tokens: 1, label: 'Clicked a planet' },
+    VIEW_PROJECT: { tokens: 1, label: 'Viewed a project' },
+    PLAY_MUSIC: { tokens: 1, label: 'Played music' },
+    DISCOVER_STAR: { tokens: 5, label: 'Found the easter egg' },
   },
   currentCause: {
-    month: 'February 2026',
-    title: 'Education for Underprivileged Kids',
-    description: 'Every token earned funds educational resources for children who need it most.',
-    tokenValue: 0.10,
+    month: 'April 2026',
+    title: 'Mid-day Meals for Govt Schools',
+    description: 'I donate to Akshaya Patra Foundation every month. Your tokens add to my contribution — feeding kids in government schools across India.',
+    tokenValue: 0.50, // INR per token
   },
 };

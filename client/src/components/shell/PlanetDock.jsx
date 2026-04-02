@@ -1,11 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PERSONAS, PLANET_CONFIG } from '../../lib/constants';
+import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import styles from './PlanetDock.module.scss';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
-const PERSONA_IDS   = Object.keys(PERSONAS);          // orbital order
+// PERSONA_IDS imported from constants (curated list)
 const BASE_SIZE     = 52;                              // px, resting diameter
 const MAX_SCALE     = 1.65;                            // → ~86px at hover apex
 const SPRING_CONFIG = { type: 'spring', stiffness: 500, damping: 30, mass: 0.5 };

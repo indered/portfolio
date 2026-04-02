@@ -159,7 +159,7 @@ $grid-gap:   1.25rem;
 }
 
 .tagline {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-serif);
   font-size: clamp(1rem, 2vw, 1.35rem);
   font-weight: 400;
   color: rgba($near-white, 0.55);
@@ -708,7 +708,7 @@ $grid-gap:   1.25rem;
 }
 
 .cardRevealText {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-serif);
   font-size: clamp(1rem, 2vw, 1.4rem);
   font-weight: 500;
   line-height: 1.5;

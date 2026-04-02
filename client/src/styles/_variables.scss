@@ -4,52 +4,54 @@
 // ============================================
 
 :root {
-  // --- Typography ---
-  --font-handwriting: 'Caveat', cursive;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --font-display: 'Space Grotesk', sans-serif;
+  // --- Typography (Refined) ---
+  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', monospace;
+  --font-serif: 'Newsreader', 'Source Serif 4', Georgia, serif;
 
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-md: 1.125rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 2.5rem;
-  --font-size-4xl: 3.5rem;
-  --font-size-hero: clamp(2.5rem, 6vw, 5rem);
+  // Font sizes - restrained scale for readability
+  --font-size-xs: 0.75rem;      // 12px
+  --font-size-sm: 0.875rem;     // 14px
+  --font-size-base: 1rem;       // 16px
+  --font-size-md: 1.125rem;     // 18px
+  --font-size-lg: 1.25rem;      // 20px
+  --font-size-xl: 1.5rem;       // 24px
+  --font-size-2xl: 2rem;        // 32px
+  --font-size-3xl: 2.5rem;      // 40px
+  --font-size-4xl: 3rem;        // 48px - reduced from 3.5rem
+  --font-size-hero: clamp(2.25rem, 5vw, 3.5rem);  // Reduced from 5rem max
 
   // --- Light / Artistic Theme (default) ---
   --color-bg-primary: #faf8f5;
   --color-bg-secondary: #f0ece6;
   --color-bg-tertiary: #e5dfd6;
-  --color-text-primary: #2d2d3a;
-  --color-text-secondary: #6b6b80;
-  --color-accent-1: #7c3aed;
+  --color-text-primary: #1a1a24;
+  --color-text-secondary: #5a5a6e;
+  --color-text-tertiary: #8a8a9a;
+  --color-accent-1: #6366f1;
   --color-accent-2: #ec4899;
   --color-accent-3: #f59e0b;
   --color-card-bg: rgba(255, 255, 255, 0.9);
-  --color-card-border: rgba(124, 58, 237, 0.15);
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-card-border: rgba(99, 102, 241, 0.15);
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-shadow: rgba(0, 0, 0, 0.06);
   --color-overlay: rgba(0, 0, 0, 0.5);
   --color-glow: none;
 
   // Legacy aliases for backwards compat
   --color-accent: var(--color-accent-1);
-  --color-accent-hover: #6d28d9;
-  --color-accent-light: rgba(124, 58, 237, 0.1);
+  --color-accent-hover: #4f46e5;
+  --color-accent-light: rgba(99, 102, 241, 0.1);
 
   // --- Persona Colors ---
-  --color-persona-developer: #06b6d4;   // cyan
-  --color-persona-runner: #22c55e;      // green
-  --color-persona-blockchain: #D97706;  // amber gold (Arc Protocol)
-  --color-persona-music: #ec4899;       // pink
-  --color-persona-dating: #e0527a;      // rose
-  --color-persona-social: #d946ef;      // magenta
-  --color-persona-thinker: #8b7355;    // warm brown
+  --color-persona-developer: #06b6d4;
+  --color-persona-runner: #22c55e;
+  --color-persona-blockchain: #8BA370;
+  --color-persona-music: #ec4899;
+  --color-persona-dating: #e0527a;
+  --color-persona-social: #8b5cf6;
+  --color-persona-thinker: #78716c;
 
   // --- Spacing Scale ---
   --space-2xs: 0.125rem;
@@ -65,22 +67,22 @@
 
   // --- Layout ---
   --max-width: 1200px;
-  --nav-height: 64px;
+  --nav-height: 56px;
 
   // --- Border Radii ---
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
-  --border-radius-lg: 16px;
-  --border-radius-xl: 24px;
-  --border-radius-2xl: 32px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-2xl: 24px;
   --border-radius-full: 9999px;
 
   // --- Transitions ---
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
+  --transition-nav: 400ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-theme: 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
   // --- Z-Index Scale ---
   --z-particles: 0;
@@ -94,16 +96,17 @@
 // Dark / Cyberpunk Theme
 // ============================================
 [data-theme='dark'] {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-tertiary: #1a1a2e;
-  --color-text-primary: #e0e0ff;
-  --color-text-secondary: #8888aa;
-  --color-accent-1: #00ffcc;
-  --color-accent-2: #ff00ff;
-  --color-accent-3: #ffff00;
-  --color-card-bg: rgba(18, 18, 26, 0.8);
-  --color-card-border: rgba(0, 255, 204, 0.2);
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #111114;
+  --color-bg-tertiary: #18181b;
+  --color-text-primary: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-accent-1: #22d3ee;
+  --color-accent-2: #f472b6;
+  --color-accent-3: #fbbf24;
+  --color-card-bg: rgba(17, 17, 20, 0.85);
+  --color-card-border: rgba(34, 211, 238, 0.15);
   --color-border: rgba(255, 255, 255, 0.08);
   --color-shadow: rgba(0, 0, 0, 0.4);
   --color-overlay: rgba(0, 0, 0, 0.7);
@@ -111,15 +114,15 @@
 
   // Legacy aliases
   --color-accent: var(--color-accent-1);
-  --color-accent-hover: #33ffd6;
-  --color-accent-light: rgba(0, 255, 204, 0.1);
+  --color-accent-hover: #67e8f9;
+  --color-accent-light: rgba(34, 211, 238, 0.1);
 
-  // Persona colors shift neon in dark theme
-  --color-persona-developer: #00e5ff;
-  --color-persona-runner: #39ff14;
-  --color-persona-blockchain: #F59E0B;  // amber gold neon
-  --color-persona-music: #ff2d95;
-  --color-persona-dating: #ff4d7f;     // neon rose
-  --color-persona-social: #ff00ff;
-  --color-persona-thinker: #c4a882;    // warm parchment
+  // Persona colors - subtle shift for dark
+  --color-persona-developer: #22d3ee;
+  --color-persona-runner: #4ade80;
+  --color-persona-blockchain: #a3b88c;
+  --color-persona-music: #f472b6;
+  --color-persona-dating: #fb7185;
+  --color-persona-social: #a78bfa;
+  --color-persona-thinker: #a8a29e;
 }

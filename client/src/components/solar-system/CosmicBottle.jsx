@@ -6,7 +6,7 @@ import gsap from 'gsap';
 // Not visible from default camera [0,8,22]. Requires rotating ~150° to discover.
 const ORIGIN = [0, 3, -38];
 
-export default function CosmicBottle({ onNoteOpen, onNoteHide }) {
+export default function CosmicBottle({ onNoteOpen, onNoteHide, onStarClick }) {
   const coreRef = useRef();
   const glowRef = useRef();
 
@@ -40,6 +40,9 @@ export default function CosmicBottle({ onNoteOpen, onNoteHide }) {
     if (opened) return;
     setOpened(true);
 
+    // Pass screen coordinates to parent for coin arc animation
+    onStarClick?.({ x: e.clientX, y: e.clientY });
+
     if (coreRef.current) {
       gsap.timeline()
         .to(coreRef.current.scale, { x: 3.5, y: 3.5, z: 3.5, duration: 0.15, ease: 'power2.out' })
@@ -47,7 +50,7 @@ export default function CosmicBottle({ onNoteOpen, onNoteHide }) {
     }
 
     setTimeout(() => onNoteOpen?.(handleClose), 200);
-  }, [opened, handleClose, onNoteOpen]);
+  }, [opened, handleClose, onNoteOpen, onStarClick]);
 
   const onOver = useCallback((e) => {
     e.stopPropagation();

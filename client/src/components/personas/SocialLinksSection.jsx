@@ -81,41 +81,30 @@ const CheckIcon = () => (
 );
 
 // ─── Monochrome social card ────────────────────────────────────────────────────
-// All cards share the same dark surface. Brand color appears ONLY on hover
-// as a border tint + subtle radial glow — Stripe/Linear contact page aesthetic.
-function SocialCard({ link, index }) {
+function SocialCard({ link }) {
   const meta = PLATFORM_META[link.icon] || {};
   const icon = ICONS[link.icon];
 
   return (
-    <motion.a
+    <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
       className={styles.card}
       style={{ '--hover-color': meta.hoverColor }}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.42, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Platform icon — rendered in its brand color, small */}
       <div className={styles.cardIcon} style={{ color: meta.hoverColor }}>
         {icon}
       </div>
 
       <div className={styles.cardBody}>
-        {/* Platform name */}
         <span className={styles.cardPlatform}>{link.name}</span>
-        {/* Handle */}
         <span className={styles.cardHandle}>{meta.handle}</span>
-        {/* Description */}
         <span className={styles.cardDesc}>{meta.description}</span>
       </div>
 
-      {/* Ghost CTA */}
       <span className={styles.cardCta}>{meta.label} →</span>
-    </motion.a>
+    </a>
   );
 }
 
@@ -172,12 +161,7 @@ export default function SocialLinksSection() {
     <div className={styles.social}>
 
       {/* ── Current Status hero ── */}
-      <motion.div
-        className={styles.hero}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <div className={styles.hero}>
         <div className={styles.statusLine}>
           <span className={styles.statusDot} aria-hidden="true" />
           <span className={styles.statusText}>
@@ -187,7 +171,7 @@ export default function SocialLinksSection() {
         <h2 className={styles.heroName}>{ABOUT.name}</h2>
         <p className={styles.heroLocation}>Full Stack Developer&nbsp;&nbsp;·&nbsp;&nbsp;{ABOUT.location}</p>
         <div className={styles.heroRule} aria-hidden="true" />
-      </motion.div>
+      </div>
 
       {/* ── Cards grid ── */}
       <div className={styles.grid}>
@@ -197,14 +181,7 @@ export default function SocialLinksSection() {
       </div>
 
       {/* ── Email section ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.45, delay: 0.2 }}
-      >
-        <EmailBlock />
-      </motion.div>
+      <EmailBlock />
 
     </div>
   );

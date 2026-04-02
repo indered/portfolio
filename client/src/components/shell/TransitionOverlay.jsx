@@ -16,7 +16,7 @@ const LAUNCH_PHRASES = [
 const FLAVOR_TEXTS = {
   developer: 'Compiling the universe...',
   runner: 'Km 32. Mind takes over.',
-  blockchain: 'Connecting to Arc Protocol...',
+  blockchain: 'Replenishing the cosmos...',
   music: 'Dropping the beat...',
   dating: 'Calibrating the romance algorithm...',
   social: 'Establishing quantum link...',

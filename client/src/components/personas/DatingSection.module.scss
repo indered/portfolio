@@ -1,30 +1,31 @@
 @use '../../styles/mixins' as *;
 
 // ============================================================
-// DatingSection — Editorial Dating Profile
-// Hinge prompts + photo grid + prose compatibility section.
-// Clean, intimate, typographically driven. NO gamification.
-// Palette: deep rose-black bg, warm rose accent
+// DatingSection — Hinge-inspired Dating Profile
+// Warm coral palette, card-based prompts, premium feel
 // ============================================================
 
-$bg:       #141210;
-$surface:  #1E1C18;
-$border:   rgba(255, 255, 255, 0.07);
-$text:     #E8E4DE;
-$text-2:   #8A8278;
-$text-3:   rgba(232, 228, 222, 0.3);
-$rose:     #e0527a;                        // persona color — rose
-$rose-dim: rgba(224, 82, 122, 0.14);
+// Hinge-inspired warm palette
+$bg:       #FAF8F5;
+$surface:  #FFFFFF;
+$border:   rgba(0, 0, 0, 0.06);
+$text:     #1A1A1A;
+$text-2:   #6B6B6B;
+$text-3:   rgba(0, 0, 0, 0.35);
+$coral:    #E8654A;                        // Hinge coral
+$coral-soft: rgba(232, 101, 74, 0.08);
+$coral-mid: rgba(232, 101, 74, 0.15);
+$shadow:   0 2px 12px rgba(0, 0, 0, 0.06);
 
 // ── Root ─────────────────────────────────────────────────────
 .container {
-  background: var(--color-bg-primary, #{$bg});
+  background: $bg;
   min-height: 100vh;
-  color: var(--color-text-primary, #{$text});
+  color: $text;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xl);
-  max-width: 600px;
+  gap: var(--space-xl);
+  max-width: 520px;
   margin-inline: auto;
   padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
 
@@ -34,7 +35,7 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 
   @include responsive('mobile') {
     padding: var(--space-xl) var(--space-sm) var(--space-3xl);
-    gap: var(--space-xl);
+    gap: var(--space-lg);
   }
 }
 
@@ -52,7 +53,7 @@ $rose-dim: rgba(224, 82, 122, 0.14);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: $rose;
+  color: $coral;
   margin: 0;
   opacity: 0.8;
 }
@@ -101,14 +102,13 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 }
 
 .pill {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  padding: 5px 12px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 8px 14px;
   border-radius: var(--border-radius-full);
-  background: $rose-dim;
-  border: 1px solid rgba(224, 82, 122, 0.22);
-  color: $text-2;
+  background: $coral-soft;
+  color: $coral;
   min-height: 32px;
   display: flex;
   align-items: center;
@@ -130,34 +130,45 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 }
 
 // ── Prompt Block ─────────────────────────────────────────────
-// Hinge-style Q + A
+// Hinge-style Q + A card
 .promptBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-xl);
+  gap: var(--space-xs);
+  padding: var(--space-lg) var(--space-xl);
   background: $surface;
-  border-radius: var(--border-radius-xl);
-  border: 1px solid $border;
-  border-left: 3px solid $rose;
+  border-radius: 20px;
+  box-shadow: $shadow;
+  position: relative;
+  overflow: hidden;
+
+  // Coral accent line at top
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, $coral, #F0856E);
+  }
 }
 
 .promptQuestion {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $rose;
+  color: $text;
   margin: 0;
-  opacity: 0.85;
+  line-height: 1.3;
 }
 
 .promptAnswer {
-  font-family: var(--font-body);
+  font-family: var(--font-serif);
   font-size: var(--font-size-md);
-  line-height: 1.7;
-  color: $text;
+  font-style: italic;
+  line-height: 1.65;
+  color: $text-2;
   margin: 0;
 
   @include responsive('mobile') {
@@ -184,34 +195,22 @@ $rose-dim: rgba(224, 82, 122, 0.14);
   display: flex;
   flex-direction: column;
   gap: 0;
-  border-radius: var(--border-radius-xl);
+  border-radius: 20px;
   overflow: hidden;
   background: $surface;
-  border: 1px solid $border;
+  box-shadow: $shadow;
   margin: 0;
 }
 
 .photoImage {
   aspect-ratio: 4/5;
-  background-color: $surface;
+  background-color: #F0EDE8;
   background-size: cover;
   position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
   padding: var(--space-sm);
-  // subtle rose gradient overlay
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      transparent 50%,
-      rgba(13, 8, 16, 0.6) 100%
-    );
-    pointer-events: none;
-  }
 }
 
 .photoNum {
@@ -219,14 +218,18 @@ $rose-dim: rgba(224, 82, 122, 0.14);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 1;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .photoCaption {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-style: italic;
   line-height: 1.5;
   color: $text-2;
   padding: var(--space-md);
@@ -238,15 +241,15 @@ $rose-dim: rgba(224, 82, 122, 0.14);
   display: flex;
   flex-direction: column;
   background: $surface;
-  border-radius: var(--border-radius-xl);
-  border: 1px solid $border;
+  border-radius: 20px;
+  box-shadow: $shadow;
   overflow: hidden;
 }
 
 .compatBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   padding: var(--space-xl);
 }
 
@@ -254,7 +257,7 @@ $rose-dim: rgba(224, 82, 122, 0.14);
   font-family: var(--font-display);
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: $text;
+  color: $coral;
   margin: 0;
   line-height: 1.3;
 }
@@ -262,7 +265,7 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 .compatBody {
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
-  line-height: 1.72;
+  line-height: 1.7;
   color: $text-2;
   margin: 0;
 }
@@ -271,16 +274,14 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 .statsSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 .statsSectionLabel {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: $text-3;
+  color: $text;
 }
 
 .statsGrid {
@@ -296,28 +297,26 @@ $rose-dim: rgba(224, 82, 122, 0.14);
 .statCard {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: var(--space-lg) var(--space-md);
+  gap: 2px;
+  padding: var(--space-md);
   background: $surface;
-  border-radius: var(--border-radius-lg);
-  border: 1px solid $border;
+  border-radius: 16px;
+  box-shadow: $shadow;
   text-align: center;
-  min-height: 44px;
 }
 
 .statValue {
-  font-family: var(--font-mono);
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: $rose;
+  color: $coral;
   line-height: 1;
 }
 
 .statLabel {
   font-family: var(--font-body);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 500;
   color: $text;
   line-height: 1.35;
 }

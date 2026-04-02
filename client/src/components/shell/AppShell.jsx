@@ -1,16 +1,15 @@
-import { useState, useCallback, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, useRef, lazy, Suspense, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import PersonaApp from './PersonaApp';
 import TransitionOverlay from './TransitionOverlay';
 import MobileHub from './MobileHub';
 import HubMasthead from './HubMasthead';
 import PlanetDock from './PlanetDock';
+import PlanetPreviewCard from './PlanetPreviewCard';
 import PaperBurnIntro from '../intro/PaperBurnIntro';
-import { PERSONAS, PLANET_CONFIG } from '../../lib/constants';
+import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
+import { useTokens } from '../../context/TokenContext';
 import styles from './AppShell.module.scss';
-
-// Ordered list of persona IDs — used for direction calculation
-const PERSONA_IDS = Object.keys(PERSONAS);
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
@@ -32,6 +31,30 @@ export default function AppShell() {
   // True while PersonaApp is fading out on back-to-hub — keeps canvas visible
   const [isExitingToHub, setIsExitingToHub] = useState(false);
 
+  // First-visit planet hint — "seven lives. click a planet."
+  const [showHint, setShowHint] = useState(false);
+  const hintDismissedRef = useRef(false);
+
+  // Star discovery coin arc particles
+  const [starCoins, setStarCoins] = useState([]);
+  const { earnTokens } = useTokens();
+
+  // ── Gravitational Drift state ──────────────────────────────────────────────
+  const [driftMode,     setDriftMode]     = useState(false);
+  const [driftIndex,    setDriftIndex]    = useState(0);
+  // true only after the camera settles at a planet — controls card visibility
+  const [driftSettled,  setDriftSettled]  = useState(false);
+  const [showExplorePrompt, setShowExplorePrompt] = useState(false);
+  const explorePromptShownRef = useRef(false);
+
+  // Stable refs for event handlers (avoid stale closures)
+  const driftModeRef    = useRef(false);
+  const driftIndexRef   = useRef(0);
+  const driftControlRef = useRef(null); // imperative handle: { goToIndex, resetSettled }
+  const handlePlanetClickRef = useRef(null); // set after handlePlanetClick is defined
+  useEffect(() => { driftModeRef.current  = driftMode;  }, [driftMode]);
+  useEffect(() => { driftIndexRef.current = driftIndex; }, [driftIndex]);
+
   // Direction of the last inter-persona navigation: 'left' | 'right'
   // Stored in a ref so handleNavigate never has a stale value,
   // and mirrored to state so PersonaApp re-renders with the correct prop.
@@ -48,6 +71,14 @@ export default function AppShell() {
     } catch {
       setUse3D(false);
     }
+  }, []);
+
+  // Preload the SolarSystem chunk immediately so it is ready the instant intro ends.
+  // We intentionally do NOT mount SolarSystem during intro (prevents a 1-frame WebGL
+  // flash before visibility:hidden can take effect), but we still want the module
+  // downloaded in parallel with the intro animation.
+  useEffect(() => {
+    import('../solar-system/SolarSystem').catch(() => {});
   }, []);
 
   // Force appropriate theme per view
@@ -82,8 +113,136 @@ export default function AppShell() {
     setView('hub');
   }, []);
 
+  // Star discovery — fire coin arc from star screen pos to wallet corner
+  const handleStarClick = useCallback(({ x, y }) => {
+    earnTokens('DISCOVER_STAR');
+
+    const walletX = window.innerWidth  - 48;
+    const walletY = window.innerHeight - 48;
+    const deltaX  = walletX - x;
+    const deltaY  = walletY - y;
+
+    const count = 7;
+    const particles = Array.from({ length: count }, (_, i) => ({
+      id:     `star-${Date.now()}-${i}`,
+      startX: x,
+      startY: y,
+      // Arc control point — rise up first, then curve toward wallet
+      arcX:   deltaX * 0.4 + (Math.random() - 0.5) * 80,
+      arcY:   deltaY * 0.25 - 90 - Math.random() * 70,
+      endX:   deltaX,
+      endY:   deltaY,
+      delay:  i * 0.06,
+    }));
+
+    setStarCoins(particles);
+    setTimeout(() => setStarCoins([]), 1800);
+  }, [earnTokens]);
+
+  // Dismiss planet hint — called on first planet interaction
+  const dismissHint = useCallback(() => {
+    if (hintDismissedRef.current) return;
+    hintDismissedRef.current = true;
+    setShowHint(false);
+    localStorage.setItem('planet_hint_seen', '1');
+  }, []);
+
+  // Show hint after 1.5s in hub — only on first ever visit
+  useEffect(() => {
+    if (view !== 'hub') return;
+    if (hintDismissedRef.current) return;
+    if (localStorage.getItem('planet_hint_seen')) {
+      hintDismissedRef.current = true;
+      return;
+    }
+    const t1 = setTimeout(() => setShowHint(true), 1500);
+    const t2 = setTimeout(() => dismissHint(), 7500); // auto-dismiss after 6s visible
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [view, dismissHint]);
+
+  // Show "press space or scroll to explore" prompt — once, 2.5s after first hub entry
+  useEffect(() => {
+    if (view !== 'hub' || !use3D) return;
+    if (explorePromptShownRef.current) return;
+    const t = setTimeout(() => {
+      setShowExplorePrompt(true);
+      explorePromptShownRef.current = true;
+    }, 2500);
+    return () => clearTimeout(t);
+  }, [view, use3D]);
+
+  // Hide explore prompt once drift activates; never show again
+  useEffect(() => {
+    if (driftMode) setShowExplorePrompt(false);
+  }, [driftMode]);
+
+  // ── Drift helpers ──────────────────────────────────────────────────────────
+  const activateDrift = useCallback(() => {
+    setShowExplorePrompt(false);
+    setDriftSettled(false);
+    setDriftMode(true);
+    setDriftIndex(0);
+  }, []);
+
+  const exitDrift = useCallback(() => {
+    setDriftMode(false);
+    setDriftIndex(0);
+    setDriftSettled(false);
+    window.__solarSystemResetCamera?.();
+  }, []);
+
+  // CameraController fires this whenever the nearest planet changes (settled=false)
+  // or the camera fully arrives at a planet (settled=true → show card).
+  // Max ~7 renders for index changes + 7 for settled events across a full drift sweep.
+  const handleDriftIndexChanged = useCallback((index, settled) => {
+    setDriftIndex(index);
+    driftIndexRef.current = index;
+    setDriftSettled(settled);
+  }, []);
+
+  const driftForward = useCallback(() => {
+    const next = driftIndexRef.current + 1;
+    if (next < PERSONA_IDS.length) {
+      driftControlRef.current?.goToIndex(next);
+    }
+  }, []);
+
+  const driftBackward = useCallback(() => {
+    const prev = driftIndexRef.current - 1;
+    if (prev >= 0) {
+      driftControlRef.current?.goToIndex(prev);
+    } else {
+      exitDrift();
+    }
+  }, [exitDrift]);
+
+  // ── Drift keyboard listener (Space / arrows / Enter / ESC) ────────────────
+  useEffect(() => {
+    if (view !== 'hub' || !use3D) return;
+
+    function onKeyDown(e) {
+      if (['Space', 'ArrowRight', 'ArrowLeft', 'Escape', 'Enter'].includes(e.code)) {
+        e.preventDefault();
+      }
+      if (e.code === 'Space' || e.code === 'ArrowRight') {
+        if (!driftModeRef.current) { activateDrift(); }
+        else                        { driftForward(); }
+      }
+      if (e.code === 'ArrowLeft' && driftModeRef.current) driftBackward();
+      if (e.code === 'Escape'    && driftModeRef.current) exitDrift();
+      if (e.code === 'Enter'     && driftModeRef.current) {
+        handlePlanetClickRef.current?.(PERSONA_IDS[driftIndexRef.current]);
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [view, use3D, activateDrift, driftForward, driftBackward, exitDrift]);
+
   const handlePlanetClick = useCallback((planetId) => {
     if (view !== 'hub') return;
+    dismissHint();
+    setDriftSettled(false);  // hide preview card immediately
     setTargetPlanet(planetId);
     setView('transitioning');
 
@@ -96,6 +255,9 @@ export default function AppShell() {
     }
   }, [view, use3D]);
 
+  // Keep stable ref for use in keyboard Enter handler
+  useEffect(() => { handlePlanetClickRef.current = handlePlanetClick; }, [handlePlanetClick]);
+
   const handleCameraArrived = useCallback(() => {
     setActivePlanet(targetPlanet);
     setView('persona');
@@ -104,14 +266,24 @@ export default function AppShell() {
 
   const handleBack = useCallback(() => {
     if (use3D) {
-      // Fade PersonaApp out, reveal canvas, camera resets — no loading screen
       setIsExitingToHub(true);
       document.documentElement.setAttribute('data-theme', 'dark');
-      window.__solarSystemResetCamera?.();
+      setDriftSettled(false); // hide card while PersonaApp fades
+
+      if (!driftModeRef.current) {
+        window.__solarSystemResetCamera?.();
+      }
+
       setTimeout(() => {
         setIsExitingToHub(false);
         setActivePlanet(null);
         setView('hub');
+
+        if (driftModeRef.current) {
+          // Camera is already at drift position — allow settled callback to re-fire
+          // so the preview card reappears without needing a new scroll
+          driftControlRef.current?.resetSettled();
+        }
       }, 700);
     } else {
       setActivePlanet(null);
@@ -149,18 +321,18 @@ export default function AppShell() {
 
   return (
     <>
+      {/* Retro CRT overlay — subtle scanlines and vignette */}
+      {view === 'hub' && <div className={styles.retroOverlay} aria-hidden="true" />}
+
       {/* Black hole intro */}
       {view === 'intro' && (
         <PaperBurnIntro onComplete={handleIntroComplete} />
       )}
 
-      {/* 3D Solar System — always mounted on desktop, visibility toggled */}
-      {use3D ? (
-        <Suspense fallback={
-          <div className={styles.loading}>
-            <div className={styles.loadingText}>Initializing the Multiverse...</div>
-          </div>
-        }>
+      {/* 3D Solar System — not mounted during intro (prevents WebGL flash);
+          module is preloaded above so it is ready the instant intro ends */}
+      {use3D && view !== 'intro' ? (
+        <Suspense fallback={null}>
           <SolarSystem
             visible={view === 'hub' || view === 'transitioning' || view === 'traveling' || isExitingToHub}
             entering={introJustFinished}
@@ -170,10 +342,15 @@ export default function AppShell() {
             travelRef={travelRef}
             travelTick={isTraveling ? travelTick : 0}
             onTravelComplete={handleTravelComplete}
+            onStarClick={handleStarClick}
+            driftMode={driftMode}
+            driftIndex={driftIndex}
+            onDriftIndexChanged={handleDriftIndexChanged}
+            driftControlRef={driftControlRef}
           />
         </Suspense>
       ) : (
-        view === 'hub' && <MobileHub onPlanetClick={handlePlanetClick} />
+        !use3D && view === 'hub' && <MobileHub onPlanetClick={handlePlanetClick} />
       )}
 
       {/* Hub masthead — big magazine reveal then compact logo */}
@@ -243,6 +420,49 @@ export default function AppShell() {
         )}
       </AnimatePresence>
 
+      {/* First-visit hint — "seven lives. click a planet." */}
+      <AnimatePresence>
+        {showHint && (
+          <motion.div
+            className={styles.hintOverlay}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            onClick={dismissHint}
+          >
+            <span className={styles.hintLine}>seven lives.</span>
+            <span className={styles.hintDot}>·</span>
+            <span className={styles.hintLine}>click a planet.</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Star discovery — coin arcs fly from star to wallet */}
+      <AnimatePresence>
+        {starCoins.map((p) => (
+          <motion.div
+            key={p.id}
+            className={styles.starCoin}
+            style={{ left: p.startX, top: p.startY }}
+            initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+            animate={{
+              x: [0, p.arcX, p.endX],
+              y: [0, p.arcY, p.endY],
+              scale: [1, 1.3, 0.4],
+              opacity: [1, 1, 0],
+            }}
+            transition={{
+              duration: 1.1,
+              delay: p.delay,
+              ease: 'easeInOut',
+              times: [0, 0.45, 1],
+            }}
+            aria-hidden="true"
+          />
+        ))}
+      </AnimatePresence>
+
       {/* PlanetDock — magnifying dock, replaces OrreryMinimap */}
       <AnimatePresence>
         {(view === 'persona' || view === 'traveling' || isExitingToHub) && activePlanet && (
@@ -251,6 +471,89 @@ export default function AppShell() {
             targetId={isTraveling ? targetPlanet : null}
             onNavigate={handleNavigate}
             isExiting={isTraveling || isExitingToHub}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* "press space or scroll to explore" — first-visit hub prompt */}
+      <AnimatePresence>
+        {showExplorePrompt && view === 'hub' && (
+          <motion.div
+            className={styles.explorePrompt}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            onClick={activateDrift}
+            style={{ cursor: 'pointer', pointerEvents: 'auto' }}
+          >
+            <span className={styles.exploreScroll} aria-hidden="true">
+              <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
+                <rect x="1" y="1" width="12" height="16" rx="6" stroke="currentColor" strokeWidth="1.5" opacity="0.5"/>
+                <motion.rect
+                  x="6" y="4" width="2" height="4" rx="1" fill="currentColor"
+                  animate={{ y: [4, 8, 4] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </svg>
+            </span>
+            <span className={styles.exploreText}>press space or scroll to explore</span>
+            <span className={styles.exploreTextMobile}>swipe to explore planets</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Drift Progress Indicator — 7 dots, right edge of screen */}
+      <AnimatePresence>
+        {driftMode && (view === 'hub' || isExitingToHub) && (
+          <motion.div
+            className={styles.driftProgress}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 12 }}
+            transition={{ duration: 0.4 }}
+          >
+            {PERSONA_IDS.map((id, i) => (
+              <button
+                key={id}
+                className={`${styles.driftDot} ${i === driftIndex ? styles.driftDotActive : i < driftIndex ? styles.driftDotVisited : ''}`}
+                style={i === driftIndex ? { background: PLANET_CONFIG[id]?.meshColor, boxShadow: `0 0 8px ${PLANET_CONFIG[id]?.meshColor}` } : undefined}
+                onClick={() => driftControlRef.current?.goToIndex(i)}
+                aria-label={`Navigate to ${PERSONAS[id]?.title}`}
+                aria-current={i === driftIndex ? 'true' : undefined}
+                title={PERSONAS[id]?.title}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Exit drift button — appears 1.5s after drift activates */}
+      <AnimatePresence>
+        {driftMode && (view === 'hub' || isExitingToHub) && (
+          <motion.button
+            className={styles.exitDrift}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 1.5, duration: 0.4 }}
+            onClick={exitDrift}
+            aria-label="Exit drift mode"
+          >
+            × exit explore
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Planet Preview Card — shown ONLY after camera finishes flying to approach position */}
+      <AnimatePresence>
+        {driftMode && driftSettled && view === 'hub' && !isExitingToHub && (
+          <PlanetPreviewCard
+            key={`${PERSONA_IDS[driftIndex]}-${driftIndex}`}
+            planetId={PERSONA_IDS[driftIndex]}
+            onEnter={() => handlePlanetClick(PERSONA_IDS[driftIndex])}
+            onContinue={driftForward}
+            onBack={exitDrift}
           />
         )}
       </AnimatePresence>

@@ -12,10 +12,11 @@ import DistantGalaxies from './DistantGalaxies';
 import CameraController from './CameraController';
 import BirthFogController from './BirthFogController';
 import CosmicBottle from './CosmicBottle';
-import { PERSONAS, PLANET_CONFIG } from '../../lib/constants';
+import { PERSONAS, PLANET_CONFIG, PERSONA_IDS, DRIFT_POSITIONS } from '../../lib/constants';
 import styles from './SolarSystem.module.scss';
 
-const personaList = Object.values(PERSONAS);
+// Use curated persona list (excludes hidden personas like music)
+const personaList = PERSONA_IDS.map(id => PERSONAS[id]);
 
 // ── Star note overlay — transparent glass, neon text, rendered OUTSIDE Canvas ──
 function BottleNote({ onClose }) {
@@ -69,7 +70,7 @@ function BottleNote({ onClose }) {
           margin: 0,
           textShadow: `0 0 12px ${glowFaint}`,
         }}>
-          you weren&rsquo;t supposed to find this
+          signal from the edge of the system
         </p>
 
         {/* Main lines */}
@@ -81,10 +82,10 @@ function BottleNote({ onClose }) {
           color: glow,
           margin: 0,
           lineHeight: 1.4,
-          maxWidth: '20ch',
+          maxWidth: '22ch',
           textShadow: `0 0 18px ${glow}, 0 0 50px ${glowDim}, 0 0 100px ${glowFaint}`,
         }}>
-          most people never look behind the sun.
+          only the curious ones make it this far.
         </p>
 
         <p style={{
@@ -97,7 +98,7 @@ function BottleNote({ onClose }) {
           textShadow: `0 0 24px ${glow}, 0 0 70px ${glowDim}, 0 0 140px ${glowFaint}`,
           letterSpacing: '-0.01em',
         }}>
-          you did.
+          hello.
         </p>
 
         <p style={{
@@ -108,7 +109,7 @@ function BottleNote({ onClose }) {
           margin: 0,
           textShadow: `0 0 14px ${glowDim}`,
         }}>
-          that&rsquo;s the whole thing.
+          i&rsquo;ve been waiting for someone like you.
         </p>
 
         {/* Coordinates */}
@@ -157,7 +158,7 @@ function BottleNote({ onClose }) {
 }
 
 // ── SolarSystem ───────────────────────────────────────────────────────────────
-export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, onTransitionComplete, entering, travelRef, travelTick, onTravelComplete }) {
+export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, onTransitionComplete, entering, travelRef, travelTick, onTravelComplete, onStarClick, driftMode, driftIndex, onDriftIndexChanged, driftControlRef }) {
   const planetRefs = useRef({});
   const [revealComplete, setRevealComplete] = useState(!entering);
 
@@ -245,12 +246,16 @@ export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, on
               radius={PLANET_CONFIG[persona.id].orbitRadius}
               personaId={persona.id}
               onClick={onPlanetClick}
+              driftMode={driftMode}
             />
             <Planet
               persona={persona}
               config={PLANET_CONFIG[persona.id]}
               onClick={onPlanetClick}
               onRegister={handleRegister}
+              driftMode={driftMode}
+              driftPosition={driftMode ? (DRIFT_POSITIONS[persona.id]?.pos ?? null) : null}
+              isActiveDriftPlanet={driftMode && persona.id === PERSONA_IDS[driftIndex]}
             />
           </group>
         ))}
@@ -261,7 +266,7 @@ export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, on
         <DistantGalaxies />
 
         {/* Easter egg — discovered when rotating to the back of the solar system */}
-        <CosmicBottle onNoteOpen={handleNoteOpen} onNoteHide={handleNoteHide} />
+        <CosmicBottle onNoteOpen={handleNoteOpen} onNoteHide={handleNoteHide} onStarClick={onStarClick} />
 
         <EffectComposer>
           <Bloom intensity={entering ? 3.0 : 0.8} luminanceThreshold={0.6} luminanceSmoothing={0.9} mipmapBlur />
@@ -275,6 +280,9 @@ export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, on
           travelRef={travelRef}
           travelTick={travelTick}
           onTravelComplete={onTravelComplete}
+          driftMode={driftMode}
+          onDriftIndexChanged={onDriftIndexChanged}
+          driftControlRef={driftControlRef}
         />
       </Canvas>
 

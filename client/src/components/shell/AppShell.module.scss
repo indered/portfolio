@@ -1,5 +1,47 @@
 @use '../../styles/mixins' as *;
 
+// ─── Retro CRT overlay — gives the hub a nostalgic feel ───────────────────────
+.retroOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+
+  // CRT scanlines
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  }
+
+  // Vignette
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.25) 100%
+    );
+  }
+}
+
+// Slight screen flicker animation (subtle)
+@keyframes screenFlicker {
+  0%, 100% { opacity: 1; }
+  97% { opacity: 0.98; }
+  98% { opacity: 1; }
+  99% { opacity: 0.97; }
+}
+
 // --- BigBang intro overlay ---
 .introOverlay {
   position: fixed;
@@ -117,7 +159,192 @@
   }
 }
 
+// --- Star discovery coin arc particles ---
+.starCoin {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe066, #d4a00a);
+  box-shadow: 0 0 8px rgba(220, 160, 10, 0.9), 0 0 20px rgba(220, 160, 10, 0.4);
+  pointer-events: none;
+  z-index: 999;
+  will-change: transform, opacity;
+}
+
+// --- Planet hint overlay — first-visit instruction ---
+.hintOverlay {
+  position: fixed;
+  bottom: 96px; // above PlanetDock
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: auto;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 11px 22px;
+  background: rgba(6, 4, 18, 0.72);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  // Subtle continuous pulse to draw attention
+  animation: hintPulse 3.5s ease-in-out infinite;
+}
+
+.hintLine {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+
+.hintDot {
+  color: rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+}
+
+@keyframes hintPulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05); opacity: 1; }
+  50%       { box-shadow: 0 4px 32px rgba(80, 120, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05); opacity: 0.85; }
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
+}
+
+// --- "press space or scroll to explore" prompt ---
+.explorePrompt {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 9px 20px;
+  background: rgba(5, 5, 22, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 100px;
+  box-shadow: 0 0 40px rgba(100, 80, 255, 0.07), 0 2px 16px rgba(0, 0, 0, 0.4);
+
+  color: rgba(220, 218, 255, 0.75);
+}
+
+.exploreScroll {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.exploreText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.exploreTextMobile {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+// --- Drift Progress Indicator — 7 dots, right edge ---
+.driftProgress {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 7;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.driftDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 200ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.55);
+    transform: scale(1.4);
+  }
+}
+
+.driftDotActive {
+  width: 10px;
+  height: 10px;
+  transform: scale(1);
+}
+
+.driftDotVisited {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+// --- Exit drift button ---
+.exitDrift {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 7;
+
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.65);
+  }
 }

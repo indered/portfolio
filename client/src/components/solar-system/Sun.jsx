@@ -32,7 +32,7 @@ function createMiTexture() {
   // "MI" sunspot — dark cooler plasma region
   ctx.globalAlpha = 0.7;
   ctx.fillStyle = '#7a2800';
-  ctx.font = 'bold 110px "Space Grotesk", "Inter", sans-serif';
+  ctx.font = 'bold 110px "Plus Jakarta Sans", "Inter", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('MI', size / 2, size / 2);

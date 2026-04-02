@@ -69,11 +69,12 @@ $breakpoint-xl: 1280px;
 }
 
 // --- Typography ---
-@mixin handwriting {
-  font-family: var(--font-handwriting);
-  font-size: 1.4em;
-  font-weight: 500;
-  line-height: 1.4;
+@mixin serif-accent {
+  font-family: var(--font-serif);
+  font-size: 1.1em;
+  font-weight: 400;
+  line-height: 1.5;
+  font-style: italic;
 }
 
 @mixin mono-text {

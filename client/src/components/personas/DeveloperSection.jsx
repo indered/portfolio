@@ -1,5 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
-import { motion, useInView, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import { useState, useCallback } from 'react';
 import { PERSONAS, SKILLS, EXPERIENCE, PROJECTS } from '../../lib/constants';
 import styles from './DeveloperSection.module.scss';
 
@@ -60,56 +59,36 @@ function SkillCloud({ activeCategory, setActiveCategory }) {
 
       {/* Tag cloud */}
       <div className={styles.tagCloud}>
-        <AnimatePresence mode="popLayout">
-          {filteredSkills.map(({ skill, category }, i) => {
-            const level = SKILL_LEVELS[skill] || 70;
-            const isHovered = hoveredSkill === skill;
-            const sizeClass =
-              level >= 90
-                ? styles.tagLg
-                : level >= 80
-                ? styles.tagMd
-                : styles.tagSm;
+        {filteredSkills.map(({ skill, category }) => {
+          const level = SKILL_LEVELS[skill] || 70;
+          const isHovered = hoveredSkill === skill;
+          const sizeClass =
+            level >= 90
+              ? styles.tagLg
+              : level >= 80
+              ? styles.tagMd
+              : styles.tagSm;
 
-            return (
-              <motion.div
-                key={skill}
-                className={`${styles.skillTag} ${sizeClass}`}
-                data-category={category}
-                layout
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                transition={{ duration: 0.2, delay: i * 0.012 }}
-                onHoverStart={() => setHoveredSkill(skill)}
-                onHoverEnd={() => setHoveredSkill(null)}
-              >
-                <span className={styles.tagName}>{skill}</span>
-                <AnimatePresence>
-                  {isHovered && (
-                    <motion.div
-                      className={styles.tagTooltip}
-                      initial={{ opacity: 0, y: 4, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                      transition={{ duration: 0.12 }}
-                    >
-                      <div className={styles.tooltipBar}>
-                        <motion.div
-                          className={styles.tooltipFill}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${level}%` }}
-                          transition={{ duration: 0.35, ease: 'easeOut' }}
-                        />
-                      </div>
-                      <span className={styles.tooltipPct}>{level}%</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+          return (
+            <div
+              key={skill}
+              className={`${styles.skillTag} ${sizeClass}`}
+              data-category={category}
+              onMouseEnter={() => setHoveredSkill(skill)}
+              onMouseLeave={() => setHoveredSkill(null)}
+            >
+              <span className={styles.tagName}>{skill}</span>
+              {isHovered && (
+                <div className={styles.tagTooltip}>
+                  <div className={styles.tooltipBar}>
+                    <div className={styles.tooltipFill} style={{ width: `${level}%` }} />
+                  </div>
+                  <span className={styles.tooltipPct}>{level}%</span>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -153,52 +132,30 @@ await mongoose.connect(MONGO_URI);
 app.listen(PORT);`,
 };
 
-function TimelineEntry({ entry, index, isActive, onClick }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+function TimelineEntry({ entry, isActive, onClick }) {
   const yearStart = entry.period.split('—')[0].trim().split(' ').pop();
 
   return (
-    <motion.div
-      ref={ref}
+    <div
       className={`${styles.timelineEntry} ${isActive ? styles.timelineEntryActive : ''}`}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.45, delay: index * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
       onClick={onClick}
     >
       {/* Year stamp */}
       <div className={styles.entryYear}>
         <span className={styles.yearText}>{yearStart}</span>
         {entry.featured && (
-          <motion.span
-            className={styles.featuredBadge}
-            initial={{ scale: 0 }}
-            animate={isInView ? { scale: 1 } : {}}
-            transition={{ delay: 0.35, type: 'spring', stiffness: 280 }}
-          >
-            Featured
-          </motion.span>
+          <span className={styles.featuredBadge}>Featured</span>
         )}
       </div>
 
       {/* Connector */}
       <div className={styles.entryConnector}>
-        <motion.div
-          className={styles.connectorDot}
-          initial={{ scale: 0 }}
-          animate={isInView ? { scale: 1 } : {}}
-          transition={{ delay: index * 0.07 + 0.18, type: 'spring' }}
-        />
+        <div className={styles.connectorDot} />
         <div className={styles.connectorLine} />
       </div>
 
       {/* Card */}
-      <motion.div
-        className={styles.entryCard}
-        whileHover={{ borderColor: 'rgba(94, 106, 210, 0.45)', y: -2 }}
-        transition={{ duration: 0.18 }}
-      >
+      <div className={styles.entryCard}>
         <div className={styles.entryHeader}>
           <div className={styles.entryMeta}>
             <span className={styles.entryRole}>{entry.role}</span>
@@ -208,64 +165,45 @@ function TimelineEntry({ entry, index, isActive, onClick }) {
           <p className={styles.entryDesc}>{entry.description}</p>
         </div>
 
-        <AnimatePresence>
-          {isActive && (
-            <motion.div
-              className={styles.entryExpanded}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.32, ease: 'easeInOut' }}
-            >
-              {/* Code block — no traffic light dots */}
-              <div className={styles.codeBlock}>
-                <div className={styles.codeBlockHeader}>
-                  <span className={styles.codeFileName}>{entry.id}.ts</span>
-                </div>
-                <pre className={styles.codeContent}>
-                  <code>{CODE_SNIPPETS[entry.id] || '// ...'}</code>
-                </pre>
+        {isActive && (
+          <div className={styles.entryExpanded}>
+            {/* Code block */}
+            <div className={styles.codeBlock}>
+              <div className={styles.codeBlockHeader}>
+                <span className={styles.codeFileName}>{entry.id}.ts</span>
               </div>
+              <pre className={styles.codeContent}>
+                <code>{CODE_SNIPPETS[entry.id] || '// ...'}</code>
+              </pre>
+            </div>
 
-              {/* Highlights */}
-              <ul className={styles.highlights}>
-                {entry.highlights.map((h, i) => (
-                  <motion.li
-                    key={i}
-                    className={styles.highlight}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <span className={styles.highlightArrow}>—</span>
-                    {h}
-                  </motion.li>
-                ))}
-              </ul>
+            {/* Highlights */}
+            <ul className={styles.highlights}>
+              {entry.highlights.map((h, i) => (
+                <li key={i} className={styles.highlight}>
+                  <span className={styles.highlightArrow}>—</span>
+                  {h}
+                </li>
+              ))}
+            </ul>
 
-              {/* Tech stack */}
-              <div className={styles.entryTech}>
-                {entry.tech.map((t) => (
-                  <span key={t} className={styles.techChip}>{t}</span>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {/* Tech stack */}
+            <div className={styles.entryTech}>
+              {entry.tech.map((t) => (
+                <span key={t} className={styles.techChip}>{t}</span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <button
           className={styles.expandToggle}
           aria-label={isActive ? 'Collapse details' : 'Expand details'}
         >
-          <motion.span
-            animate={{ rotate: isActive ? 45 : 0 }}
-            transition={{ duration: 0.18 }}
-          >
-            +
-          </motion.span>
+          <span>{isActive ? '×' : '+'}</span>
         </button>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -302,30 +240,21 @@ await mongoose.connect(MONGO_URI);
 app.listen(PORT);`,
 };
 
-function ProjectCard({ project, index }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.15 });
+function ProjectCard({ project }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.article
-      ref={ref}
+    <article
       className={`${styles.projectCard} ${project.featured ? styles.projectCardFeatured : ''}`}
-      initial={{ opacity: 0, y: 32 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ y: -4 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Thin top accent line — no glow */}
+      {/* Thin top accent line */}
       <div className={styles.cardAccentBar} />
 
       {/* Featured badge */}
       {project.featured && (
-        <div className={styles.featuredLabel}>
-          FEATURED
-        </div>
+        <div className={styles.featuredLabel}>FEATURED</div>
       )}
 
       <div className={styles.cardBody}>
@@ -356,33 +285,18 @@ function ProjectCard({ project, index }) {
           <div className={styles.snippetHeader}>
             <span className={styles.snippetFileName}>snippet.ts</span>
           </div>
-          <AnimatePresence>
-            {isHovered ? (
-              <motion.pre
-                key="snippet"
-                className={styles.snippetCode}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.18 }}
-              >
-                <code>{PROJECT_SNIPPETS[project.id] || '// coming soon'}</code>
-              </motion.pre>
-            ) : (
-              <motion.div
-                key="idle"
-                className={styles.snippetIdle}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <span className={styles.snippetIdleText}>hover to inspect</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {isHovered ? (
+            <pre className={styles.snippetCode}>
+              <code>{PROJECT_SNIPPETS[project.id] || '// coming soon'}</code>
+            </pre>
+          ) : (
+            <div className={styles.snippetIdle}>
+              <span className={styles.snippetIdleText}>hover to inspect</span>
+            </div>
+          )}
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
@@ -397,18 +311,11 @@ const STATS = [
 function StatsBar() {
   return (
     <div className={styles.statsBar}>
-      {STATS.map((stat, i) => (
-        <motion.div
-          key={stat.label}
-          className={styles.statItem}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.08, duration: 0.38 }}
-        >
+      {STATS.map((stat) => (
+        <div key={stat.label} className={styles.statItem}>
           <span className={styles.statValue}>{stat.value}</span>
           <span className={styles.statLabel}>{stat.label}</span>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
@@ -446,25 +353,15 @@ function SectionLabel({ children }) {
 
 // ─── Main Section ──────────────────────────────────────────────────────────────
 export default function DeveloperSection() {
-  const containerRef = useRef(null);
-  const heroRef = useRef(null);
   const [activeEntry, setActiveEntry] = useState(null);
   const [skillCategory, setSkillCategory] = useState('all');
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 0.18], [0, -36]);
 
   const handleEntryClick = (id) => {
     setActiveEntry((prev) => (prev === id ? null : id));
   };
 
   return (
-    <div className={styles.developer} ref={containerRef}>
+    <div className={styles.developer}>
 
       {/* ── DOT GRID BACKGROUND ── */}
       <div className={styles.dotGridWrap} aria-hidden="true">
@@ -472,69 +369,66 @@ export default function DeveloperSection() {
       </div>
 
       {/* ── HERO ── */}
-      <motion.section
-        ref={heroRef}
-        className={styles.hero}
-        style={{ opacity: heroOpacity, y: heroY }}
-      >
+      <section className={styles.hero}>
         <div className={styles.heroInner}>
           {/* Location / role badge */}
-          <motion.div
-            className={styles.locationBadge}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
+          <div className={styles.locationBadge}>
             <span className={styles.locationDot} />
             <span>Dubai, UAE</span>
             <span className={styles.locationSep}>·</span>
             <span>Full Stack Developer</span>
-          </motion.div>
+          </div>
 
           {/* Big title */}
-          <motion.h2
-            className={styles.heroTitle}
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <h2 className={styles.heroTitle}>
             <span className={styles.heroTitleLine1}>The</span>
             <span className={styles.heroTitleLine2}>Architect</span>
-          </motion.h2>
+          </h2>
 
           {/* Tagline */}
-          <motion.p
-            className={styles.heroTagline}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          <p className={styles.heroTagline}>
             {persona.tagline}
-          </motion.p>
+          </p>
 
           {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <StatsBar />
-          </motion.div>
+          <StatsBar />
+
+          {/* Download buttons */}
+          <div className={styles.downloadRow}>
+            <a
+              href="/mahesh-inder-resume.pdf"
+              download="Mahesh_Inder_Resume.pdf"
+              className={styles.downloadBtn}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Resume
+            </a>
+            <a
+              href="/mahesh-inder-cover-letter.pdf"
+              download="Mahesh_Inder_Cover_Letter.pdf"
+              className={`${styles.downloadBtn} ${styles.downloadBtnOutline}`}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Cover Letter
+            </a>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── SKILLS ── */}
       <section className={styles.skillsSection}>
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className={styles.sectionHeader}>
           <SectionLabel>Tech Stack</SectionLabel>
           <h3 className={styles.sectionTitle}>Skills &amp; Tools</h3>
-        </motion.div>
+        </div>
 
         <SkillCloud
           activeCategory={skillCategory}
@@ -544,23 +438,16 @@ export default function DeveloperSection() {
 
       {/* ── EXPERIENCE ── */}
       <section className={styles.experienceSection}>
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className={styles.sectionHeader}>
           <SectionLabel>Career History</SectionLabel>
           <h3 className={styles.sectionTitle}>Experience</h3>
-        </motion.div>
+        </div>
 
         <div className={styles.timeline}>
-          {EXPERIENCE.map((entry, i) => (
+          {EXPERIENCE.map((entry) => (
             <TimelineEntry
               key={entry.id}
               entry={entry}
-              index={i}
               isActive={activeEntry === entry.id}
               onClick={() => handleEntryClick(entry.id)}
             />
@@ -570,32 +457,20 @@ export default function DeveloperSection() {
 
       {/* ── PROJECTS ── */}
       <section className={styles.projectsSection}>
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className={styles.sectionHeader}>
           <SectionLabel>Selected Work</SectionLabel>
           <h3 className={styles.sectionTitle}>Projects</h3>
-        </motion.div>
+        </div>
 
         <div className={styles.projectsGrid}>
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+          {PROJECTS.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </section>
 
       {/* ── FOOTER CTA ── */}
-      <motion.div
-        className={styles.footerCta}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className={styles.footerCta}>
         <p className={styles.footerCtaText}>
           Systems built to last. Let&apos;s build something together.
         </p>
@@ -605,7 +480,7 @@ export default function DeveloperSection() {
         >
           Get in touch
         </a>
-      </motion.div>
+      </div>
     </div>
   );
 }

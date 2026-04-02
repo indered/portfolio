@@ -3,9 +3,9 @@
 @use 'persona-themes';
 
 // ============================================
-// Font Imports (includes Caveat for handwriting)
+// Font Imports (Refined typography stack)
 // ============================================
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 // ============================================
 // CSS Reset & Base Styles
@@ -114,7 +114,8 @@ ol {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  line-height: 1.1;
+  line-height: 1.2;
+  font-weight: 600;
   color: var(--color-text-primary);
 }
 
@@ -142,8 +143,8 @@ pre {
   border: 0;
 }
 
-.handwriting {
-  @include mixins.handwriting;
+.serif-accent {
+  @include mixins.serif-accent;
 }
 
 .mono {

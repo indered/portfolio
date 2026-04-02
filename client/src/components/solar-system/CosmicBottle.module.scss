@@ -101,7 +101,7 @@
 // ─── Signature ────────────────────────────────────────────────────────────────
 
 .signature {
-  font-family: 'Caveat', 'Brush Script MT', cursive;
+  font-family: var(--font-serif);
   font-size: 1.6rem;
   font-weight: 700;
   color: #3d1a0a;

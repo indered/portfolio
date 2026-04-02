@@ -168,6 +168,65 @@ $shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
   padding-left: var(--space-md);
 }
 
+// ── DOWNLOAD BUTTONS ──────────────────────────
+.downloadRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 20px;
+  background: var(--persona-color);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  box-shadow: $shadow-md, 0 0 0 1px color-mix(in srgb, var(--persona-color) 40%, transparent);
+  transition:
+    background 150ms ease,
+    box-shadow 150ms ease,
+    transform 120ms ease;
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 200ms ease;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--persona-color) 88%, #000);
+    box-shadow: $shadow-lg, 0 0 0 1px color-mix(in srgb, var(--persona-color) 40%, transparent);
+    transform: translateY(-1px);
+
+    svg {
+      transform: translateY(2px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.downloadBtnOutline {
+  background: transparent;
+  color: var(--persona-color);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--persona-color) 55%, transparent), $shadow-sm;
+
+  &:hover {
+    background: color-mix(in srgb, var(--persona-color) 6%, transparent);
+    box-shadow: inset 0 0 0 1.5px var(--persona-color), $shadow-sm;
+  }
+}
+
 // ── STATS BAR ─────────────────────────────────
 .statsBar {
   display: flex;

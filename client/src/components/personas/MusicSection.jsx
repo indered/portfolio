@@ -1,7 +1,5 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
-import { PERSONAS } from '../../lib/constants';
 import styles from './MusicSection.module.scss';
+import { PERSONAS } from '../../lib/constants';
 
 const persona = PERSONAS.music;
 
@@ -150,7 +148,6 @@ function DjCaricature() {
 function YouTubePlaceholder() {
   return (
     <div className={styles.ytPlaceholder}>
-      {/* YouTube logo SVG */}
       <div className={styles.ytLogo} aria-hidden="true">
         <svg width="68" height="48" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
           <rect width="68" height="48" rx="14" fill="#FF0000" />
@@ -165,20 +162,12 @@ function YouTubePlaceholder() {
 
 // --- Main component ---
 export default function MusicSection() {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-
   return (
-    <div className={styles.music} ref={sectionRef}>
+    <div className={styles.music}>
 
       {/* ====== SECTION 1: HERO ====== */}
       <div className={styles.hero}>
-        <motion.div
-          className={styles.heroInner}
-          initial={{ opacity: 0, y: 28 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
+        <div className={styles.heroInner}>
           <div className={styles.heroEyebrow}>
             <Equalizer />
             <span className={styles.heroEyebrowText}>Guitar · DJ Decks · Dubai</span>
@@ -191,20 +180,14 @@ export default function MusicSection() {
           <p className={styles.heroSubtitle}>
             {persona.tagline}
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* ====== WAVEFORM DIVIDER 1 ====== */}
       <WaveformDivider />
 
       {/* ====== SECTION 2: TWO-PANEL INSTRUMENT SPLIT ====== */}
-      <motion.div
-        className={styles.instrumentGrid}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.12 }}
-        transition={{ duration: 0.65, ease: 'easeOut' }}
-      >
+      <div className={styles.instrumentGrid}>
         {/* LEFT: On Guitar */}
         <div className={styles.panelGuitar}>
           <div className={styles.panelHeader}>
@@ -297,19 +280,13 @@ export default function MusicSection() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ====== WAVEFORM DIVIDER 2 ====== */}
       <WaveformDivider />
 
       {/* ====== SECTION 3: YOUTUBE PLAYLIST ====== */}
-      <motion.div
-        className={styles.playlistSection}
-        initial={{ opacity: 0, y: 48 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.12 }}
-        transition={{ duration: 0.65, ease: 'easeOut' }}
-      >
+      <div className={styles.playlistSection}>
         <div className={styles.playlistHeaderRow}>
           <div className={styles.playlistTitleGroup}>
             <VinylAccent />
@@ -321,7 +298,6 @@ export default function MusicSection() {
           <p className={styles.playlistMeta}>Updated regularly · Guitar covers &amp; DJ sets</p>
         </div>
 
-        {/* YouTube embed area — placeholder until real playlist ID set */}
         <div className={styles.ytEmbedWrapper}>
           <YouTubePlaceholder />
         </div>
@@ -329,7 +305,7 @@ export default function MusicSection() {
         <p className={styles.playlistFootnote}>
           Guitar covers &amp; DJ sets · Updated regularly
         </p>
-      </motion.div>
+      </div>
 
     </div>
   );

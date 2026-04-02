@@ -31,13 +31,9 @@
   font-weight: 700;
   font-size: clamp(12vw, 17vw, 240px);
   line-height: 0.88;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  // Slight text-shadow gives depth against the dark canvas
-  text-shadow:
-    0 0 80px rgba(255, 255, 255, 0.06),
-    0 0 200px rgba(180, 200, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 // MAHESH — left edge
@@ -90,11 +86,90 @@
   right: 24px;
   z-index: 3;
   text-align: right;
-  pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 0;
+}
+
+// Clickable logo wrapper
+.logoBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  position: relative;
+  opacity: 0.85;
+  transition: opacity 160ms ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Tiny chevron indicates the button opens a menu
+.logoChevron {
+  display: block;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 4px;
+  line-height: 1;
+}
+
+// Dropdown — dark glass card
+.menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 174px;
+  background: rgba(8, 6, 18, 0.88);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  z-index: 10;
+}
+
+// Individual menu item
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: background 130ms ease, color 130ms ease;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.65;
+    transition: transform 200ms ease, opacity 130ms ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.95);
+
+    svg {
+      transform: translateY(2px);
+      opacity: 1;
+    }
+  }
 }
 
 // Ghost monogram — barely visible, brand mark for those who notice

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTokens } from '../../context/TokenContext';
-import { useTokenStats } from '../../hooks/useTokenStats';
 import { TOKEN_CONFIG } from '../../lib/constants';
 import styles from './TokenWallet.module.scss';
 
@@ -55,11 +54,13 @@ function CoinIcon() {
 
 export default function TokenWallet() {
   const { sessionTokens, recentAction } = useTokens();
-  const { totalTokens, totalValue, currentCause, loading } = useTokenStats();
   const [expanded, setExpanded] = useState(false);
   const [floatingPlus, setFloatingPlus] = useState(null);
   const [coinParticles, setCoinParticles] = useState([]);
   const prevTokensRef = useRef(sessionTokens);
+
+  const { currentCause } = TOKEN_CONFIG;
+  const tokenValueINR = currentCause.tokenValue; // ₹0.50 per token
 
   // Detect token earning — trigger floating +N and coin burst animation
   useEffect(() => {
@@ -92,11 +93,13 @@ export default function TokenWallet() {
     ? TOKEN_CONFIG.actions[recentAction.action]?.label || ''
     : '';
 
-  const formattedValue = new Intl.NumberFormat(undefined, {
+  // Calculate equivalent donation in INR
+  const equivalentINR = sessionTokens * tokenValueINR;
+  const formattedINR = new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     minimumFractionDigits: 2,
-  }).format(totalValue);
+  }).format(equivalentINR);
 
   return (
     <div className={styles.wrapper}>
@@ -167,7 +170,7 @@ export default function TokenWallet() {
 
             {/* Session Tokens */}
             <div className={styles.sessionBlock}>
-              <span className={styles.sessionLabel}>Session Tokens</span>
+              <span className={styles.sessionLabel}>Your Tokens</span>
               <span className={styles.sessionCount}>
                 <AnimatedCounter value={sessionTokens} />
               </span>
@@ -193,20 +196,13 @@ export default function TokenWallet() {
             {/* Divider */}
             <div className={styles.divider} />
 
-            {/* Global Stats */}
+            {/* Equivalent Donation */}
             <div className={styles.globalStats}>
               <div className={styles.statRow}>
-                <span className={styles.statLabel}>Global Tokens</span>
-                <span className={styles.statValue}>
-                  {loading ? '...' : totalTokens.toLocaleString()}
-                </span>
-              </div>
-              <div className={styles.statRow}>
                 <span className={styles.statLabel}>Equivalent Donation</span>
-                <span className={styles.statValue}>
-                  {loading ? '...' : formattedValue}
-                </span>
+                <span className={styles.statValue}>{formattedINR}</span>
               </div>
+              <p className={styles.conversionNote}>1 token = ₹0.50</p>
             </div>
 
             {/* Current Cause */}
