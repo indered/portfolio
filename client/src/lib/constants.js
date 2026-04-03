@@ -311,10 +311,9 @@ export const SKILLS = {
 // --- Social Links ---
 export const SOCIAL_LINKS = [
   { name: 'GitHub', url: 'https://github.com/indered', icon: 'github' },
-  { name: 'LinkedIn', url: 'https://linkedin.com/in/maheshinder', icon: 'linkedin' },
-  { name: 'Instagram', url: 'https://instagram.com/maheshinder', icon: 'instagram' },
-  { name: 'Email', url: 'mailto:hi@indered.in', icon: 'mail' },
-  { name: 'Twitter', url: 'https://twitter.com/maheshinder', icon: 'twitter' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/in/mahesh-inder/', icon: 'linkedin' },
+  { name: 'Instagram', url: 'https://www.instagram.com/mahesh.inder_/', icon: 'instagram' },
+  { name: 'Email', url: 'mailto:mahesh.inder85@gmail.com', icon: 'mail' },
 ];
 
 // --- Running Stats (Runner Persona) ---
@@ -388,7 +387,7 @@ export const ABOUT = {
   name: 'Mahesh Inder',
   title: 'Full Stack Developer',
   location: 'Dubai, UAE',
-  email: 'hi@indered.in',
+  email: 'mahesh.inder85@gmail.com',
   bio: "Full-stack developer who treats codebases like universes — each one deserves its own laws of physics. From architecting microservices at Noumena to building APIs so fast Google featured them twice at I/O, Mahesh doesn't just write code. He composes distributed symphonies.",
   education: {
     degree: 'B.Tech in Computer Science',
