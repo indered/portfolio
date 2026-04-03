@@ -59,15 +59,18 @@ export default function PersonaApp({
       if (isExiting) return;
 
       if (e.key === 'Escape') {
+        e.preventDefault();
         onBack();
       } else if (e.key === 'ArrowLeft' && prevId) {
+        e.preventDefault();
         onNavigate(prevId);
       } else if (e.key === 'ArrowRight' && nextId) {
+        e.preventDefault();
         onNavigate(nextId);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
   }, [isExiting, onBack, onNavigate, prevId, nextId]);
 
   if (!persona || !PersonaComponent) return null;
