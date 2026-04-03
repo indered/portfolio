@@ -53,16 +53,22 @@ export default function PersonaApp({
     contentRef.current?.scrollTo(0, 0);
   }, [personaId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Escape key to return to cosmos
+  // Keyboard navigation: Escape to cosmos, Arrow keys between planets
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !isExiting) {
+      if (isExiting) return;
+
+      if (e.key === 'Escape') {
         onBack();
+      } else if (e.key === 'ArrowLeft' && prevId) {
+        onNavigate(prevId);
+      } else if (e.key === 'ArrowRight' && nextId) {
+        onNavigate(nextId);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isExiting, onBack]);
+  }, [isExiting, onBack, onNavigate, prevId, nextId]);
 
   if (!persona || !PersonaComponent) return null;
 
