@@ -487,21 +487,20 @@ export default function AppShell({ directPersona = null }) {
         )}
       </AnimatePresence>
 
-      {/* "press space or scroll to explore" — first-visit hub prompt */}
+      {/* Explore CTA — always visible in hub when not drifting */}
       <AnimatePresence>
-        {showExplorePrompt && view === 'hub' && (
-          <motion.div
+        {view === 'hub' && !driftMode && (
+          <motion.button
             className={styles.explorePrompt}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             onClick={activateDrift}
-            style={{ cursor: 'pointer', pointerEvents: 'auto' }}
           >
             <span className={styles.exploreText}>press space or click here to explore</span>
             <span className={styles.exploreTextMobile}>click here to explore planets</span>
-          </motion.div>
+          </motion.button>
         )}
       </AnimatePresence>
 
