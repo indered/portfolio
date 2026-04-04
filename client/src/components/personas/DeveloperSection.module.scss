@@ -1,63 +1,21 @@
 @use '../../styles/mixins' as *;
 
-// ============================================
-// DeveloperSection — Minimal editorial
-// Readable, tight, dark readable colors
-// ============================================
+$paper:   #FAFAF8;
+$black:   #111;
+$dark:    #222;
+$mid:     #444;
+$rule:    #ddd;
+$accent:  var(--persona-color);
 
-$paper:     #FAFAF8;
-$ink:       #1C1C1C;
-$ink-body:  #2E2E2E;
-$ink-sub:   #555;
-$rule:      rgba(0, 0, 0, 0.12);
-$accent:    var(--persona-color);
-
-// ── ROOT ─────────────────────────────────────
 .page {
   display: flex;
   flex-direction: column;
   background: $paper;
-  color: $ink;
+  color: $black;
   min-height: 100%;
   max-width: 720px;
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 5vw, 2rem);
-}
-
-// ── DOSSIER BAR ──────────────────────────────
-.dossierBar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: $rule;
-  border: 1px solid $rule;
-
-  @include tablet {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.dossierItem {
-  background: $paper;
-  padding: 10px 12px;
-  text-align: center;
-}
-
-.dLabel {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: $ink-sub;
-  margin-bottom: 3px;
-}
-
-.dValue {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: $ink;
 }
 
 // ── DOWNLOADS ────────────────────────────────
@@ -76,26 +34,17 @@ $accent:    var(--persona-color);
   border: 1px solid $rule;
   background: white;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: $ink;
+  font-size: 0.8rem;
+  color: $black;
   text-decoration: none;
   transition: all 160ms ease;
 
-  svg {
-    opacity: 0.5;
-    transition: all 160ms ease;
-  }
+  svg { opacity: 0.5; transition: all 160ms ease; }
 
   &:hover {
     border-color: $accent;
     color: $accent;
-    background: color-mix(in srgb, $accent 4%, white);
-
-    svg {
-      opacity: 1;
-      transform: translateY(2px);
-    }
+    svg { opacity: 1; transform: translateY(2px); }
   }
 }
 
@@ -104,19 +53,49 @@ $accent:    var(--persona-color);
   padding: clamp(1.25rem, 3vw, 1.75rem) 0;
   border-bottom: 1px solid $rule;
 
-  &:last-of-type {
-    border-bottom: none;
-  }
+  &:last-of-type { border-bottom: none; }
 }
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: $ink;
+  letter-spacing: 0.12em;
+  color: $black;
   margin: 0 0 clamp(0.75rem, 2vw, 1rem);
+}
+
+// ── SKILLS ───────────────────────────────────
+.skillGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: $rule;
+  border: 1px solid $rule;
+
+  @include tablet { grid-template-columns: repeat(2, 1fr); }
+}
+
+.skillCard {
+  background: $paper;
+  padding: 16px;
+}
+
+.skillName {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $black;
+  margin: 0 0 4px;
+}
+
+.skillTools {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: $mid;
+  line-height: 1.5;
+  margin: 0;
 }
 
 // ── WORK ─────────────────────────────────────
@@ -124,10 +103,7 @@ $accent:    var(--persona-color);
   padding: clamp(1rem, 2vw, 1.25rem) 0;
   border-bottom: 1px solid $rule;
 
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+  &:last-child { border-bottom: none; padding-bottom: 0; }
 }
 
 .workHead {
@@ -140,9 +116,9 @@ $accent:    var(--persona-color);
 
 .workCompany {
   font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
   font-weight: 700;
-  color: $ink;
+  color: $black;
   margin: 0;
   display: flex;
   align-items: center;
@@ -152,9 +128,9 @@ $accent:    var(--persona-color);
 
 .badge {
   font-family: var(--font-mono);
-  font-size: 0.55rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: $accent;
   font-weight: 600;
   padding: 2px 7px;
@@ -163,16 +139,14 @@ $accent:    var(--persona-color);
 
 .workRole {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: $ink-sub;
+  font-size: 0.75rem;
+  color: $mid;
 }
 
 .workPeriod {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: $ink-sub;
+  font-size: 0.75rem;
+  color: $mid;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -183,26 +157,24 @@ $accent:    var(--persona-color);
   border-left: 2px solid $accent;
   margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+  &:last-child { margin-bottom: 0; }
 }
 
 .projName {
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: $ink;
+  letter-spacing: 0.03em;
+  color: $black;
   margin: 0 0 6px;
 }
 
 .projDesc {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.7;
-  color: $ink-body;
+  color: $dark;
   margin: 0 0 10px;
 }
 
@@ -214,45 +186,11 @@ $accent:    var(--persona-color);
 
 .tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 3px 9px;
-  border: 1px solid color-mix(in srgb, $accent 30%, transparent);
-  color: $ink-body;
-  background: color-mix(in srgb, $accent 5%, white);
-}
-
-// ── SKILLS ───────────────────────────────────
-.skillGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: $rule;
-  border: 1px solid $rule;
-
-  @include tablet {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.skillCard {
-  background: $paper;
-  padding: 14px 16px;
-}
-
-.skillName {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: $ink;
-  margin: 0 0 4px;
-}
-
-.skillTools {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: $ink-sub;
-  line-height: 1.5;
-  margin: 0;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, $accent 35%, transparent);
+  color: $dark;
+  background: color-mix(in srgb, $accent 6%, white);
 }
 
 // ── FOOTER ───────────────────────────────────
@@ -264,36 +202,28 @@ $accent:    var(--persona-color);
 .footerCta {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: white;
-  background: $ink;
+  background: $black;
   text-decoration: none;
   padding: 10px 22px;
   transition: background 200ms;
 
-  &:hover {
-    background: $accent;
-  }
+  &:hover { background: $accent; }
 }
 
 .colophon {
   margin-top: clamp(1rem, 2vw, 1.5rem);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   letter-spacing: 0.06em;
-  color: $ink-sub;
+  color: $mid;
 }
 
-.colDot {
-  margin: 0 6px;
-  opacity: 0.4;
-}
-
-.colName {
-  color: $accent;
-}
+.colDot { margin: 0 6px; opacity: 0.4; }
+.colName { color: $accent; }
 
 .colClaude {
   background: linear-gradient(90deg, #cc785c, #d4956a);

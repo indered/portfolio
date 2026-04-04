@@ -1,6 +1,16 @@
 import styles from './DeveloperSection.module.scss';
 
-// ─── The Work — all visible, casual but professional ─────────────────────────
+// ─── Skills — 6 broad pillars ────────────────────────────────────────────────
+const SKILLS = [
+  { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
+  { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
+  { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
+  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
+  { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
+  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
+];
+
+// ─── The Work ────────────────────────────────────────────────────────────────
 const WORK = [
   {
     company: 'Emirates NBD',
@@ -80,27 +90,9 @@ const WORK = [
   },
 ];
 
-// ─── Skills — 6 broad pillars ────────────────────────────────────────────────
-const SKILLS = [
-  { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
-  { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
-  { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
-  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
-  { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
-  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
-];
-
 export default function DeveloperSection() {
   return (
     <div className={styles.page} role="main">
-
-      {/* ── DOSSIER BAR ── */}
-      <div className={styles.dossierBar}>
-        <div className={styles.dossierItem}><span className={styles.dLabel}>Current</span><span className={styles.dValue}>Emirates NBD</span></div>
-        <div className={styles.dossierItem}><span className={styles.dLabel}>Stack</span><span className={styles.dValue}>React · Node · Rust</span></div>
-        <div className={styles.dossierItem}><span className={styles.dLabel}>Featured</span><span className={styles.dValue}>2× Google I/O</span></div>
-        <div className={styles.dossierItem}><span className={styles.dLabel}>B2B</span><span className={styles.dValue}>Burj2Burj Finisher</span></div>
-      </div>
 
       {/* ── DOWNLOADS ── */}
       <div className={styles.downloads}>
@@ -114,7 +106,20 @@ export default function DeveloperSection() {
         </a>
       </div>
 
-      {/* ── THE WORK — all visible ── */}
+      {/* ── SKILLS — on top ── */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Skills</h2>
+        <div className={styles.skillGrid}>
+          {SKILLS.map((s) => (
+            <div key={s.name} className={styles.skillCard}>
+              <h3 className={styles.skillName}>{s.name}</h3>
+              <p className={styles.skillTools}>{s.tools}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── THE WORK ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>The Work</h2>
 
@@ -144,19 +149,6 @@ export default function DeveloperSection() {
             ))}
           </div>
         ))}
-      </section>
-
-      {/* ── SKILLS — after work ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Skills</h2>
-        <div className={styles.skillGrid}>
-          {SKILLS.map((s) => (
-            <div key={s.name} className={styles.skillCard}>
-              <h3 className={styles.skillName}>{s.name}</h3>
-              <p className={styles.skillTools}>{s.tools}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ── FOOTER ── */}
