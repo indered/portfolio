@@ -1,143 +1,91 @@
 @use '../../styles/mixins' as *;
 
 // ============================================
-// DeveloperSection — Newspaper / Magazine Layout
-// Editorial, readable, broadsheet inspired
-// Accent: var(--persona-color) — dev blue #2a7fe0
+// DeveloperSection — Vogue / Editorial Magazine
+// High fashion typography, dramatic whitespace,
+// serif headlines, clean grid
 // ============================================
 
-// ── Local palette ─────────────────────────────
-$paper:        #FAF9F7;
-$paper-warm:   #F5F3EF;
-$ink:          #1A1714;
-$ink-light:    #6B6560;
-$ink-faint:    rgba(0, 0, 0, 0.35);
-$rule:         rgba(0, 0, 0, 0.12);
-$rule-heavy:   rgba(0, 0, 0, 0.25);
-$card-bg:      #FFFFFF;
-$shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.05);
-$shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
+$paper:      #FAF9F7;
+$cream:      #F2EFE9;
+$ink:        #1A1714;
+$ink-mid:    #4A4640;
+$ink-light:  #8A8580;
+$ink-faint:  rgba(0, 0, 0, 0.18);
+$rule:       rgba(0, 0, 0, 0.1);
+$rule-heavy: #1A1714;
+$accent:     var(--persona-color);
+$card-bg:    #FFFFFF;
+$shadow:     0 2px 12px rgba(0, 0, 0, 0.06);
 
-// ── NEWSPAPER ROOT ───────────────────────────
-.newspaper {
+// ── MAGAZINE ROOT ─��──────────────────────────
+.magazine {
   display: flex;
   flex-direction: column;
   background: $paper;
   color: $ink;
   min-height: 100%;
-  max-width: 900px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 4vw, 2.5rem);
+  padding: 0 clamp(1.25rem, 5vw, 3rem);
 }
 
 // ── MASTHEAD ─────────────────────────────────
 .masthead {
   text-align: center;
-  padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(3rem, 8vw, 5rem) 0 clamp(1.5rem, 3vw, 2rem);
 }
 
-.mastheadTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.mastheadMeta {
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: $ink-light;
-  padding-bottom: 10px;
-
-  @include mobile {
-    font-size: 0.5rem;
-    gap: 8px;
-  }
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-.edition {
-  white-space: nowrap;
-}
-
-.editionDate {
-  @include mobile {
-    display: none;
-  }
-}
-
-.mastheadRule {
-  height: 1px;
-  background: $ink;
-  opacity: 0.2;
-
-  &:first-of-type {
-    margin-bottom: 16px;
-  }
-
-  &:last-of-type {
-    margin-top: 16px;
-  }
+.mastheadDot {
+  margin: 0 8px;
+  opacity: 0.4;
 }
 
 .mastheadTitle {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 0.9;
+  font-size: clamp(3.5rem, 12vw, 7rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
   margin: 0;
-  color: $ink;
+  text-transform: uppercase;
+
+  @include mobile {
+    font-size: clamp(2.8rem, 16vw, 4.5rem);
+  }
 }
 
 .mastheadSub {
   font-family: var(--font-body);
-  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
   font-style: italic;
-  color: $ink-light;
-  margin: 12px 0 0;
-  line-height: 1.5;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+  color: $ink-mid;
+  margin: clamp(0.75rem, 2vw, 1.5rem) auto 0;
+  line-height: 1.6;
+  max-width: 480px;
 }
 
-// ── STATS TICKER ─────────────────────────────
-.statsTicker {
-  display: flex;
-  justify-content: center;
-  gap: clamp(1.5rem, 5vw, 3rem);
-  padding: clamp(1rem, 2vw, 1.5rem) 0;
-  border-top: 2px solid $ink;
-  border-bottom: 1px solid $rule;
+.mastheadRule {
+  height: 3px;
+  background: $rule-heavy;
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.tickerItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.tickerValue {
-  font-family: var(--font-display);
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
-  font-weight: 700;
-  color: $ink;
-  line-height: 1;
-}
-
-.tickerLabel {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: $ink-light;
-}
-
-// ── FRONT PAGE — lede + sidebar ──────────────
-.frontPage {
+// ── HERO SPREAD ���─────────────────────────────
+.heroSpread {
   display: grid;
-  grid-template-columns: 1fr 240px;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  grid-template-columns: 1fr 220px;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding: clamp(2rem, 4vw, 3rem) 0;
   border-bottom: 1px solid $rule;
 
   @include tablet {
@@ -145,103 +93,89 @@ $shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
   }
 }
 
-.ledeCol {
+.heroMain {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
 
-.ledeKicker {
+.kicker {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--persona-color);
-  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: $accent;
+  font-weight: 600;
 }
 
-.ledeHeadline {
+.heroHeadline {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.02em;
   color: $ink;
   margin: 0;
 }
 
-.ledeBody {
+.heroDek {
   font-family: var(--font-body);
-  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-size: clamp(0.9rem, 1.3vw, 1rem);
   line-height: 1.75;
-  color: $ink-light;
+  color: $ink-mid;
   margin: 0;
-
-  // Drop cap — newspaper style
-  &::first-letter {
-    float: left;
-    font-family: var(--font-display);
-    font-size: 3.2em;
-    font-weight: 700;
-    line-height: 0.85;
-    margin-right: 8px;
-    margin-top: 4px;
-    color: $ink;
-  }
 }
 
-// Download links — understated, editorial
 .downloadRow {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-top: 4px;
 }
 
 .downloadLink {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: var(--persona-color);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $accent;
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color 200ms ease;
+  transition: border-color 200ms;
 
   &:hover {
-    border-bottom-color: var(--persona-color);
+    border-bottom-color: $accent;
   }
 }
 
-.downloadSep {
+.sep {
   color: $ink-faint;
   font-size: 0.7rem;
 }
 
-// Sidebar — dossier card
-.sidebar {
+// ── DOSSIER SIDEBAR ──────────────────────────
+.dossier {
+  border-left: 3px solid $rule-heavy;
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+
   @include tablet {
-    order: -1;
+    border-left: none;
+    border-top: 1px solid $rule;
+    padding-left: 0;
+    padding-top: var(--space-lg);
   }
 }
 
-.sidebarCard {
-  background: $paper-warm;
-  border: 1px solid $rule;
-  border-top: 3px solid $ink;
-  padding: var(--space-lg);
-}
-
-.sidebarTitle {
+.dossierTitle {
   font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin: 0 0 var(--space-md);
   color: $ink;
 }
 
-.dossier {
+.dossierList {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -251,330 +185,56 @@ $shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
 .dossierRow {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
+  align-items: baseline;
+  padding: 7px 0;
   border-bottom: 1px solid $rule;
-  font-size: 0.78rem;
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   dt {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: $ink-light;
   }
 
   dd {
     font-family: var(--font-body);
+    font-size: 0.78rem;
     color: $ink;
     font-weight: 500;
     margin: 0;
+    text-align: right;
   }
 }
 
 // ── SECTION HEADERS ──────────────────────────
 .section {
-  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
-  position: relative;
+  padding: clamp(2rem, 4vw, 3rem) 0;
 }
 
-.sectionHeader {
-  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+.sectionHead {
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
 }
 
-.sectionEyebrow {
+.sectionLabel {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--persona-color);
-  margin-bottom: 6px;
-}
-
-.sectionTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: $ink;
-  margin: 0;
+  text-transform: uppercase;
 }
 
-.headerRule {
+.sectionRule {
   height: 1px;
   background: $rule;
   margin-top: 10px;
 }
 
-// ── EXPERIENCE GRID ──────────────────────────
-.experienceGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
-
-  @include tablet {
-    grid-template-columns: 1fr;
-  }
-}
-
-.expArticle {
-  background: $card-bg;
-  border: 1px solid $rule;
-  padding: var(--space-lg);
-  cursor: pointer;
-  transition: box-shadow 200ms ease, border-color 200ms ease;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  &:hover {
-    box-shadow: $shadow-md;
-    border-color: $rule-heavy;
-  }
-}
-
-.expArticleActive {
-  border-color: var(--persona-color);
-  box-shadow: $shadow-md;
-}
-
-.expArticleFeatured {
-  border-top: 3px solid var(--persona-color);
-}
-
-.expMeta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.expPeriod {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: $ink-light;
-  letter-spacing: 0.04em;
-}
-
-.expBadge {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--persona-color);
-  background: color-mix(in srgb, var(--persona-color) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--persona-color) 25%, transparent);
-  padding: 2px 6px;
-  border-radius: 2px;
-}
-
-.expCompany {
-  font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2vw, 1.3rem);
-  font-weight: 700;
-  color: $ink;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.expRole {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--persona-color);
-  font-weight: 500;
-}
-
-.expDesc {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  line-height: 1.65;
-  color: $ink-light;
-  margin: 0;
-}
-
-.expExpanded {
-  margin-top: 8px;
-  padding-top: 12px;
-  border-top: 1px solid $rule;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.expHighlights {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  li {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: $ink-light;
-    padding-left: 16px;
-    position: relative;
-
-    &::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: var(--persona-color);
-      opacity: 0.6;
-    }
-  }
-}
-
-.expTech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.readMore {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  color: var(--persona-color);
-  padding: 0;
-  margin-top: 4px;
-  text-align: left;
-  transition: opacity 200ms ease;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-// ── TECH TAGS (shared) ───────────────────────
-.techTag {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  padding: 2px 7px;
-  border: 1px solid $rule;
-  background: $paper-warm;
-  color: $ink-light;
-  letter-spacing: 0.02em;
-}
-
-.techMore {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: $ink-faint;
-  display: flex;
-  align-items: center;
-}
-
-// ── PROJECTS GRID ────────────────────────────
-.projectsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
-
-  @include tablet {
-    grid-template-columns: 1fr;
-  }
-}
-
-.projectArticle {
-  background: $card-bg;
-  border: 1px solid $rule;
-  padding: var(--space-lg);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: box-shadow 200ms ease;
-
-  &:hover {
-    box-shadow: $shadow-md;
-  }
-}
-
-.projectFeatured {
-  grid-column: 1 / -1;
-  border-top: 3px solid var(--persona-color);
-
-  @include tablet {
-    grid-column: 1;
-  }
-}
-
-.projectBadge {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--persona-color);
-  font-weight: 600;
-}
-
-.projectRole {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: $ink-light;
-}
-
-.projectTitle {
-  font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
-  font-weight: 700;
-  color: $ink;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.projectSub {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-style: italic;
-  color: $ink-light;
-  margin: 0;
-}
-
-.projectDesc {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  line-height: 1.65;
-  color: $ink-light;
-  margin: 0;
-  flex: 1;
-}
-
-.projectFooter {
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid $rule;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.projectImpact {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--persona-color);
-}
-
-.projectTech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-// ── SKILLS ───────────────────────────────────
+// ── SKILLS ��──────────────────────────────────
 .skillFilters {
   display: flex;
   flex-wrap: wrap;
@@ -584,26 +244,30 @@ $shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
 
 .filterBtn {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 6px 12px;
+  letter-spacing: 0.08em;
+  padding: 7px 14px;
   border: 1px solid $rule;
-  background: $card-bg;
+  background: transparent;
   color: $ink-light;
   cursor: pointer;
-  transition: all 140ms ease;
+  transition: all 160ms ease;
 
   &:hover {
-    color: var(--persona-color);
-    border-color: var(--persona-color);
+    color: $ink;
+    border-color: $ink;
   }
 }
 
-.filterBtnActive {
-  color: var(--persona-color);
-  border-color: var(--persona-color);
-  background: color-mix(in srgb, var(--persona-color) 6%, $card-bg);
+.filterActive {
+  color: $paper;
+  background: $ink;
+  border-color: $ink;
+
+  &:hover {
+    color: $paper;
+  }
 }
 
 .skillGrid {
@@ -614,69 +278,258 @@ $shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
 
 .skillChip {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 6px 12px;
+  font-size: 0.72rem;
+  padding: 7px 14px;
   border: 1px solid $rule;
   background: $card-bg;
-  color: $ink;
+  color: $ink-mid;
   transition: all 160ms ease;
+  letter-spacing: 0.01em;
 
   &:hover {
-    border-color: var(--persona-color);
-    color: var(--persona-color);
+    border-color: $ink;
+    color: $ink;
+    background: $cream;
   }
+}
+
+// ── WORK STREAM ─��────────────────────────────
+.workStream {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.workCard {
+  border-bottom: 1px solid $rule;
+
+  &:first-child {
+    border-top: 1px solid $rule;
+  }
+}
+
+.workCardFeatured {
+  .workCompany {
+    color: $accent;
+  }
+}
+
+.workCardOpen {
+  background: $card-bg;
+  margin: 0 -clamp(1.25rem, 5vw, 3rem);
+  padding: 0 clamp(1.25rem, 5vw, 3rem);
+  box-shadow: $shadow;
+}
+
+.workHeader {
+  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: opacity 160ms ease;
+
+  &:hover {
+    .workToggle {
+      color: $ink;
+    }
+  }
+}
+
+.workMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.workPeriod {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: $ink-light;
+}
+
+.workLocation {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: $ink-faint;
+
+  &::before {
+    content: '·';
+    margin-right: 10px;
+  }
+}
+
+.workBadge {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $accent;
+  font-weight: 600;
+  background: color-mix(in srgb, $accent 8%, transparent);
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, $accent 20%, transparent);
+}
+
+.workCompany {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  color: $ink;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.workRole {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $ink-light;
+}
+
+.workHeadline {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: $ink-mid;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.workToggle {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $accent;
+  margin-top: 4px;
+  transition: color 160ms ease;
+}
+
+// ── WORK BODY — expanded ─────────────────────
+.workBody {
+  padding: 0 0 clamp(1.25rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.workStory {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1rem);
+  line-height: 1.8;
+  color: $ink-mid;
+  margin: 0;
+  max-width: 62ch;
+
+  // Drop cap
+  &::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 3.4em;
+    font-weight: 800;
+    line-height: 0.82;
+    margin-right: 10px;
+    margin-top: 5px;
+    color: $ink;
+  }
+}
+
+// ── PROJECT BLOCKS ───────────────────────────
+.projectBlock {
+  padding: var(--space-lg);
+  background: $cream;
+  border-left: 3px solid $accent;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.projectName {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $ink;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.projectDesc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: $ink-mid;
+  margin: 0;
+}
+
+.projectTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.techTag {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  padding: 2px 8px;
+  border: 1px solid $rule;
+  background: $card-bg;
+  color: $ink-light;
+  letter-spacing: 0.02em;
 }
 
 // ── FOOTER ───────────────────────────────────
 .footer {
   text-align: center;
-  padding: clamp(2rem, 4vw, 3rem) 0 clamp(1.5rem, 3vw, 2rem);
+  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(1.5rem, 3vw, 2rem);
 }
 
 .footerRule {
-  height: 2px;
-  background: $ink;
-  opacity: 0.15;
-  margin-bottom: var(--space-xl);
+  height: 3px;
+  background: $rule-heavy;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.footerText {
+.footerQuote {
   font-family: var(--font-body);
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
   font-style: italic;
-  color: $ink-light;
-  margin: 0 0 var(--space-lg);
-  max-width: 36ch;
-  margin-left: auto;
-  margin-right: auto;
+  color: $ink-mid;
+  margin: 0 auto clamp(1.5rem, 3vw, 2rem);
+  max-width: 32ch;
   line-height: 1.5;
 }
 
 .footerCta {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--persona-color);
+  color: $paper;
+  background: $ink;
   text-decoration: none;
-  border: 1px solid var(--persona-color);
-  padding: 10px 24px;
-  transition: all 180ms ease;
+  padding: 12px 28px;
+  transition: all 200ms ease;
 
   &:hover {
-    background: var(--persona-color);
-    color: #fff;
+    background: $accent;
   }
 }
 
-.footerColophon {
-  margin-top: var(--space-xl);
+.footerMeta {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 16px;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   color: $ink-faint;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
