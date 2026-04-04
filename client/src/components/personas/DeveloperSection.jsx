@@ -95,9 +95,10 @@ export default function DeveloperSection() {
     <div className={styles.page} role="main">
 
       {/* ── INTRO LINE ── */}
-      <p className={styles.intro}>
-        7 years across 4 countries. Finance, e-commerce, social and AI.
-      </p>
+      <div className={styles.intro}>
+        <p>7+ years of full stack development across India, Indonesia and UAE.</p>
+        <p>Worked in finance, e-commerce, social platforms and AI.</p>
+      </div>
 
       {/* ── DOWNLOADS ── */}
       <div className={styles.downloads}>
