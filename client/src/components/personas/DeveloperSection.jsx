@@ -4,7 +4,7 @@ import styles from './DeveloperSection.module.scss';
 
 const persona = PERSONAS.developer;
 
-// ─── Skill Filter Cloud ────────────────────────────────────────────────────────
+// ─── Skill categories ─────────────────────────────────────────────────────────
 const SKILL_CATEGORIES = [
   { key: 'all', label: 'All' },
   { key: 'languages', label: 'Languages' },
@@ -14,478 +14,274 @@ const SKILL_CATEGORIES = [
   { key: 'devops', label: 'DevOps' },
 ];
 
-const SKILL_LEVELS = {
-  JavaScript: 95, TypeScript: 88, Python: 70, Rust: 60, Solidity: 58, 'C++': 55,
-  React: 92, 'Next.js': 82, Redux: 85, 'Apollo Client': 88,
-  HTML5: 95, CSS3: 90, Sass: 88,
-  'Node.js': 93, Express: 90, 'Apollo Server': 87, GraphQL: 90,
-  REST: 92, Kafka: 75, LangChain: 65, Ethereum: 62, ElasticSearch: 75, RabbitMQ: 72,
-  MongoDB: 85, PostgreSQL: 80, MySQL: 75,
-  'AWS EC2': 78, 'AWS ECS': 75, 'AWS SNS': 80, 'AWS SQS': 78,
-  'AWS Lambda': 72, OpenSearch: 68, Docker: 82, Heroku: 70,
-};
-
-function SkillCloud({ activeCategory, setActiveCategory }) {
-  const [hoveredSkill, setHoveredSkill] = useState(null);
-
-  const getFilteredSkills = useCallback(() => {
-    if (activeCategory === 'all') {
-      return Object.entries(SKILLS).flatMap(([cat, skills]) =>
-        skills.map((s) => ({ skill: s, category: cat }))
-      );
-    }
-    return (SKILLS[activeCategory] || []).map((s) => ({
-      skill: s,
-      category: activeCategory,
-    }));
-  }, [activeCategory]);
-
-  const filteredSkills = getFilteredSkills();
-
-  return (
-    <div className={styles.skillCloud}>
-      {/* Filter tabs */}
-      <div className={styles.skillFilters}>
-        {SKILL_CATEGORIES.map((cat) => (
-          <button
-            key={cat.key}
-            className={`${styles.filterBtn} ${activeCategory === cat.key ? styles.filterBtnActive : ''}`}
-            onClick={() => setActiveCategory(cat.key)}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tag cloud */}
-      <div className={styles.tagCloud}>
-        {filteredSkills.map(({ skill, category }) => {
-          const level = SKILL_LEVELS[skill] || 70;
-          const isHovered = hoveredSkill === skill;
-          const sizeClass =
-            level >= 90
-              ? styles.tagLg
-              : level >= 80
-              ? styles.tagMd
-              : styles.tagSm;
-
-          return (
-            <div
-              key={skill}
-              className={`${styles.skillTag} ${sizeClass}`}
-              data-category={category}
-              onMouseEnter={() => setHoveredSkill(skill)}
-              onMouseLeave={() => setHoveredSkill(null)}
-            >
-              <span className={styles.tagName}>{skill}</span>
-              {isHovered && (
-                <div className={styles.tagTooltip}>
-                  <div className={styles.tooltipBar}>
-                    <div className={styles.tooltipFill} style={{ width: `${level}%` }} />
-                  </div>
-                  <span className={styles.tooltipPct}>{level}%</span>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ─── Timeline Entry ────────────────────────────────────────────────────────────
-const CODE_SNIPPETS = {
-  emiratesnbd: `// Real-time payment tracking — Kafka + Lambda
-consumer.subscribe({ topic: 'payment.events' });
-consumer.run({
-  eachMessage: async ({ message }) => {
-    const event = JSON.parse(message.value);
-    await tracker.propagate(event);
-    // < 1ms end-to-end latency
-  },
-});`,
-  noumena: `// Apollo Federation — microservices gateway
-const gateway = new ApolloGateway({
-  supergraphSdl: new IntrospectAndCompose({
-    subgraphs: services.map(s => ({
-      name: s.name, url: s.endpoint,
-    })),
-  }),
-});`,
-  tokopedia: `// Server-side rendering — featured at Google I/O
-export async function getServerSideProps() {
-  const data = await fetchDiscovery();
-  return { props: { data } };
-  // TTFB: 87ms
-}`,
-  ttn: `// RabbitMQ async processing pipeline
-const channel = await conn.createChannel();
-await channel.assertQueue('tasks', {
-  durable: true,
-});
-// 2,000+ concurrent connections handled`,
-  freelance: `// MERN stack — solo deployment
-const app = express();
-app.use('/api', router);
-await mongoose.connect(MONGO_URI);
-app.listen(PORT);`,
-};
-
-function TimelineEntry({ entry, isActive, onClick }) {
-  const yearStart = entry.period.split('—')[0].trim().split(' ').pop();
-
-  return (
-    <article
-      className={`${styles.timelineEntry} ${isActive ? styles.timelineEntryActive : ''}`}
-      onClick={onClick}
-      role="listitem"
-      aria-expanded={isActive}
-      aria-label={`${entry.role} at ${entry.company}, ${entry.period}`}
-    >
-      {/* Year stamp */}
-      <div className={styles.entryYear}>
-        <span className={styles.yearText}>{yearStart}</span>
-        {entry.featured && (
-          <span className={styles.featuredBadge}>Featured</span>
-        )}
-      </div>
-
-      {/* Connector */}
-      <div className={styles.entryConnector} aria-hidden="true">
-        <div className={styles.connectorDot} />
-        <div className={styles.connectorLine} />
-      </div>
-
-      {/* Card */}
-      <div className={styles.entryCard}>
-        <div className={styles.entryHeader}>
-          <div className={styles.entryMeta}>
-            <span className={styles.entryRole}>{entry.role}</span>
-            <span className={styles.entryPeriod}>{entry.period}</span>
-          </div>
-          <h4 className={styles.entryCompany}>{entry.company}</h4>
-          <p className={styles.entryDesc}>{entry.description}</p>
-        </div>
-
-        {isActive && (
-          <div className={styles.entryExpanded}>
-            {/* Code block */}
-            <div className={styles.codeBlock}>
-              <div className={styles.codeBlockHeader}>
-                <span className={styles.codeFileName}>{entry.id}.ts</span>
-              </div>
-              <pre className={styles.codeContent}>
-                <code>{CODE_SNIPPETS[entry.id] || '// ...'}</code>
-              </pre>
-            </div>
-
-            {/* Highlights */}
-            <ul className={styles.highlights}>
-              {entry.highlights.map((h, i) => (
-                <li key={i} className={styles.highlight}>
-                  <span className={styles.highlightArrow}>—</span>
-                  {h}
-                </li>
-              ))}
-            </ul>
-
-            {/* Tech stack */}
-            <div className={styles.entryTech}>
-              {entry.tech.map((t) => (
-                <span key={t} className={styles.techChip}>{t}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <button
-          className={styles.expandToggle}
-          aria-label={isActive ? 'Collapse details' : 'Expand details'}
-        >
-          <span aria-hidden="true">{isActive ? '×' : '+'}</span>
-        </button>
-      </div>
-    </article>
-  );
-}
-
-// ─── Project Card ──────────────────────────────────────────────────────────────
-const PROJECT_SNIPPETS = {
-  1: `// Apollo Federation Gateway
-const { url } = await startStandaloneServer(
-  buildSubgraphSchema([resolvers]),
-  { listen: { port: 4001 } }
-);`,
-  2: `// Discovery API — Google I/O Featured
-export const handler = async (req, res) => {
-  const items = await discovery.fetch({
-    page: req.query.page, limit: 20,
-  });
-  // TTFB: 87ms
-};`,
-  3: `// ElasticSearch real-time query
-const results = await client.search({
-  index: 'recipes',
-  query: { match: { title: q } },
-  // 20ms average response
-});`,
-  4: `// Redux multilevel form state
-const insuranceSlice = createSlice({
-  name: 'form',
-  initialState: { step: 0 },
-  reducers: { nextStep, prevStep },
-});`,
-  5: `// MERN solo deployment
-const app = express();
-app.use('/api', apiRouter);
-await mongoose.connect(MONGO_URI);
-app.listen(PORT);`,
-};
-
-function ProjectCard({ project }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <article
-      className={`${styles.projectCard} ${project.featured ? styles.projectCardFeatured : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      role="listitem"
-      aria-label={`${project.title}: ${project.subtitle}`}
-    >
-      {/* Thin top accent line */}
-      <div className={styles.cardAccentBar} aria-hidden="true" />
-
-      {/* Featured badge */}
-      {project.featured && (
-        <div className={styles.featuredLabel} role="status" aria-label="Featured project">FEATURED</div>
-      )}
-
-      <div className={styles.cardBody}>
-        {/* Left: content */}
-        <div className={styles.cardContent}>
-          <span className={styles.cardRole}>{project.role}</span>
-          <h4 className={styles.cardTitle}>{project.title}</h4>
-          <p className={styles.cardSubtitle}>{project.subtitle}</p>
-          <p className={styles.cardDescription}>{project.description}</p>
-
-          <div className={styles.cardFooter}>
-            <div className={styles.impactRow}>
-              <span className={styles.impactPill}>{project.impact}</span>
-            </div>
-            <div className={styles.cardTech}>
-              {project.tech.slice(0, 5).map((t) => (
-                <span key={t} className={styles.cardTechChip}>{t}</span>
-              ))}
-              {project.tech.length > 5 && (
-                <span className={styles.cardTechMore}>+{project.tech.length - 5}</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right: code snippet panel */}
-        <div className={styles.cardSnippet}>
-          <div className={styles.snippetHeader}>
-            <span className={styles.snippetFileName}>snippet.ts</span>
-          </div>
-          {isHovered ? (
-            <pre className={styles.snippetCode}>
-              <code>{PROJECT_SNIPPETS[project.id] || '// coming soon'}</code>
-            </pre>
-          ) : (
-            <div className={styles.snippetIdle}>
-              <span className={styles.snippetIdleText}>hover to inspect</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-// ─── Stats Bar ─────────────────────────────────────────────────────────────────
+// ─── Stats ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { label: 'Years experience', value: '7+' },
-  { label: 'Google I/O features', value: '2×' },
-  { label: 'Users served', value: '10K+' },
-  { label: 'Full-stack layers', value: '∞' },
+  { label: 'Years', value: '7+' },
+  { label: 'Google I/O', value: '2×' },
+  { label: 'Users', value: '10K+' },
+  { label: 'Stack depth', value: '∞' },
 ];
 
-function StatsBar() {
-  return (
-    <div className={styles.statsBar}>
-      {STATS.map((stat) => (
-        <div key={stat.label} className={styles.statItem}>
-          <span className={styles.statValue}>{stat.value}</span>
-          <span className={styles.statLabel}>{stat.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
+// ─── Edition helpers ──────────────────────────────────────────────────────────
+const EDITION_DATE = new Date().toLocaleDateString('en-GB', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
 
-// ─── Dot Grid Background ───────────────────────────────────────────────────────
-function DotGrid() {
-  return (
-    <svg
-      className={styles.dotGrid}
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <pattern
-          id="dot-pattern"
-          x="0"
-          y="0"
-          width="24"
-          height="24"
-          patternUnits="userSpaceOnUse"
-        >
-          <circle cx="1" cy="1" r="1" fill="currentColor" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#dot-pattern)" />
-    </svg>
-  );
-}
+const ISSUE_NUM = `Vol. VII · No. ${new Date().getDate()}`;
 
-// ─── Section Label ─────────────────────────────────────────────────────────────
-function SectionLabel({ children }) {
-  return <span className={styles.sectionEyebrow}>{children}</span>;
-}
-
-// ─── Main Section ──────────────────────────────────────────────────────────────
+// ─── Main Section ─────────────────────────────────────────────────────────────
 export default function DeveloperSection() {
   const [activeEntry, setActiveEntry] = useState(null);
   const [skillCategory, setSkillCategory] = useState('all');
 
-  const handleEntryClick = (id) => {
-    setActiveEntry((prev) => (prev === id ? null : id));
-  };
+  const getFilteredSkills = useCallback(() => {
+    if (skillCategory === 'all') {
+      return Object.entries(SKILLS).flatMap(([cat, skills]) =>
+        skills.map((s) => ({ skill: s, category: cat }))
+      );
+    }
+    return (SKILLS[skillCategory] || []).map((s) => ({
+      skill: s,
+      category: skillCategory,
+    }));
+  }, [skillCategory]);
+
+  const filteredSkills = getFilteredSkills();
 
   return (
-    <div className={styles.developer} role="main">
+    <div className={styles.newspaper} role="main">
 
-      {/* ── DOT GRID BACKGROUND ── */}
-      <div className={styles.dotGridWrap} aria-hidden="true">
-        <DotGrid />
+      {/* ── MASTHEAD — newspaper header ── */}
+      <header className={styles.masthead}>
+        <div className={styles.mastheadTop}>
+          <span className={styles.edition}>{ISSUE_NUM}</span>
+          <span className={styles.editionDate}>{EDITION_DATE}</span>
+          <span className={styles.edition}>Dubai, UAE</span>
+        </div>
+        <div className={styles.mastheadRule} aria-hidden="true" />
+        <h1 className={styles.mastheadTitle}>The Architect</h1>
+        <div className={styles.mastheadRule} aria-hidden="true" />
+        <p className={styles.mastheadSub}>
+          {persona.tagline}
+        </p>
+      </header>
+
+      {/* ── STATS TICKER ── */}
+      <div className={styles.statsTicker}>
+        {STATS.map((s) => (
+          <div key={s.label} className={styles.tickerItem}>
+            <span className={styles.tickerValue}>{s.value}</span>
+            <span className={styles.tickerLabel}>{s.label}</span>
+          </div>
+        ))}
       </div>
 
-      {/* ── HERO ── */}
-      <section className={styles.hero} aria-labelledby="developer-heading">
-        <div className={styles.heroInner}>
-          {/* Location / role badge */}
-          <div className={styles.locationBadge} aria-label="Location and role">
-            <span className={styles.locationDot} aria-hidden="true" />
-            <span>Dubai, UAE</span>
-            <span className={styles.locationSep} aria-hidden="true">·</span>
-            <span>Full Stack Developer</span>
-          </div>
-
-          {/* Big title */}
-          <h2 id="developer-heading" className={styles.heroTitle}>
-            <span className={styles.heroTitleLine1}>The</span>
-            <span className={styles.heroTitleLine2}>Architect</span>
+      {/* ── HEADLINE + LEDE — the "front page" ── */}
+      <section className={styles.frontPage}>
+        <div className={styles.ledeCol}>
+          <div className={styles.ledeKicker}>Senior Full Stack Engineer · Emirates NBD</div>
+          <h2 className={styles.ledeHeadline}>
+            From Kafka Streams to Google I/O:
+            Seven Years Building Systems That Scale
           </h2>
-
-          {/* Tagline */}
-          <p className={styles.heroTagline}>
-            {persona.tagline}
+          <p className={styles.ledeBody}>
+            A full stack developer who has built real-time payment systems for one of the UAE&apos;s largest banks,
+            architected microservice constellations for global platforms, and shipped APIs so fast that Google
+            showcased them on stage — twice. Based in Dubai, currently engineering at Emirates NBD,
+            where every dirham moves with sub-millisecond precision.
           </p>
 
-          {/* Stats */}
-          <StatsBar />
-
-          {/* Download buttons */}
+          {/* Download links */}
           <div className={styles.downloadRow}>
             <a
               href="/mahesh-inder-resume.pdf"
               download="Mahesh_Inder_Resume.pdf"
-              className={styles.downloadBtn}
+              className={styles.downloadLink}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Resume
+              Download Resume (PDF)
             </a>
+            <span className={styles.downloadSep}>|</span>
             <a
               href="/mahesh-inder-cover-letter.pdf"
               download="Mahesh_Inder_Cover_Letter.pdf"
-              className={`${styles.downloadBtn} ${styles.downloadBtnOutline}`}
+              className={styles.downloadLink}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
               Cover Letter
             </a>
           </div>
         </div>
+
+        {/* Sidebar — location & quick facts */}
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarCard}>
+            <h3 className={styles.sidebarTitle}>Quick Dossier</h3>
+            <dl className={styles.dossier}>
+              <div className={styles.dossierRow}>
+                <dt>Location</dt>
+                <dd>Dubai, UAE</dd>
+              </div>
+              <div className={styles.dossierRow}>
+                <dt>Current</dt>
+                <dd>Emirates NBD</dd>
+              </div>
+              <div className={styles.dossierRow}>
+                <dt>Stack</dt>
+                <dd>React · Node · Rust</dd>
+              </div>
+              <div className={styles.dossierRow}>
+                <dt>Featured</dt>
+                <dd>2× Google I/O</dd>
+              </div>
+              <div className={styles.dossierRow}>
+                <dt>Hobby</dt>
+                <dd>Marathon Runner</dd>
+              </div>
+              <div className={styles.dossierRow}>
+                <dt>Email</dt>
+                <dd>hi@indered.in</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
       </section>
 
-      {/* ── SKILLS ── */}
-      <section className={styles.skillsSection} aria-labelledby="skills-heading">
+      {/* ── EXPERIENCE — "career dispatch" articles ── */}
+      <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <SectionLabel>Tech Stack</SectionLabel>
-          <h3 id="skills-heading" className={styles.sectionTitle}>Skills &amp; Tools</h3>
+          <span className={styles.sectionEyebrow}>Career Dispatch</span>
+          <h3 className={styles.sectionTitle}>Experience</h3>
+          <div className={styles.headerRule} aria-hidden="true" />
         </div>
 
-        <SkillCloud
-          activeCategory={skillCategory}
-          setActiveCategory={setSkillCategory}
-        />
+        <div className={styles.experienceGrid}>
+          {EXPERIENCE.map((entry) => {
+            const isActive = activeEntry === entry.id;
+            return (
+              <article
+                key={entry.id}
+                className={`${styles.expArticle} ${isActive ? styles.expArticleActive : ''} ${entry.featured ? styles.expArticleFeatured : ''}`}
+                onClick={() => setActiveEntry(isActive ? null : entry.id)}
+                role="listitem"
+                aria-expanded={isActive}
+              >
+                <div className={styles.expMeta}>
+                  <span className={styles.expPeriod}>{entry.period}</span>
+                  {entry.featured && <span className={styles.expBadge}>Featured</span>}
+                </div>
+                <h4 className={styles.expCompany}>{entry.company}</h4>
+                <span className={styles.expRole}>{entry.role}</span>
+                <p className={styles.expDesc}>{entry.description}</p>
+
+                {isActive && (
+                  <div className={styles.expExpanded}>
+                    <ul className={styles.expHighlights}>
+                      {entry.highlights.map((h, i) => (
+                        <li key={i}>{h}</li>
+                      ))}
+                    </ul>
+                    <div className={styles.expTech}>
+                      {entry.tech.map((t) => (
+                        <span key={t} className={styles.techTag}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  className={styles.readMore}
+                  aria-label={isActive ? 'Show less' : 'Read full story'}
+                >
+                  {isActive ? 'Show less' : 'Read full story'} {isActive ? '−' : '+'}
+                </button>
+              </article>
+            );
+          })}
+        </div>
       </section>
 
-      {/* ── EXPERIENCE ── */}
-      <section className={styles.experienceSection} aria-labelledby="experience-heading">
+      {/* ── PROJECTS — "selected works" ── */}
+      <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <SectionLabel>Career History</SectionLabel>
-          <h3 id="experience-heading" className={styles.sectionTitle}>Experience</h3>
+          <span className={styles.sectionEyebrow}>Selected Works</span>
+          <h3 className={styles.sectionTitle}>Projects</h3>
+          <div className={styles.headerRule} aria-hidden="true" />
         </div>
 
-        <div className={styles.timeline} role="list" aria-label="Work experience timeline">
-          {EXPERIENCE.map((entry) => (
-            <TimelineEntry
-              key={entry.id}
-              entry={entry}
-              isActive={activeEntry === entry.id}
-              onClick={() => handleEntryClick(entry.id)}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* ── PROJECTS ── */}
-      <section className={styles.projectsSection} aria-labelledby="projects-heading">
-        <div className={styles.sectionHeader}>
-          <SectionLabel>Selected Work</SectionLabel>
-          <h3 id="projects-heading" className={styles.sectionTitle}>Projects</h3>
-        </div>
-
-        <div className={styles.projectsGrid} role="list" aria-label="Featured projects">
+        <div className={styles.projectsGrid}>
           {PROJECTS.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <article
+              key={project.id}
+              className={`${styles.projectArticle} ${project.featured ? styles.projectFeatured : ''}`}
+            >
+              {project.featured && (
+                <div className={styles.projectBadge}>Featured at Google I/O</div>
+              )}
+              <span className={styles.projectRole}>{project.role}</span>
+              <h4 className={styles.projectTitle}>{project.title}</h4>
+              <p className={styles.projectSub}>{project.subtitle}</p>
+              <p className={styles.projectDesc}>{project.description}</p>
+              <div className={styles.projectFooter}>
+                <span className={styles.projectImpact}>{project.impact}</span>
+                <div className={styles.projectTech}>
+                  {project.tech.slice(0, 4).map((t) => (
+                    <span key={t} className={styles.techTag}>{t}</span>
+                  ))}
+                  {project.tech.length > 4 && (
+                    <span className={styles.techMore}>+{project.tech.length - 4}</span>
+                  )}
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* ── FOOTER CTA ── */}
-      <footer className={styles.footerCta} aria-label="Contact call to action">
-        <p className={styles.footerCtaText}>
+      {/* ── SKILLS — "the toolkit" ── */}
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionEyebrow}>The Toolkit</span>
+          <h3 className={styles.sectionTitle}>Skills &amp; Technologies</h3>
+          <div className={styles.headerRule} aria-hidden="true" />
+        </div>
+
+        <div className={styles.skillFilters}>
+          {SKILL_CATEGORIES.map((cat) => (
+            <button
+              key={cat.key}
+              className={`${styles.filterBtn} ${skillCategory === cat.key ? styles.filterBtnActive : ''}`}
+              onClick={() => setSkillCategory(cat.key)}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.skillGrid}>
+          {filteredSkills.map(({ skill, category }) => (
+            <span key={skill} className={styles.skillChip} data-category={category}>
+              {skill}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FOOTER — contact CTA ── */}
+      <footer className={styles.footer}>
+        <div className={styles.footerRule} aria-hidden="true" />
+        <p className={styles.footerText}>
           Systems built to last. Let&apos;s build something together.
         </p>
-        <a
-          href="mailto:hi@indered.in"
-          className={styles.footerCtaLink}
-          aria-label="Send email to Mahesh Inder"
-        >
-          Get in touch
+        <a href="mailto:hi@indered.in" className={styles.footerCta}>
+          Get in touch &rarr;
         </a>
+        <div className={styles.footerColophon}>
+          <span>© {new Date().getFullYear()} Mahesh Inder</span>
+          <span>·</span>
+          <span>Dubai, UAE</span>
+        </div>
       </footer>
     </div>
   );

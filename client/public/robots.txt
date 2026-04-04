@@ -1,4 +1,4 @@
-# robots.txt for maheshinder.com
+# robots.txt for maheshinder.in
 # Mahesh Inder - Full Stack Developer Portfolio
 
 # Allow all crawlers
@@ -19,10 +19,10 @@ Disallow: /_*
 Disallow: /admin/
 
 # Sitemap location
-Sitemap: https://maheshinder.com/sitemap.xml
+Sitemap: https://maheshinder.in/sitemap.xml
 
 # Crawl-delay for polite crawling (optional, respected by some bots)
 # Crawl-delay: 10
 
 # Host directive (for some search engines)
-Host: https://maheshinder.com
+Host: https://maheshinder.in

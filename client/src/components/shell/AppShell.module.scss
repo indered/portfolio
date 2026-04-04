@@ -251,16 +251,6 @@
   color: rgba(220, 218, 255, 0.75);
 }
 
-.exploreScroll {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
 .exploreText {
   font-family: var(--font-mono);
   font-size: 11px;

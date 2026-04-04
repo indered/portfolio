@@ -10,7 +10,7 @@
 import { useEffect, useCallback } from 'react';
 
 // Base SEO configuration
-const BASE_URL = 'https://maheshinder.com';
+const BASE_URL = 'https://maheshinder.in';
 const SITE_NAME = 'Mahesh Inder Portfolio';
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.jpg`;
 

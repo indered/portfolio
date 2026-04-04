@@ -91,12 +91,17 @@ export default function PersonaApp({
 
       {/* ── Header */}
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={onBack}>
-          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 2L4 7l5 5" />
-          </svg>
-          {hubLabel}
-        </button>
+        <div className={styles.headerLeft}>
+          <button className={styles.logoLink} onClick={onBack} aria-label="Back to home">
+            <img src="/logo.svg" alt="Mahesh Inder" className={styles.headerLogo} />
+          </button>
+          <button className={styles.backButton} onClick={onBack}>
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 2L4 7l5 5" />
+            </svg>
+            {hubLabel}
+          </button>
+        </div>
         <span className={styles.personaTitle}>
           {persona.icon} {persona.title}
           <span className={styles.realName}>{config?.realName}</span>

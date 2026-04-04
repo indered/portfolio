@@ -92,32 +92,71 @@
   gap: 0;
 }
 
-// Clickable logo wrapper
-.logoBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  text-align: right;
+// Logo image wrapper
+.logoImgWrap {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0;
-  position: relative;
-  opacity: 0.85;
-  transition: opacity 160ms ease;
-
-  &:hover {
-    opacity: 1;
-  }
+  gap: 4px;
 }
 
-// Tiny chevron indicates the button opens a menu
-.logoChevron {
-  display: inline-block;
-  font-size: 8px;
-  color: rgba(255, 255, 255, 0.3);
-  line-height: 1;
+// ── Paperwork button — space-themed, visible ──────────────────────────────────
+.paperworkBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  transition: all 260ms ease;
+  position: relative;
+  overflow: hidden;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  // Subtle glow on hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 8px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(74, 158, 255, 0.15) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(74, 158, 255, 0.35);
+    background: rgba(74, 158, 255, 0.08);
+
+    &::before {
+      opacity: 1;
+    }
+
+    svg {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  }
 }
 
 // Dropdown — dark glass card
@@ -178,15 +217,6 @@
   width: auto;
 }
 
-// Meta row — subtitle + chevron
-.logoMeta {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-top: 4px;
-}
-
 // Sub-descriptor — extreme tracking, near-invisible
 .logoSub {
   font-family: var(--font-mono);
@@ -194,12 +224,24 @@
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.25);
   text-transform: uppercase;
+  text-align: right;
 }
 
-// ── Responsive — hide big masthead on small screens ───────────────────────────
+// ── Responsive ───────────────────────────────────────────────────────────────
 @include responsive('tablet') {
   .mastheadBig {
-    display: none;
+    // Scale down for mobile — keep the animation, just fit it
+    padding: 0 clamp(12px, 3vw, 24px);
+  }
+
+  .line1,
+  .line2 {
+    font-size: clamp(3rem, 15vw, 7rem);
+  }
+
+  .subtitle {
+    font-size: clamp(0.45rem, 1.8vw, 0.6rem);
+    letter-spacing: 0.25em;
   }
 
   .logoCompact {

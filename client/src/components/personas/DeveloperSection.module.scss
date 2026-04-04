@@ -1,1053 +1,682 @@
 @use '../../styles/mixins' as *;
 
 // ============================================
-// DeveloperSection — Editorial Light Theme
-// Clean, readable, premium engineering page
+// DeveloperSection — Newspaper / Magazine Layout
+// Editorial, readable, broadsheet inspired
 // Accent: var(--persona-color) — dev blue #2a7fe0
 // ============================================
 
-// ── Local palette — editorial light ─────────────────
-$bg:          #F9F8F6;
-$card:        #FFFFFF;
-$card-raised: #F3F1EC;
-$border:      rgba(0, 0, 0, 0.08);
-$border-mid:  rgba(0, 0, 0, 0.13);
-$text-primary:   #1A1714;
-$text-secondary: #6B6560;
-$code-bg:     #0D1117;
-$code-text:   #E8E4DE;
-$code-comment: #6B7280;
+// ── Local palette ─────────────────────────────
+$paper:        #FAF9F7;
+$paper-warm:   #F5F3EF;
+$ink:          #1A1714;
+$ink-light:    #6B6560;
+$ink-faint:    rgba(0, 0, 0, 0.35);
+$rule:         rgba(0, 0, 0, 0.12);
+$rule-heavy:   rgba(0, 0, 0, 0.25);
+$card-bg:      #FFFFFF;
+$shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.05);
+$shadow-md:    0 4px 14px rgba(0, 0, 0, 0.08);
 
-// Elevation shadows
-$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-$shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
-
-// ── ROOT WRAPPER ──────────────────────────────
-.developer {
-  position: relative;
+// ── NEWSPAPER ROOT ───────────────────────────
+.newspaper {
   display: flex;
   flex-direction: column;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
-  padding: 0 0 clamp(3rem, 6vw, 5rem);
-  background: $bg;
-  color: $text-primary;
+  background: $paper;
+  color: $ink;
   min-height: 100%;
-  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
 }
 
-// ── DOT GRID BACKGROUND ───────────────────────
-.dotGridWrap {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+// ── MASTHEAD ─────────────────────────────────
+.masthead {
+  text-align: center;
+  padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(1rem, 2vw, 1.5rem);
 }
 
-.dotGrid {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  color: $text-secondary;
-  opacity: 0.04;
-}
-
-// Ensure all content sits above dot grid
-.hero,
-.skillsSection,
-.experienceSection,
-.projectsSection,
-.footerCta {
-  position: relative;
-  z-index: 1;
-}
-
-// ── HERO ──────────────────────────────────────
-.hero {
-  position: relative;
-  padding: clamp(3.5rem, 7vw, 5.5rem) clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
-  min-height: clamp(480px, 62vh, 680px);
+.mastheadTop {
   display: flex;
-  align-items: flex-end;
-  will-change: opacity, transform;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: clamp(1.5rem, 4vw, 3.5rem);
-    right: clamp(1.5rem, 4vw, 3.5rem);
-    height: 1px;
-    background: $border;
-  }
-
-  @include tablet {
-    min-height: 400px;
-    align-items: flex-start;
-    padding-top: clamp(4.5rem, 10vw, 7rem);
-  }
-}
-
-.heroInner {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  max-width: 760px;
-}
-
-// Location badge — light card with shadow
-.locationBadge {
-  display: inline-flex;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--space-sm);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: $text-secondary;
-  border: 1px solid $border-mid;
-  border-radius: var(--border-radius-full);
-  padding: 5px 12px;
-  width: fit-content;
-  letter-spacing: 0.04em;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  background: $card;
-  box-shadow: $shadow-sm;
-}
-
-.locationDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--persona-color);
-  flex-shrink: 0;
-}
-
-.locationSep {
-  opacity: 0.3;
-}
-
-// Hero heading
-.heroTitle {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  line-height: 0.9;
-  margin: 0;
-}
-
-.heroTitleLine1 {
-  font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2.8vw, 2rem);
-  font-weight: 400;
-  color: rgba(26, 23, 20, 0.3);
-  letter-spacing: -0.02em;
-}
-
-.heroTitleLine2 {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 6vw, 5rem);
-  font-weight: 700;
-  color: $text-primary;
-  letter-spacing: -0.03em;
+  color: $ink-light;
+  padding-bottom: 10px;
 
   @include mobile {
-    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-size: 0.5rem;
+    gap: 8px;
   }
 }
 
-// Tagline
-.heroTagline {
-  font-family: var(--font-body);
-  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
-  line-height: 1.7;
-  max-width: 500px;
-  color: $text-secondary;
-  margin: 0;
-  border-left: 2px solid color-mix(in srgb, var(--persona-color) 35%, transparent);
-  padding-left: var(--space-md);
+.edition {
+  white-space: nowrap;
 }
 
-// ── DOWNLOAD BUTTONS ──────────────────────────
+.editionDate {
+  @include mobile {
+    display: none;
+  }
+}
+
+.mastheadRule {
+  height: 1px;
+  background: $ink;
+  opacity: 0.2;
+
+  &:first-of-type {
+    margin-bottom: 16px;
+  }
+
+  &:last-of-type {
+    margin-top: 16px;
+  }
+}
+
+.mastheadTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  margin: 0;
+  color: $ink;
+}
+
+.mastheadSub {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-style: italic;
+  color: $ink-light;
+  margin: 12px 0 0;
+  line-height: 1.5;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ── STATS TICKER ─────────────────────────────
+.statsTicker {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.5rem, 5vw, 3rem);
+  padding: clamp(1rem, 2vw, 1.5rem) 0;
+  border-top: 2px solid $ink;
+  border-bottom: 1px solid $rule;
+}
+
+.tickerItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.tickerValue {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 700;
+  color: $ink;
+  line-height: 1;
+}
+
+.tickerLabel {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $ink-light;
+}
+
+// ── FRONT PAGE — lede + sidebar ──────────────
+.frontPage {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  border-bottom: 1px solid $rule;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ledeCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ledeKicker {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--persona-color);
+  font-weight: 500;
+}
+
+.ledeHeadline {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: $ink;
+  margin: 0;
+}
+
+.ledeBody {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  line-height: 1.75;
+  color: $ink-light;
+  margin: 0;
+
+  // Drop cap — newspaper style
+  &::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 3.2em;
+    font-weight: 700;
+    line-height: 0.85;
+    margin-right: 8px;
+    margin-top: 4px;
+    color: $ink;
+  }
+}
+
+// Download links — understated, editorial
 .downloadRow {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 4px;
 }
 
-.downloadBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 9px 20px;
-  background: var(--persona-color);
-  color: #fff;
+.downloadLink {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.7rem;
   letter-spacing: 0.04em;
-  border-radius: var(--border-radius-md);
-  text-decoration: none;
-  box-shadow: $shadow-md, 0 0 0 1px color-mix(in srgb, var(--persona-color) 40%, transparent);
-  transition:
-    background 150ms ease,
-    box-shadow 150ms ease,
-    transform 120ms ease;
-
-  svg {
-    flex-shrink: 0;
-    transition: transform 200ms ease;
-  }
-
-  &:hover {
-    background: color-mix(in srgb, var(--persona-color) 88%, #000);
-    box-shadow: $shadow-lg, 0 0 0 1px color-mix(in srgb, var(--persona-color) 40%, transparent);
-    transform: translateY(-1px);
-
-    svg {
-      transform: translateY(2px);
-    }
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.downloadBtnOutline {
-  background: transparent;
   color: var(--persona-color);
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--persona-color) 55%, transparent), $shadow-sm;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--persona-color) 6%, transparent);
-    box-shadow: inset 0 0 0 1.5px var(--persona-color), $shadow-sm;
+    border-bottom-color: var(--persona-color);
   }
 }
 
-// ── STATS BAR ─────────────────────────────────
-.statsBar {
-  display: flex;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding-top: var(--space-sm);
-  flex-wrap: wrap;
+.downloadSep {
+  color: $ink-faint;
+  font-size: 0.7rem;
 }
 
-.statItem {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+// Sidebar — dossier card
+.sidebar {
+  @include tablet {
+    order: -1;
+  }
 }
 
-.statValue {
-  font-family: var(--font-mono);
-  font-size: clamp(1.1rem, 2vw, 1.7rem);
-  font-weight: 700;
-  color: $text-primary;
-  line-height: 1;
+.sidebarCard {
+  background: $paper-warm;
+  border: 1px solid $rule;
+  border-top: 3px solid $ink;
+  padding: var(--space-lg);
 }
 
-.statLabel {
-  font-family: var(--font-body);
-  font-size: 0.68rem;
+.sidebarTitle {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: $text-secondary;
-  opacity: 0.7;
+  margin: 0 0 var(--space-md);
+  color: $ink;
 }
 
-// ── SECTION HEADERS ───────────────────────────
-.sectionHeader {
+.dossier {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xl);
+  gap: 0;
+  margin: 0;
 }
 
-// Uppercase tracked eyebrow — persona accent color
+.dossierRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid $rule;
+  font-size: 0.78rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  dt {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $ink-light;
+  }
+
+  dd {
+    font-family: var(--font-body);
+    color: $ink;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+// ── SECTION HEADERS ──────────────────────────
+.section {
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  position: relative;
+}
+
+.sectionHeader {
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
 .sectionEyebrow {
+  display: block;
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--persona-color);
-  opacity: 0.8;
-  line-height: 1;
+  margin-bottom: 6px;
 }
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  font-weight: 600;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 700;
   letter-spacing: -0.01em;
-  color: $text-primary;
-  line-height: 1.05;
+  color: $ink;
   margin: 0;
 }
 
-// ── SKILLS SECTION ────────────────────────────
-.skillsSection {
-  padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+.headerRule {
+  height: 1px;
+  background: $rule;
+  margin-top: 10px;
 }
 
-.skillCloud {
+// ── EXPERIENCE GRID ──────────────────────────
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.expArticle {
+  background: $card-bg;
+  border: 1px solid $rule;
+  padding: var(--space-lg);
+  cursor: pointer;
+  transition: box-shadow 200ms ease, border-color 200ms ease;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: 8px;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $rule-heavy;
+  }
 }
 
+.expArticleActive {
+  border-color: var(--persona-color);
+  box-shadow: $shadow-md;
+}
+
+.expArticleFeatured {
+  border-top: 3px solid var(--persona-color);
+}
+
+.expMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expPeriod {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: $ink-light;
+  letter-spacing: 0.04em;
+}
+
+.expBadge {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--persona-color);
+  background: color-mix(in srgb, var(--persona-color) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--persona-color) 25%, transparent);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+.expCompany {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  font-weight: 700;
+  color: $ink;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.expRole {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--persona-color);
+  font-weight: 500;
+}
+
+.expDesc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: $ink-light;
+  margin: 0;
+}
+
+.expExpanded {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid $rule;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.expHighlights {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: $ink-light;
+    padding-left: 16px;
+    position: relative;
+
+    &::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--persona-color);
+      opacity: 0.6;
+    }
+  }
+}
+
+.expTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.readMore {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--persona-color);
+  padding: 0;
+  margin-top: 4px;
+  text-align: left;
+  transition: opacity 200ms ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+// ── TECH TAGS (shared) ───────────────────────
+.techTag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  padding: 2px 7px;
+  border: 1px solid $rule;
+  background: $paper-warm;
+  color: $ink-light;
+  letter-spacing: 0.02em;
+}
+
+.techMore {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: $ink-faint;
+  display: flex;
+  align-items: center;
+}
+
+// ── PROJECTS GRID ────────────────────────────
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.projectArticle {
+  background: $card-bg;
+  border: 1px solid $rule;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 200ms ease;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.projectFeatured {
+  grid-column: 1 / -1;
+  border-top: 3px solid var(--persona-color);
+
+  @include tablet {
+    grid-column: 1;
+  }
+}
+
+.projectBadge {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--persona-color);
+  font-weight: 600;
+}
+
+.projectRole {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $ink-light;
+}
+
+.projectTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 700;
+  color: $ink;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.projectSub {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: $ink-light;
+  margin: 0;
+}
+
+.projectDesc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: $ink-light;
+  margin: 0;
+  flex: 1;
+}
+
+.projectFooter {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid $rule;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.projectImpact {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--persona-color);
+}
+
+.projectTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+// ── SKILLS ───────────────────────────────────
 .skillFilters {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: 6px;
+  margin-bottom: var(--space-lg);
 }
 
 .filterBtn {
-  font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 8px 14px;
-  min-height: 44px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid $border-mid;
-  background: $card;
-  color: $text-secondary;
+  padding: 6px 12px;
+  border: 1px solid $rule;
+  background: $card-bg;
+  color: $ink-light;
   cursor: pointer;
-  box-shadow: $shadow-sm;
-  transition:
-    color 140ms ease,
-    border-color 140ms ease,
-    background 140ms ease,
-    box-shadow 140ms ease;
-  display: flex;
-  align-items: center;
+  transition: all 140ms ease;
 
   &:hover {
     color: var(--persona-color);
-    border-color: color-mix(in srgb, var(--persona-color) 35%, transparent);
-    background: color-mix(in srgb, var(--persona-color) 6%, $card);
-    box-shadow: $shadow-md;
+    border-color: var(--persona-color);
   }
 }
 
 .filterBtnActive {
   color: var(--persona-color);
-  border-color: color-mix(in srgb, var(--persona-color) 35%, transparent);
-  background: color-mix(in srgb, var(--persona-color) 8%, $card);
-  box-shadow: $shadow-sm;
+  border-color: var(--persona-color);
+  background: color-mix(in srgb, var(--persona-color) 6%, $card-bg);
 }
 
-// Tag cloud
-.tagCloud {
+.skillGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  align-items: flex-start;
 }
 
-.skillTag {
-  position: relative;
+.skillChip {
   font-family: var(--font-mono);
-  border-radius: var(--border-radius-sm);
-  border: 1px solid $border-mid;
-  background: $card;
-  color: $text-secondary;
-  cursor: default;
-  box-shadow: $shadow-sm;
-  transition:
-    border-color 140ms ease,
-    background 140ms ease,
-    color 140ms ease,
-    box-shadow 140ms ease;
-  white-space: nowrap;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border: 1px solid $rule;
+  background: $card-bg;
+  color: $ink;
+  transition: all 160ms ease;
 
   &:hover {
-    border-color: color-mix(in srgb, var(--persona-color) 35%, transparent);
-    background: color-mix(in srgb, var(--persona-color) 6%, $card);
-    color: $text-primary;
-    box-shadow: $shadow-md;
+    border-color: var(--persona-color);
+    color: var(--persona-color);
   }
 }
 
-.tagSm {
-  font-size: 0.68rem;
-  padding: 4px 9px;
+// ── FOOTER ───────────────────────────────────
+.footer {
+  text-align: center;
+  padding: clamp(2rem, 4vw, 3rem) 0 clamp(1.5rem, 3vw, 2rem);
 }
 
-.tagMd {
-  font-size: 0.75rem;
-  padding: 5px 11px;
-}
-
-.tagLg {
-  font-size: 0.8rem;
-  padding: 6px 13px;
-  border-color: color-mix(in srgb, var(--persona-color) 20%, transparent);
-  color: $text-primary;
-  font-weight: 500;
-}
-
-.tagName {
-  position: relative;
-  z-index: 1;
-}
-
-// Tooltip with proficiency bar
-.tagTooltip {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: $card;
-  border: 1px solid $border-mid;
-  border-radius: var(--border-radius-sm);
-  padding: 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  z-index: 100;
-  pointer-events: none;
-  width: 96px;
-  box-shadow: $shadow-md;
-}
-
-.tooltipBar {
-  flex: 1;
+.footerRule {
   height: 2px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
+  background: $ink;
+  opacity: 0.15;
+  margin-bottom: var(--space-xl);
 }
 
-.tooltipFill {
-  height: 100%;
-  background: var(--persona-color);
-  border-radius: 2px;
-}
-
-.tooltipPct {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--persona-color);
-  flex-shrink: 0;
-}
-
-// ── EXPERIENCE SECTION ────────────────────────
-.experienceSection {
-  padding: 0 clamp(1.5rem, 4vw, 3.5rem);
-}
-
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: var(--space-2xl);
-}
-
-// Single entry row — 3-column grid: year | dot+line | card
-.timelineEntry {
-  display: grid;
-  grid-template-columns: 64px 20px 1fr;
-  gap: 0 16px;
-  cursor: pointer;
-
-  @include tablet {
-    grid-template-columns: 52px 16px 1fr;
-    gap: 0 12px;
-  }
-
-  @include mobile {
-    grid-template-columns: 40px 14px 1fr;
-    gap: 0 10px;
-  }
-}
-
-// Year stamp
-.entryYear {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  padding-top: 20px;
-}
-
-.yearText {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: $text-secondary;
-  letter-spacing: 0.04em;
-  opacity: 0.6;
-}
-
-.featuredBadge {
+.footerText {
   font-family: var(--font-body);
-  font-size: 0.55rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--persona-color);
-  background: color-mix(in srgb, var(--persona-color) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--persona-color) 28%, transparent);
-  border-radius: var(--border-radius-sm);
-  padding: 2px 6px;
-  white-space: nowrap;
-}
-
-// Connector dot + vertical line
-.entryConnector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
-}
-
-.connectorDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid $border-mid;
-  background: $bg;
-  flex-shrink: 0;
-  transition:
-    border-color 180ms ease,
-    background 180ms ease;
-  z-index: 1;
-
-  .timelineEntry:hover &,
-  .timelineEntryActive & {
-    border-color: var(--persona-color);
-    background: var(--persona-color);
-  }
-}
-
-.connectorLine {
-  flex: 1;
-  width: 1px;
-  background: $border-mid;
-  margin-top: 4px;
-  min-height: 40px;
-  opacity: 0.5;
-}
-
-// Entry card
-.entryCard {
-  position: relative;
-  background: $card;
-  border: 1px solid $border;
-  border-left: 3px solid $border-mid;
-  border-radius: var(--border-radius-md);
-  padding: var(--space-lg) var(--space-xl);
-  margin-bottom: var(--space-md);
-  box-shadow: $shadow-sm;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-
-  .timelineEntry:hover & {
-    border-left-color: color-mix(in srgb, var(--persona-color) 50%, transparent);
-    box-shadow: $shadow-md;
-  }
-
-  .timelineEntryActive & {
-    border-left-color: var(--persona-color);
-    box-shadow: $shadow-md;
-  }
-
-  @include mobile {
-    padding: var(--space-md);
-    border-left-width: 2px;
-  }
-}
-
-.entryHeader {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.entryMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  flex-wrap: wrap;
-}
-
-// Role: 12px uppercase tracked
-.entryRole {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--persona-color);
-  font-weight: 500;
-}
-
-.entryPeriod {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: $text-secondary;
-  opacity: 0.7;
-
-  &::before {
-    content: '·';
-    margin-right: 8px;
-    opacity: 0.4;
-  }
-}
-
-// Company name: 18px medium
-.entryCompany {
-  font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2vw, 1.375rem);
-  font-weight: 600;
-  color: $text-primary;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.entryDesc {
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.65;
-  color: $text-secondary;
-  max-width: 58ch;
-  margin: var(--space-xs) 0 0;
-}
-
-// Expanded region
-.entryExpanded {
-  overflow: hidden;
-  margin-top: var(--space-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  border-top: 1px solid $border;
-  padding-top: var(--space-lg);
-}
-
-// Code block — always dark for readability
-.codeBlock {
-  background: $code-bg;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-top: 2px solid color-mix(in srgb, var(--persona-color) 45%, transparent);
-  border-radius: var(--border-radius-sm);
-  overflow: hidden;
-}
-
-.codeBlockHeader {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.codeFileName {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: $code-comment;
-  letter-spacing: 0.02em;
-}
-
-.codeContent {
-  padding: 14px 16px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.7;
-  color: $code-text;
-  white-space: pre;
-  overflow-x: auto;
-  margin: 0;
-
-  code {
-    color: inherit;
-  }
-
-  @include mobile {
-    font-size: 0.65rem;
-  }
-}
-
-// Highlights list
-.highlights {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.highlight {
-  display: flex;
-  gap: var(--space-sm);
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.6;
-  color: $text-secondary;
-}
-
-.highlightArrow {
-  font-family: var(--font-mono);
-  color: var(--persona-color);
-  opacity: 0.6;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-// Tech chips in expanded area
-.entryTech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.techChip {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--persona-color) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--persona-color) 22%, transparent);
-  color: var(--persona-color);
-  letter-spacing: 0.02em;
-}
-
-// Expand toggle button
-.expandToggle {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  width: 28px;
-  height: 28px;
-  min-height: 28px;
-  border-radius: 50%;
-  border: 1px solid $border-mid;
-  background: $card-raised;
-  color: $text-secondary;
-  font-size: 1rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    border-color 140ms ease,
-    color 140ms ease,
-    background 140ms ease;
-
-  &:hover {
-    border-color: color-mix(in srgb, var(--persona-color) 35%, transparent);
-    color: var(--persona-color);
-    background: color-mix(in srgb, var(--persona-color) 8%, $card);
-  }
-
-  .timelineEntryActive & {
-    border-color: var(--persona-color);
-    color: var(--persona-color);
-    background: color-mix(in srgb, var(--persona-color) 8%, $card);
-  }
-}
-
-// ── PROJECTS SECTION ──────────────────────────
-.projectsSection {
-  padding: 0 clamp(1.5rem, 4vw, 3.5rem);
-}
-
-.projectsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-xl);
-
-  // Featured card spans full width
-  & > *:first-child {
-    grid-column: 1 / -1;
-  }
-
-  @include tablet {
-    grid-template-columns: 1fr;
-
-    & > *:first-child {
-      grid-column: 1;
-    }
-  }
-}
-
-// Project card — light surface, elevation on hover
-.projectCard {
-  position: relative;
-  background: $card;
-  border: 1px solid $border;
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
-  box-shadow: $shadow-sm;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-
-  &:hover {
-    border-color: color-mix(in srgb, var(--persona-color) 28%, transparent);
-    box-shadow: $shadow-lg;
-  }
-}
-
-.projectCardFeatured {
-  border-color: color-mix(in srgb, var(--persona-color) 18%, transparent);
-  box-shadow: $shadow-md;
-}
-
-// Thin top accent — gradient
-.cardAccentBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--persona-color),
-    color-mix(in srgb, var(--persona-color) 35%, transparent)
-  );
-  opacity: 0.65;
-
-  .projectCardFeatured & {
-    opacity: 1;
-  }
-}
-
-// Featured label
-.featuredLabel {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  font-family: var(--font-body);
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--persona-color);
-  background: color-mix(in srgb, var(--persona-color) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--persona-color) 28%, transparent);
-  border-radius: var(--border-radius-full);
-  padding: 4px 10px;
-  z-index: 2;
-}
-
-// Card body: content + code snippet side by side
-.cardBody {
-  display: grid;
-  grid-template-columns: 1fr;
-
-  @include desktop {
-    grid-template-columns: 1fr 280px;
-  }
-}
-
-.cardContent {
-  padding: var(--space-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-
-  @include mobile {
-    padding: var(--space-md);
-  }
-}
-
-// Role: uppercase tracked
-.cardRole {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: $text-secondary;
-  opacity: 0.7;
-}
-
-.cardTitle {
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  font-weight: 600;
-  color: $text-primary;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.cardSubtitle {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: $text-secondary;
-}
-
-.cardDescription {
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.7;
-  color: $text-secondary;
-  flex: 1;
-}
-
-.cardFooter {
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px solid $border;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-// Impact pill
-.impactRow {
-  display: flex;
-}
-
-.impactPill {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--persona-color);
-  background: color-mix(in srgb, var(--persona-color) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--persona-color) 25%, transparent);
-  border-radius: var(--border-radius-full);
-  padding: 3px 10px;
-  letter-spacing: 0.01em;
-}
-
-.cardTech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.cardTechChip {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  padding: 2px 7px;
-  border-radius: 3px;
-  background: $card-raised;
-  border: 1px solid $border-mid;
-  color: $text-secondary;
-}
-
-.cardTechMore {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: $text-secondary;
-  opacity: 0.5;
-  display: flex;
-  align-items: center;
-  padding: 0 4px;
-}
-
-// Right panel: code snippet — stays dark for readability
-.cardSnippet {
-  background: $code-bg;
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  flex-direction: column;
-  min-height: 180px;
-  overflow: hidden;
-
-  @include tablet {
-    display: none;
-  }
-}
-
-.snippetHeader {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.snippetFileName {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: $code-comment;
-}
-
-.snippetCode {
-  flex: 1;
-  padding: 14px 16px;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  line-height: 1.72;
-  color: $code-text;
-  white-space: pre;
-  overflow: auto;
-  margin: 0;
-
-  code {
-    color: inherit;
-  }
-}
-
-.snippetIdle {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: $code-comment;
-  opacity: 0.4;
-}
-
-.snippetIdleText {
+  font-size: clamp(1rem, 2vw, 1.2rem);
   font-style: italic;
-}
-
-// ── FOOTER CTA ────────────────────────────────
-.footerCta {
-  padding: var(--space-3xl) clamp(1.5rem, 4vw, 3.5rem);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-lg);
-  border-top: 1px solid $border;
-
-  @include mobile {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.footerCtaText {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  color: $text-secondary;
-  margin: 0;
-  max-width: 42ch;
+  color: $ink-light;
+  margin: 0 0 var(--space-lg);
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
   line-height: 1.5;
 }
 
-.footerCtaLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 11px 24px;
-  background: var(--persona-color);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  border-radius: var(--border-radius-md);
+.footerCta {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--persona-color);
   text-decoration: none;
-  box-shadow: $shadow-md;
-  transition:
-    background 150ms ease,
-    box-shadow 150ms ease;
-  flex-shrink: 0;
+  border: 1px solid var(--persona-color);
+  padding: 10px 24px;
+  transition: all 180ms ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--persona-color) 85%, #000);
-    box-shadow: $shadow-lg;
+    background: var(--persona-color);
+    color: #fff;
   }
+}
+
+.footerColophon {
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: $ink-faint;
+  letter-spacing: 0.06em;
 }

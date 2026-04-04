@@ -6,7 +6,7 @@
 
   <!-- Homepage / Solar System Hub -->
   <url>
-    <loc>https://maheshinder.com/</loc>
+    <loc>https://maheshinder.in/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -14,7 +14,7 @@
 
   <!-- Developer Section - Main Portfolio -->
   <url>
-    <loc>https://maheshinder.com/#developer</loc>
+    <loc>https://maheshinder.in/#developer</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -22,7 +22,7 @@
 
   <!-- Runner Section - Fitness/Strava -->
   <url>
-    <loc>https://maheshinder.com/#runner</loc>
+    <loc>https://maheshinder.in/#runner</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -30,7 +30,7 @@
 
   <!-- Figuring Out Section - Electrolyte Brand -->
   <url>
-    <loc>https://maheshinder.com/#blockchain</loc>
+    <loc>https://maheshinder.in/#blockchain</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -38,7 +38,7 @@
 
   <!-- Social Links Section -->
   <url>
-    <loc>https://maheshinder.com/#social</loc>
+    <loc>https://maheshinder.in/#social</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -46,7 +46,7 @@
 
   <!-- Thinker Section - Thoughts/Blog -->
   <url>
-    <loc>https://maheshinder.com/#thinker</loc>
+    <loc>https://maheshinder.in/#thinker</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -54,7 +54,7 @@
 
   <!-- Dating/Bachelor Profile Section -->
   <url>
-    <loc>https://maheshinder.com/#dating</loc>
+    <loc>https://maheshinder.in/#dating</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -62,7 +62,7 @@
 
   <!-- Resume PDF -->
   <url>
-    <loc>https://maheshinder.com/mahesh-inder-resume.pdf</loc>
+    <loc>https://maheshinder.in/mahesh-inder-resume.pdf</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

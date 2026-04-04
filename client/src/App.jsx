@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { TokenProvider } from './context/TokenContext';
 import CursorEffect from './components/layout/CursorEffect';
@@ -14,7 +15,10 @@ function App() {
         <Suspense fallback={null}>
           <TokenWallet />
         </Suspense>
-        <AppShell />
+        <Routes>
+          <Route path="/architect" element={<AppShell directPersona="developer" />} />
+          <Route path="/*" element={<AppShell />} />
+        </Routes>
       </TokenProvider>
     </ThemeProvider>
   );

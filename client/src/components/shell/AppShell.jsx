@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef, lazy, Suspense, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PersonaApp from './PersonaApp';
 import TransitionOverlay from './TransitionOverlay';
 import MobileHub from './MobileHub';
@@ -14,12 +15,14 @@ import styles from './AppShell.module.scss';
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
-export default function AppShell() {
+export default function AppShell({ directPersona = null }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   // Reset SEO to default when in hub view (null = default config)
   const { updateSEO } = useSEO(null);
-  const [view, setView] = useState('intro');
+  const [view, setView] = useState(directPersona ? 'persona' : 'intro');
   const [introJustFinished, setIntroJustFinished] = useState(false);
-  const [activePlanet, setActivePlanet] = useState(null);
+  const [activePlanet, setActivePlanet] = useState(directPersona);
   const [targetPlanet, setTargetPlanet] = useState(null);
   const [sourcePlanet, setSourcePlanet] = useState(null);
   const [use3D, setUse3D] = useState(false);
@@ -88,10 +91,10 @@ export default function AppShell() {
   useEffect(() => {
     if (view === 'intro') {
       document.documentElement.setAttribute('data-theme', 'light');
-    } else if (view === 'hub') {
+    } else if (view === 'hub' || directPersona) {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
-  }, [view]);
+  }, [view, directPersona]);
 
   // Sync persona color to :root so CursorEffect can use it
   useEffect(() => {
@@ -268,6 +271,12 @@ export default function AppShell() {
   }, [targetPlanet]);
 
   const handleBack = useCallback(() => {
+    // If opened via direct route (e.g. /architect), navigate to home
+    if (directPersona && location.pathname !== '/') {
+      navigate('/');
+      return;
+    }
+
     if (use3D) {
       setIsExitingToHub(true);
       document.documentElement.setAttribute('data-theme', 'dark');
@@ -292,7 +301,7 @@ export default function AppShell() {
       setActivePlanet(null);
       setView('hub');
     }
-  }, [use3D]);
+  }, [use3D, directPersona, location.pathname, navigate]);
 
   // Inter-planet navigation — always a 2D directional pull (user's choice).
   // The 3D camera warp is only used for hub → planet entry, never between planets.
@@ -490,18 +499,8 @@ export default function AppShell() {
             onClick={activateDrift}
             style={{ cursor: 'pointer', pointerEvents: 'auto' }}
           >
-            <span className={styles.exploreScroll} aria-hidden="true">
-              <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
-                <rect x="1" y="1" width="12" height="16" rx="6" stroke="currentColor" strokeWidth="1.5" opacity="0.5"/>
-                <motion.rect
-                  x="6" y="4" width="2" height="4" rx="1" fill="currentColor"
-                  animate={{ y: [4, 8, 4] }}
-                  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                />
-              </svg>
-            </span>
-            <span className={styles.exploreText}>press space or scroll to explore</span>
-            <span className={styles.exploreTextMobile}>swipe to explore planets</span>
+            <span className={styles.exploreText}>press space or click here to explore</span>
+            <span className={styles.exploreTextMobile}>click here to explore planets</span>
           </motion.div>
         )}
       </AnimatePresence>
