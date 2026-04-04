@@ -230,7 +230,6 @@
 // ── Responsive ───────────────────────────────────────────────────────────────
 @include responsive('tablet') {
   .mastheadBig {
-    // Scale down for mobile — keep the animation, just fit it
     padding: 0 clamp(12px, 3vw, 24px);
   }
 
@@ -245,7 +244,23 @@
   }
 
   .logoCompact {
-    top: 14px;
+    top: auto;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     right: 16px;
+  }
+
+  .logoImg {
+    height: 32px;
+  }
+
+  .logoSub {
+    display: none;
+  }
+
+  .paperworkBtn {
+    padding: 5px 10px;
+    font-size: 0.58rem;
+    gap: 6px;
+    margin-top: 8px;
   }
 }

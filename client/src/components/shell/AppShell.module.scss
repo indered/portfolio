@@ -264,6 +264,13 @@
     border-color: rgba(74, 158, 255, 0.6);
     transform: translateX(-50%) scale(0.97);
   }
+
+  // Mobile — move to bottom center, above the logo/paperwork
+  @media (max-width: 768px) {
+    top: auto;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    padding: 10px 20px;
+  }
 }
 
 .exploreText {

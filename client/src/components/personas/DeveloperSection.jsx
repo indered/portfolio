@@ -141,7 +141,7 @@ export default function DeveloperSection() {
               </div>
               <div className={styles.dossierRow}>
                 <dt>Email</dt>
-                <dd>hi@indered.in</dd>
+                <dd>hello@maheshinder.in</dd>
               </div>
             </dl>
           </div>
@@ -274,7 +274,7 @@ export default function DeveloperSection() {
         <p className={styles.footerText}>
           Systems built to last. Let&apos;s build something together.
         </p>
-        <a href="mailto:hi@indered.in" className={styles.footerCta}>
+        <a href="mailto:hello@maheshinder.in" className={styles.footerCta}>
           Get in touch &rarr;
         </a>
         <div className={styles.footerColophon}>
