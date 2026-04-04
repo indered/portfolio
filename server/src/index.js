@@ -92,10 +92,10 @@ app.use((err, req, res, _next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 
-  // Self-ping every 10 minutes to prevent Render free tier sleep
+  // Self-ping every 5 minutes to prevent Render free tier sleep
   if (process.env.RENDER_EXTERNAL_URL || process.env.NODE_ENV === 'production') {
     const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
-    cron.schedule('*/10 * * * *', async () => {
+    cron.schedule('*/5 * * * *', async () => {
       try {
         await fetch(`${url}/api/health`);
         console.log('Keep-alive ping sent');
