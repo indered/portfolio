@@ -1,20 +1,20 @@
-import { useState, useCallback } from 'react';
-import { PERSONAS, SKILLS } from '../../lib/constants';
+import { useState } from 'react';
+import { PERSONAS } from '../../lib/constants';
 import styles from './DeveloperSection.module.scss';
 
 const persona = PERSONAS.developer;
 
-// ─── Skill categories ─────────────────────────────────────────────────────────
-const SKILL_CATEGORIES = [
-  { key: 'all', label: 'All' },
-  { key: 'languages', label: 'Languages' },
-  { key: 'frontend', label: 'Frontend' },
-  { key: 'backend', label: 'Backend' },
-  { key: 'databases', label: 'Databases' },
-  { key: 'devops', label: 'DevOps' },
+// ─── Broad skills — 6 pillars ────────────────────────────────────────────────
+const SKILLS = [
+  { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
+  { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
+  { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
+  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
+  { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
+  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
 ];
 
-// ─── The Work — merged experience + projects, drunk-friend energy ─────────────
+// ─── The Work — experience + projects, drunk-friend descriptions ─────────────
 const WORK = [
   {
     id: 'enbd',
@@ -22,21 +22,19 @@ const WORK = [
     role: 'Senior Full Stack / Backend Engineer',
     period: '2024 — Present',
     location: 'Dubai',
-    headline: 'Building the money pipes for one of the biggest banks in the Middle East.',
-    story: "Okay so picture this — every time someone in the UAE sends money, my code touches it. I built this real-time payment tracker that runs on Kafka and AWS Lambda, and the whole thing moves faster than you can blink. Like sub-millisecond fast. My manager once asked me 'can it be faster?' and I rewrote the hot path in Rust. Yes, Rust. At a bank. I'm that guy.",
+    featured: false,
     projects: [
       {
         name: 'Payment Tracker',
-        desc: "Real-time payment tracking using event-driven architecture — Kafka consumers eating messages like it's an all-you-can-eat buffet, AWS Lambda triggers firing everywhere, and every single dirham accounted for in sub-millisecond time. The backend is polyglot — Rust for the bits that need to be stupidly fast, Node.js for everything else.",
-        tech: ['Rust', 'Kafka', 'AWS Lambda', 'Node.js', 'TypeScript'],
+        desc: "Bro okay so imagine every time someone in the UAE sends money — like literally every dirham — my code touches it. Built this real-time payment tracker on Kafka and AWS Lambda that processes transactions in sub-millisecond time. The hot path? Rewrote it in Rust because Node wasn't cutting it. Yes, Rust at a bank. I'm that guy.",
+        tech: ['Rust', 'Kafka', 'AWS Lambda', 'Node.js'],
       },
       {
         name: 'Statement Generator',
-        desc: "A document engine built on Rust that generates statements for accounts, FDs, credit cards — basically every piece of paper the bank throws at you, but digitally. It talks to like fifteen different systems, stitches the data together, and renders pixel-perfect PDFs. Built the whole thing from scratch because the existing one was... let's just say it was from a different era.",
+        desc: "You know those bank statements nobody reads? I built the engine that makes them. Accounts, FDs, credit cards — every statement the bank generates comes through this Rust-powered document engine I designed from scratch. It talks to like fifteen different systems, stitches your financial life together, and spits out pixel-perfect PDFs. The old system was from 2014. Mine does it in a tenth of the time.",
         tech: ['Rust', 'Document Engine', 'Node.js', 'AWS'],
       },
     ],
-    tech: ['Rust', 'Node.js', 'Kafka', 'AWS Lambda', 'TypeScript', 'LangChain'],
   },
   {
     id: 'noumena',
@@ -44,16 +42,13 @@ const WORK = [
     role: 'Backend Developer',
     period: '2021 — 2023',
     location: 'Remote',
-    headline: 'Architected the nervous system of a global freelancer platform.',
-    story: "So Noumena was this wild ride where I basically built an entire microservices galaxy from scratch. Imagine like... 12 different services all talking to each other through Amazon SNS, and none of them are allowed to drop a single message. I designed the whole Apollo Federation gateway — you know, the thing that makes all these GraphQL schemas play nice together. Oh and I also invented their in-app currency. Like literally designed a token economy for freelancer transactions. I basically created money, bro.",
     projects: [
       {
-        name: 'Microservices Galaxy',
-        desc: "Apollo Federation gateway stitching together a dozen GraphQL schemas. Inter-service messaging via Amazon SNS with 50ms latency and zero dropped messages. Domain-Driven Design so clean that onboarding new devs went from 2 weeks to 3 days.",
+        name: 'Microservices Platform',
+        desc: "So Noumena was this freelancer platform and I basically built its entire nervous system. Twelve microservices, all talking through Amazon SNS, zero dropped messages, 50ms latency. I designed the Apollo Federation gateway — the thing that makes a dozen GraphQL schemas play nice. Oh and I also invented their in-app currency. Like literally designed a token economy. I created money, bro.",
         tech: ['Apollo Federation', 'GraphQL', 'AWS SNS/SQS', 'Docker', 'PostgreSQL'],
       },
     ],
-    tech: ['Node.js', 'Apollo Federation', 'GraphQL', 'AWS SNS/SQS', 'Docker', 'PostgreSQL'],
   },
   {
     id: 'tokopedia',
@@ -62,21 +57,18 @@ const WORK = [
     period: '2020 — 2021',
     location: 'Jakarta',
     featured: true,
-    headline: 'Built APIs so fast, Google put them on stage. Twice.',
-    story: "This is the one I flex the hardest. Tokopedia is basically Indonesia's Amazon, right? And I built APIs for their discovery engine — the thing that shows you products before you even know you want them. The rendering was SO fast that Google literally featured it at I/O. And then they featured it AGAIN the next year. Two times at Google I/O. I peaked at 23 and I'm okay with that. Also built this admin tool called Intools that managed sale pages worth millions in GMV. No big deal.",
     projects: [
       {
         name: 'Discovery Engine',
-        desc: "Super-fast rendering APIs for product discovery. Featured twice at Google I/O as a case study in web performance. TTFB clocked at 87ms.",
+        desc: "This is the one I flex the hardest. Tokopedia is basically Indonesia's Amazon right? I built APIs for their product discovery engine — shows you stuff before you know you want it. The rendering was SO fast that Google featured it at I/O. And then they featured it AGAIN the next year. Two times at Google I/O. TTFB clocked at 87ms. I peaked at 23 and honestly I'm okay with that.",
         tech: ['React', 'Node.js', 'GraphQL', 'Go'],
       },
       {
         name: 'Intools',
-        desc: "Admin weapon for managing Discovery sale pages. Moved millions in GMV through content management pipelines.",
+        desc: "Admin weapon for managing Discovery sale pages. Every flash sale, every campaign page that moved millions in GMV — all managed through this tool I built. Content pipelines, live previews, the whole thing.",
         tech: ['React', 'Ant Design', 'Kubernetes'],
       },
     ],
-    tech: ['React', 'Node.js', 'GraphQL', 'Go', 'Ant Design', 'Kubernetes'],
   },
   {
     id: 'ttn',
@@ -84,65 +76,38 @@ const WORK = [
     role: 'Full Stack Developer',
     period: '2019 — 2020',
     location: 'Delhi',
-    headline: 'Where the Big Bang happened. Two projects, 2,000+ concurrent users.',
-    story: "This is where it all started, man. My first real gig and they threw me into the deep end — lead API dev on Kokaihop 3.0, a recipe platform that needed to handle 2,000 concurrent users without breaking a sweat. I plugged in ElasticSearch for search that returns in 20 milliseconds, RabbitMQ for async processing, and ran Node in cluster mode like a madman. Then they put me on Bharti AXA — a PWA for insurance forms so complex it needed its own dimension of Redux state management.",
     projects: [
       {
         name: 'Kokaihop 3.0',
-        desc: "Full API architecture rebuild — MongoDB schemas, Apollo Server, ElasticSearch for 20ms search, RabbitMQ for async tasks, Node.js cluster mode handling 2,000+ concurrent users.",
-        tech: ['React', 'Redux', 'Apollo Server', 'GraphQL', 'MongoDB', 'ElasticSearch'],
+        desc: "Where the Big Bang happened. First real gig, lead API dev, and they said 'handle 2,000 concurrent users.' So I plugged in ElasticSearch for 20ms search, RabbitMQ for async processing, ran Node in cluster mode like a madman. MongoDB schemas, Apollo Server, the full quantum stack. Everything from scratch.",
+        tech: ['Apollo Server', 'GraphQL', 'MongoDB', 'ElasticSearch', 'RabbitMQ'],
       },
       {
         name: 'Bharti AXA PWA',
-        desc: "Progressive Web App with multilevel insurance forms. Redux state management so complex it could have its own conference talk.",
+        desc: "Insurance forms so complex they needed their own dimension of Redux state. Multilevel form wizard, offline-first PWA, conditional logic branches everywhere. State management so clean it could've been a conference talk.",
         tech: ['React', 'Redux', 'Apollo Client', 'PWA'],
       },
     ],
-    tech: ['React', 'Redux', 'Apollo Server', 'GraphQL', 'MongoDB', 'ElasticSearch', 'RabbitMQ'],
   },
   {
     id: 'freelance',
-    company: 'Freelancing',
+    company: 'Freelance',
     role: 'Full Stack Developer',
     period: '2021 — 2022',
     location: 'Remote',
-    headline: 'Solo missions for causes that matter.',
-    story: "Sometimes you gotta go solo. Built Man the Bay for Urban-Ed Academy — a digital report card for their 4-year fellowship in the Bay Area. Full MERN stack, one-person army. When you believe in the cause, you become the entire engineering department.",
     projects: [
       {
         name: 'Man the Bay',
-        desc: "Digital report card for Urban-Ed Academy's fellowship program. Full MERN stack, solo deployment, real impact.",
+        desc: "Solo mission for Urban-Ed Academy — built their digital report card for a 4-year fellowship in the Bay Area. Full MERN stack, one-person army. When you believe in the cause, you become the entire engineering department.",
         tech: ['React', 'Node.js', 'Express', 'MongoDB'],
       },
     ],
-    tech: ['React', 'Node.js', 'Express', 'MongoDB'],
   },
 ];
 
-// ─── Edition helpers ──────────────────────────────────────────────────────────
-const EDITION_DATE = new Date().toLocaleDateString('en-GB', {
-  year: 'numeric',
-  month: 'long',
-});
-
 // ─── Main Section ─────────────────────────────────────────────────────────────
 export default function DeveloperSection() {
-  const [expandedWork, setExpandedWork] = useState(null);
-  const [skillCategory, setSkillCategory] = useState('all');
-
-  const getFilteredSkills = useCallback(() => {
-    if (skillCategory === 'all') {
-      return Object.entries(SKILLS).flatMap(([cat, skills]) =>
-        skills.map((s) => ({ skill: s, category: cat }))
-      );
-    }
-    return (SKILLS[skillCategory] || []).map((s) => ({
-      skill: s,
-      category: skillCategory,
-    }));
-  }, [skillCategory]);
-
-  const filteredSkills = getFilteredSkills();
+  const [openWork, setOpenWork] = useState(null);
 
   return (
     <div className={styles.magazine} role="main">
@@ -150,126 +115,79 @@ export default function DeveloperSection() {
       {/* ── MASTHEAD ── */}
       <header className={styles.masthead}>
         <div className={styles.mastheadMeta}>
-          <span>{EDITION_DATE}</span>
-          <span className={styles.mastheadDot}>·</span>
           <span>Dubai, UAE</span>
+          <span className={styles.dot}>·</span>
+          <span>Est. 2019</span>
         </div>
-        <h1 className={styles.mastheadTitle}>THE<br />ARCHITECT</h1>
-        <p className={styles.mastheadSub}>{persona.tagline}</p>
-        <div className={styles.mastheadRule} />
+        <h1 className={styles.title}>THE<br />ARCHITECT</h1>
+        <div className={styles.rule} />
       </header>
 
-      {/* ── HERO SPREAD ── */}
-      <section className={styles.heroSpread}>
-        <div className={styles.heroMain}>
-          <span className={styles.kicker}>Profile</span>
-          <h2 className={styles.heroHeadline}>
-            Mahesh Inder builds things<br />
-            that move money, serve millions,<br />
-            and occasionally impress Google.
-          </h2>
-          <p className={styles.heroDek}>
-            Seven years. Four countries. From Kafka streams at Emirates NBD to APIs
-            that got standing ovations at Google I/O — twice. Currently in Dubai,
-            making sure every dirham in the UAE moves at sub-millisecond speed.
-          </p>
-          <div className={styles.downloadRow}>
-            <a href="/mahesh-inder-resume.pdf" download className={styles.downloadLink}>
-              Resume
-            </a>
-            <span className={styles.sep} aria-hidden="true">/</span>
-            <a href="/mahesh-inder-cover-letter.pdf" download className={styles.downloadLink}>
-              Cover Letter
-            </a>
-          </div>
-        </div>
+      {/* ── DOSSIER BAR ── */}
+      <div className={styles.dossierBar}>
+        <div className={styles.dossierItem}><span className={styles.dLabel}>Current</span><span className={styles.dValue}>Emirates NBD</span></div>
+        <div className={styles.dossierItem}><span className={styles.dLabel}>Stack</span><span className={styles.dValue}>React · Node · Rust</span></div>
+        <div className={styles.dossierItem}><span className={styles.dLabel}>Featured</span><span className={styles.dValue}>2× Google I/O</span></div>
+        <div className={styles.dossierItem}><span className={styles.dLabel}>Running</span><span className={styles.dValue}>Burj2Burj</span></div>
+      </div>
 
-        {/* Dossier sidebar */}
-        <aside className={styles.dossier}>
-          <h3 className={styles.dossierTitle}>Dossier</h3>
-          <dl className={styles.dossierList}>
-            <div className={styles.dossierRow}><dt>Location</dt><dd>Dubai, UAE</dd></div>
-            <div className={styles.dossierRow}><dt>Current</dt><dd>Emirates NBD</dd></div>
-            <div className={styles.dossierRow}><dt>Stack</dt><dd>React · Node · Rust</dd></div>
-            <div className={styles.dossierRow}><dt>Featured</dt><dd>2× Google I/O</dd></div>
-            <div className={styles.dossierRow}><dt>Running</dt><dd>Burj2Burj · Marathons</dd></div>
-            <div className={styles.dossierRow}><dt>Email</dt><dd>hello@maheshinder.in</dd></div>
-          </dl>
-        </aside>
-      </section>
+      {/* ── DOWNLOADS ── */}
+      <div className={styles.downloads}>
+        <a href="/mahesh-inder-resume.pdf" download className={styles.dlLink}>Resume</a>
+        <span className={styles.sep}>/</span>
+        <a href="/mahesh-inder-cover-letter.pdf" download className={styles.dlLink}>Cover Letter</a>
+      </div>
 
-      {/* ── SKILLS — "The Toolkit" ── */}
+      {/* ── SKILLS — 6 broad pillars ── */}
       <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <span className={styles.sectionLabel}>The Toolkit</span>
-          <div className={styles.sectionRule} />
-        </div>
-
-        <div className={styles.skillFilters}>
-          {SKILL_CATEGORIES.map((cat) => (
-            <button
-              key={cat.key}
-              className={`${styles.filterBtn} ${skillCategory === cat.key ? styles.filterActive : ''}`}
-              onClick={() => setSkillCategory(cat.key)}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
+        <h2 className={styles.sectionTitle}>Skills</h2>
+        <div className={styles.ruleLight} />
         <div className={styles.skillGrid}>
-          {filteredSkills.map(({ skill, category }) => (
-            <span key={skill} className={styles.skillChip} data-category={category}>
-              {skill}
-            </span>
+          {SKILLS.map((s) => (
+            <div key={s.name} className={styles.skillCard}>
+              <h3 className={styles.skillName}>{s.name}</h3>
+              <p className={styles.skillTools}>{s.tools}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ── THE WORK — merged experience + projects ── */}
+      {/* ── THE WORK ── */}
       <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <span className={styles.sectionLabel}>The Work</span>
-          <div className={styles.sectionRule} />
-        </div>
+        <h2 className={styles.sectionTitle}>The Work</h2>
+        <div className={styles.ruleLight} />
 
-        <div className={styles.workStream}>
+        <div className={styles.workList}>
           {WORK.map((entry) => {
-            const isOpen = expandedWork === entry.id;
+            const isOpen = openWork === entry.id;
             return (
-              <article
-                key={entry.id}
-                className={`${styles.workCard} ${isOpen ? styles.workCardOpen : ''} ${entry.featured ? styles.workCardFeatured : ''}`}
-              >
-                {/* Header — always visible */}
+              <article key={entry.id} className={`${styles.workItem} ${isOpen ? styles.workOpen : ''}`}>
                 <div
-                  className={styles.workHeader}
-                  onClick={() => setExpandedWork(isOpen ? null : entry.id)}
+                  className={styles.workHead}
+                  onClick={() => setOpenWork(isOpen ? null : entry.id)}
                 >
-                  <div className={styles.workMeta}>
-                    <span className={styles.workPeriod}>{entry.period}</span>
-                    <span className={styles.workLocation}>{entry.location}</span>
-                    {entry.featured && <span className={styles.workBadge}>2× Google I/O</span>}
+                  <div className={styles.workLeft}>
+                    <h4 className={styles.workCompany}>
+                      {entry.company}
+                      {entry.featured && <span className={styles.badge}>Google I/O</span>}
+                    </h4>
+                    <span className={styles.workRole}>{entry.role}</span>
                   </div>
-                  <h4 className={styles.workCompany}>{entry.company}</h4>
-                  <span className={styles.workRole}>{entry.role}</span>
-                  <p className={styles.workHeadline}>{entry.headline}</p>
-                  <span className={styles.workToggle}>{isOpen ? 'Less' : 'Read the story'}</span>
+                  <div className={styles.workRight}>
+                    <span className={styles.workPeriod}>{entry.period}</span>
+                    <span className={styles.workToggle}>{isOpen ? '−' : '+'}</span>
+                  </div>
                 </div>
 
-                {/* Expanded — the drunk friend explanation */}
                 {isOpen && (
                   <div className={styles.workBody}>
-                    <p className={styles.workStory}>{entry.story}</p>
-
-                    {/* Projects within this role */}
                     {entry.projects.map((proj) => (
-                      <div key={proj.name} className={styles.projectBlock}>
-                        <h5 className={styles.projectName}>{proj.name}</h5>
-                        <p className={styles.projectDesc}>{proj.desc}</p>
-                        <div className={styles.projectTech}>
+                      <div key={proj.name} className={styles.project}>
+                        <h5 className={styles.projName}>{proj.name}</h5>
+                        <p className={styles.projDesc}>{proj.desc}</p>
+                        <div className={styles.projTech}>
                           {proj.tech.map((t) => (
-                            <span key={t} className={styles.techTag}>{t}</span>
+                            <span key={t} className={styles.tag}>{t}</span>
                           ))}
                         </div>
                       </div>
@@ -284,17 +202,11 @@ export default function DeveloperSection() {
 
       {/* ── FOOTER ── */}
       <footer className={styles.footer}>
-        <div className={styles.footerRule} />
-        <p className={styles.footerQuote}>
-          &ldquo;Systems built to last. Let&apos;s build something together.&rdquo;
-        </p>
+        <div className={styles.rule} />
+        <p className={styles.footerText}>Systems built to last.</p>
         <a href="mailto:hello@maheshinder.in" className={styles.footerCta}>
           Get in touch &rarr;
         </a>
-        <div className={styles.footerMeta}>
-          <span>© {new Date().getFullYear()} Mahesh Inder</span>
-          <span>Dubai, UAE</span>
-        </div>
       </footer>
     </div>
   );
