@@ -162,11 +162,6 @@ export default function DeveloperSection() {
         <a href="mailto:hello@maheshinder.in" className={styles.footerCta}>
           Get in touch &rarr;
         </a>
-        <p className={styles.colophon}>
-          dreamt up at 3am by <span className={styles.colName}>mahesh inder</span>
-          <span className={styles.colDot}>·</span>
-          wired together by <span className={styles.colClaude}>claude</span>
-        </p>
       </footer>
     </div>
   );
