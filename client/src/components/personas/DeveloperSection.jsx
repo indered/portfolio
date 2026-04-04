@@ -1,8 +1,5 @@
-import { useState } from 'react';
 import { PERSONAS } from '../../lib/constants';
 import styles from './DeveloperSection.module.scss';
-
-const persona = PERSONAS.developer;
 
 // ─── Broad skills — 6 pillars ────────────────────────────────────────────────
 const SKILLS = [
@@ -14,15 +11,12 @@ const SKILLS = [
   { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
 ];
 
-// ─── The Work — experience + projects, drunk-friend descriptions ─────────────
+// ─── The Work — all visible, drunk-friend descriptions ───────────────────────
 const WORK = [
   {
-    id: 'enbd',
     company: 'Emirates NBD',
     role: 'Senior Full Stack / Backend Engineer',
     period: '2024 — Present',
-    location: 'Dubai',
-    featured: false,
     projects: [
       {
         name: 'Payment Tracker',
@@ -37,11 +31,9 @@ const WORK = [
     ],
   },
   {
-    id: 'noumena',
     company: 'Noumena',
     role: 'Backend Developer',
     period: '2021 — 2023',
-    location: 'Remote',
     projects: [
       {
         name: 'Microservices Platform',
@@ -51,11 +43,9 @@ const WORK = [
     ],
   },
   {
-    id: 'tokopedia',
     company: 'Tokopedia',
     role: 'Full Stack Developer',
     period: '2020 — 2021',
-    location: 'Jakarta',
     featured: true,
     projects: [
       {
@@ -71,11 +61,9 @@ const WORK = [
     ],
   },
   {
-    id: 'ttn',
     company: 'To The New',
     role: 'Full Stack Developer',
     period: '2019 — 2020',
-    location: 'Delhi',
     projects: [
       {
         name: 'Kokaihop 3.0',
@@ -90,11 +78,9 @@ const WORK = [
     ],
   },
   {
-    id: 'freelance',
     company: 'Freelance',
     role: 'Full Stack Developer',
     period: '2021 — 2022',
-    location: 'Remote',
     projects: [
       {
         name: 'Man the Bay',
@@ -105,23 +91,9 @@ const WORK = [
   },
 ];
 
-// ─── Main Section ─────────────────────────────────────────────────────────────
 export default function DeveloperSection() {
-  const [openWork, setOpenWork] = useState(null);
-
   return (
-    <div className={styles.magazine} role="main">
-
-      {/* ── MASTHEAD ── */}
-      <header className={styles.masthead}>
-        <div className={styles.mastheadMeta}>
-          <span>Dubai, UAE</span>
-          <span className={styles.dot}>·</span>
-          <span>Est. 2019</span>
-        </div>
-        <h1 className={styles.title}>THE<br />ARCHITECT</h1>
-        <div className={styles.rule} />
-      </header>
+    <div className={styles.page} role="main">
 
       {/* ── DOSSIER BAR ── */}
       <div className={styles.dossierBar}>
@@ -131,17 +103,21 @@ export default function DeveloperSection() {
         <div className={styles.dossierItem}><span className={styles.dLabel}>Running</span><span className={styles.dValue}>Burj2Burj</span></div>
       </div>
 
-      {/* ── DOWNLOADS ── */}
+      {/* ── DOWNLOADS — proper download buttons ── */}
       <div className={styles.downloads}>
-        <a href="/mahesh-inder-resume.pdf" download className={styles.dlLink}>Resume</a>
-        <span className={styles.sep}>/</span>
-        <a href="/mahesh-inder-cover-letter.pdf" download className={styles.dlLink}>Cover Letter</a>
+        <a href="/mahesh-inder-resume.pdf" download="Mahesh_Inder_Resume.pdf" className={styles.dlBtn}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Resume
+        </a>
+        <a href="/mahesh-inder-cover-letter.pdf" download="Mahesh_Inder_Cover_Letter.pdf" className={styles.dlBtn}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Cover Letter
+        </a>
       </div>
 
-      {/* ── SKILLS — 6 broad pillars ── */}
+      {/* ── SKILLS ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Skills</h2>
-        <div className={styles.ruleLight} />
         <div className={styles.skillGrid}>
           {SKILLS.map((s) => (
             <div key={s.name} className={styles.skillCard}>
@@ -152,61 +128,48 @@ export default function DeveloperSection() {
         </div>
       </section>
 
-      {/* ── THE WORK ── */}
+      {/* ── THE WORK — all visible, no accordions ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>The Work</h2>
-        <div className={styles.ruleLight} />
 
-        <div className={styles.workList}>
-          {WORK.map((entry) => {
-            const isOpen = openWork === entry.id;
-            return (
-              <article key={entry.id} className={`${styles.workItem} ${isOpen ? styles.workOpen : ''}`}>
-                <div
-                  className={styles.workHead}
-                  onClick={() => setOpenWork(isOpen ? null : entry.id)}
-                >
-                  <div className={styles.workLeft}>
-                    <h4 className={styles.workCompany}>
-                      {entry.company}
-                      {entry.featured && <span className={styles.badge}>Google I/O</span>}
-                    </h4>
-                    <span className={styles.workRole}>{entry.role}</span>
-                  </div>
-                  <div className={styles.workRight}>
-                    <span className={styles.workPeriod}>{entry.period}</span>
-                    <span className={styles.workToggle}>{isOpen ? '−' : '+'}</span>
-                  </div>
+        {WORK.map((entry, idx) => (
+          <div key={idx} className={styles.workEntry}>
+            <div className={styles.workHead}>
+              <div>
+                <h3 className={styles.workCompany}>
+                  {entry.company}
+                  {entry.featured && <span className={styles.badge}>2× Google I/O</span>}
+                </h3>
+                <span className={styles.workRole}>{entry.role}</span>
+              </div>
+              <span className={styles.workPeriod}>{entry.period}</span>
+            </div>
+
+            {entry.projects.map((proj) => (
+              <div key={proj.name} className={styles.project}>
+                <h4 className={styles.projName}>{proj.name}</h4>
+                <p className={styles.projDesc}>{proj.desc}</p>
+                <div className={styles.projTech}>
+                  {proj.tech.map((t) => (
+                    <span key={t} className={styles.tag}>{t}</span>
+                  ))}
                 </div>
-
-                {isOpen && (
-                  <div className={styles.workBody}>
-                    {entry.projects.map((proj) => (
-                      <div key={proj.name} className={styles.project}>
-                        <h5 className={styles.projName}>{proj.name}</h5>
-                        <p className={styles.projDesc}>{proj.desc}</p>
-                        <div className={styles.projTech}>
-                          {proj.tech.map((t) => (
-                            <span key={t} className={styles.tag}>{t}</span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
+              </div>
+            ))}
+          </div>
+        ))}
       </section>
 
       {/* ── FOOTER ── */}
       <footer className={styles.footer}>
-        <div className={styles.rule} />
-        <p className={styles.footerText}>Systems built to last.</p>
         <a href="mailto:hello@maheshinder.in" className={styles.footerCta}>
           Get in touch &rarr;
         </a>
+        <p className={styles.colophon}>
+          dreamt up at 3am by <span className={styles.colName}>mahesh inder</span>
+          <span className={styles.colDot}>·</span>
+          wired together by <span className={styles.colClaude}>claude</span>
+        </p>
       </footer>
     </div>
   );
