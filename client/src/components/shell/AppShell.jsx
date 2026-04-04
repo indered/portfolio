@@ -553,9 +553,9 @@ export default function AppShell({ directPersona = null }) {
         )}
       </AnimatePresence>
 
-      {/* Swipe hint — mobile only, shown while camera flies to planet */}
+      {/* Swipe hint — mobile only, persistent during drift */}
       <AnimatePresence>
-        {driftMode && !driftSettled && view === 'hub' && (
+        {driftMode && view === 'hub' && !isExitingToHub && (
           <motion.div
             className={styles.swipeHint}
             initial={{ opacity: 0 }}
@@ -570,7 +570,27 @@ export default function AppShell({ directPersona = null }) {
         )}
       </AnimatePresence>
 
-      {/* Planet Preview Card — shown ONLY after camera finishes flying to approach position */}
+      {/* Mobile planet heading — just the name above the planet */}
+      <AnimatePresence>
+        {driftMode && driftSettled && view === 'hub' && !isExitingToHub && (
+          <motion.div
+            className={styles.mobilePlanetName}
+            key={`mobile-${PERSONA_IDS[driftIndex]}`}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => handlePlanetClick(PERSONA_IDS[driftIndex])}
+            style={{ '--planet-color': PLANET_CONFIG[PERSONA_IDS[driftIndex]]?.meshColor }}
+          >
+            <span className={styles.mobilePlanetIcon}>{PERSONAS[PERSONA_IDS[driftIndex]]?.icon}</span>
+            <span className={styles.mobilePlanetTitle}>{PERSONAS[PERSONA_IDS[driftIndex]]?.title}</span>
+            <span className={styles.mobilePlanetTap}>tap to enter</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Planet Preview Card — desktop only */}
       <AnimatePresence>
         {driftMode && driftSettled && view === 'hub' && !isExitingToHub && (
           <PlanetPreviewCard
