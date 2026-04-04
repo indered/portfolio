@@ -19,12 +19,12 @@ const WORK = [
     projects: [
       {
         name: 'Payment Tracker',
-        desc: "Every time someone in the UAE sends money — every single dirham — this system tracks it in real time. Built on Kafka and AWS Lambda, processing transactions in sub-millisecond time. The performance-critical path runs on Rust because sometimes Node just isn't fast enough. Event-driven architecture, zero tolerance for latency.",
+        desc: "Real-time payment tracking for every dirham in the UAE, sub-millisecond on Kafka, Lambda and Rust.",
         tech: ['Rust', 'Kafka', 'AWS Lambda', 'Node.js'],
       },
       {
         name: 'Statement Generator',
-        desc: "A document engine built from scratch in Rust that generates every statement the bank produces — accounts, fixed deposits, credit cards, the lot. Pulls data from fifteen different systems, stitches it together, and renders pixel-perfect PDFs. Replaced a legacy system from 2014 and does the job ten times faster.",
+        desc: "Rust-powered document engine that generates bank statements for accounts, FDs and credit cards 10x faster than the legacy system.",
         tech: ['Rust', 'Document Engine', 'Node.js', 'AWS'],
       },
     ],
@@ -36,7 +36,7 @@ const WORK = [
     projects: [
       {
         name: 'Microservices Platform',
-        desc: "Built the entire backend nervous system of a global freelancer platform. Twelve microservices communicating through Amazon SNS — zero dropped messages, 50ms latency. Designed the Apollo Federation gateway that makes a dozen GraphQL schemas work as one. Also designed their in-app token economy for freelancer transactions. Literally created a currency.",
+        desc: "Twelve microservices, Apollo Federation gateway, in-app token economy, zero dropped messages at 50ms latency.",
         tech: ['Apollo Federation', 'GraphQL', 'AWS SNS/SQS', 'Docker', 'PostgreSQL'],
       },
     ],
@@ -49,12 +49,12 @@ const WORK = [
     projects: [
       {
         name: 'Discovery Engine',
-        desc: "APIs for Indonesia's largest e-commerce platform — the product discovery engine that shows you things before you know you want them. The rendering was fast enough that Google featured it at I/O. Then featured it again the next year. Two appearances at Google I/O off the same work. TTFB clocked at 87ms.",
+        desc: "Product discovery APIs so fast Google featured them at I/O twice. TTFB at 87ms.",
         tech: ['React', 'Node.js', 'GraphQL', 'Go'],
       },
       {
         name: 'Intools',
-        desc: "Internal admin tool for managing Discovery sale pages. Every flash sale, every campaign page that moved millions in GMV — all orchestrated through this. Content pipelines, live previews, real-time publishing.",
+        desc: "Admin tool for Discovery sale pages that moved millions in GMV through content pipelines and live previews.",
         tech: ['React', 'Ant Design', 'Kubernetes'],
       },
     ],
@@ -66,12 +66,12 @@ const WORK = [
     projects: [
       {
         name: 'Kokaihop 3.0',
-        desc: "First real gig, lead API developer. They said handle 2,000 concurrent users — so the answer was ElasticSearch for 20ms search, RabbitMQ for async processing, Node in cluster mode. MongoDB schemas, Apollo Server, everything from scratch. The full stack, built ground up.",
+        desc: "Full API rebuild handling 2,000 concurrent users with ElasticSearch (20ms search), RabbitMQ and Node cluster mode.",
         tech: ['Apollo Server', 'GraphQL', 'MongoDB', 'ElasticSearch', 'RabbitMQ'],
       },
       {
         name: 'Bharti AXA PWA',
-        desc: "Progressive Web App for insurance — multilevel form wizard with conditional logic branches everywhere. Offline-first, Redux state management complex enough to be its own conference talk.",
+        desc: "Offline-first insurance PWA with multilevel form wizard and Redux state management.",
         tech: ['React', 'Redux', 'Apollo Client', 'PWA'],
       },
     ],
@@ -83,7 +83,7 @@ const WORK = [
     projects: [
       {
         name: 'Man the Bay',
-        desc: "Solo build for Urban-Ed Academy — a digital report card for their 4-year fellowship program in the Bay Area. Full MERN stack, one-person engineering department. When the cause matters, you ship the whole thing yourself.",
+        desc: "Solo MERN build for Urban-Ed Academy's 4-year fellowship program in the Bay Area.",
         tech: ['React', 'Node.js', 'Express', 'MongoDB'],
       },
     ],
@@ -93,6 +93,11 @@ const WORK = [
 export default function DeveloperSection() {
   return (
     <div className={styles.page} role="main">
+
+      {/* ── INTRO LINE ── */}
+      <p className={styles.intro}>
+        7 years across 4 countries. Finance, e-commerce, social and AI.
+      </p>
 
       {/* ── DOWNLOADS ── */}
       <div className={styles.downloads}>
