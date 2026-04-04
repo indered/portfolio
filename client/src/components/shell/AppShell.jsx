@@ -257,9 +257,10 @@ export default function AppShell({ directPersona = null }) {
         setActivePlanet(planetId);
         setView('persona');
         setTargetPlanet(null);
+        if (planetId === 'developer') navigate('/architect', { replace: true });
       }, 1800);
     }
-  }, [view, use3D]);
+  }, [view, use3D, navigate]);
 
   // Keep stable ref for use in keyboard Enter handler
   useEffect(() => { handlePlanetClickRef.current = handlePlanetClick; }, [handlePlanetClick]);
@@ -268,12 +269,17 @@ export default function AppShell({ directPersona = null }) {
     setActivePlanet(targetPlanet);
     setView('persona');
     setTargetPlanet(null);
-  }, [targetPlanet]);
+    if (targetPlanet === 'developer') navigate('/architect', { replace: true });
+  }, [targetPlanet, navigate]);
 
   const handleBack = useCallback(() => {
-    // If opened via direct route (e.g. /architect), navigate to home
-    if (directPersona && location.pathname !== '/') {
-      navigate('/');
+    // Always reset URL to / when going back to hub
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+    }
+
+    // If opened via direct route (e.g. /architect), go to full hub
+    if (directPersona) {
       return;
     }
 
@@ -319,7 +325,8 @@ export default function AppShell({ directPersona = null }) {
 
     // Always direct content swap — no solar system revisit, no warp overlay
     setActivePlanet(planetId);
-  }, [view, activePlanet, isExitingToHub]);
+    navigate(planetId === 'developer' ? '/architect' : '/', { replace: true });
+  }, [view, activePlanet, isExitingToHub, navigate]);
 
   // Called when camera has landed at destination planet
   const handleTravelComplete = useCallback(() => {
