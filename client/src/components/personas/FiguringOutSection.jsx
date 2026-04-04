@@ -64,7 +64,7 @@ export default function FiguringOutSection() {
         {/* Brand name */}
         <h1 id="figuring-out-heading" className={styles.brandName}>
           <a
-            href="https://figuringout-web.vercel.app/"
+            href="https://figuringout.club"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Figuring Out - Visit the electrolyte brand website (opens in new tab)"
@@ -90,7 +90,7 @@ export default function FiguringOutSection() {
 
         {/* Visit link */}
         <a
-          href="https://figuringout-web.vercel.app/"
+          href="https://figuringout.club"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.visitBtn}
