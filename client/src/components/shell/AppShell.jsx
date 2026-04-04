@@ -553,6 +553,23 @@ export default function AppShell({ directPersona = null }) {
         )}
       </AnimatePresence>
 
+      {/* Swipe hint — mobile only, shown while camera flies to planet */}
+      <AnimatePresence>
+        {driftMode && !driftSettled && view === 'hub' && (
+          <motion.div
+            className={styles.swipeHint}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            <span className={styles.swipeArrow}>‹</span>
+            <span className={styles.swipeLabel}>swipe to explore</span>
+            <span className={styles.swipeArrow}>›</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Planet Preview Card — shown ONLY after camera finishes flying to approach position */}
       <AnimatePresence>
         {driftMode && driftSettled && view === 'hub' && !isExitingToHub && (

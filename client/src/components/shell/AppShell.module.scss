@@ -365,3 +365,60 @@
     color: rgba(255, 255, 255, 0.65);
   }
 }
+
+// --- Swipe hint — mobile drift onboarding ---
+.swipeHint {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    position: fixed;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    z-index: 8;
+
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 20px;
+    background: rgba(5, 5, 22, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+  }
+}
+
+.swipeLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.swipeArrow {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.4);
+
+  &:first-child {
+    animation: swipeLeft 1.4s ease-in-out infinite;
+  }
+  &:last-child {
+    animation: swipeRight 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes swipeLeft {
+  0%, 100% { transform: translateX(0); opacity: 0.4; }
+  50% { transform: translateX(-4px); opacity: 0.8; }
+}
+
+@keyframes swipeRight {
+  0%, 100% { transform: translateX(0); opacity: 0.4; }
+  50% { transform: translateX(4px); opacity: 0.8; }
+}

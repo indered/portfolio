@@ -164,10 +164,60 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .card {
     bottom: 24px;
-    padding: 0 20px 16px;
+    padding: 0 16px 14px;
     border-radius: 16px;
+    gap: 10px;
+    width: min(400px, calc(100vw - 24px));
+  }
+
+  .orb {
+    width: 48px;
+    height: 48px;
+  }
+
+  .orbIcon {
+    font-size: 1.3rem;
+  }
+
+  .identity {
+    gap: 2px;
+  }
+
+  .tagline {
+    max-width: 28ch;
+    font-size: 0.85rem;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .enterBtn {
+    padding: 8px 18px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) and (max-height: 700px) {
+  .card {
+    bottom: 16px;
+    gap: 8px;
+    padding: 0 14px 10px;
+  }
+
+  .orb {
+    width: 40px;
+    height: 40px;
+  }
+
+  .orbIcon {
+    font-size: 1.1rem;
+  }
+
+  .realName {
+    display: none;
   }
 }
