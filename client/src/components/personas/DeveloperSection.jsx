@@ -1,17 +1,6 @@
-import { PERSONAS } from '../../lib/constants';
 import styles from './DeveloperSection.module.scss';
 
-// ─── Broad skills — 6 pillars ────────────────────────────────────────────────
-const SKILLS = [
-  { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
-  { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
-  { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
-  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
-  { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
-  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
-];
-
-// ─── The Work — all visible, drunk-friend descriptions ───────────────────────
+// ─── The Work — all visible, casual but professional ─────────────────────────
 const WORK = [
   {
     company: 'Emirates NBD',
@@ -20,12 +9,12 @@ const WORK = [
     projects: [
       {
         name: 'Payment Tracker',
-        desc: "Bro okay so imagine every time someone in the UAE sends money — like literally every dirham — my code touches it. Built this real-time payment tracker on Kafka and AWS Lambda that processes transactions in sub-millisecond time. The hot path? Rewrote it in Rust because Node wasn't cutting it. Yes, Rust at a bank. I'm that guy.",
+        desc: "Every time someone in the UAE sends money — every single dirham — this system tracks it in real time. Built on Kafka and AWS Lambda, processing transactions in sub-millisecond time. The performance-critical path runs on Rust because sometimes Node just isn't fast enough. Event-driven architecture, zero tolerance for latency.",
         tech: ['Rust', 'Kafka', 'AWS Lambda', 'Node.js'],
       },
       {
         name: 'Statement Generator',
-        desc: "You know those bank statements nobody reads? I built the engine that makes them. Accounts, FDs, credit cards — every statement the bank generates comes through this Rust-powered document engine I designed from scratch. It talks to like fifteen different systems, stitches your financial life together, and spits out pixel-perfect PDFs. The old system was from 2014. Mine does it in a tenth of the time.",
+        desc: "A document engine built from scratch in Rust that generates every statement the bank produces — accounts, fixed deposits, credit cards, the lot. Pulls data from fifteen different systems, stitches it together, and renders pixel-perfect PDFs. Replaced a legacy system from 2014 and does the job ten times faster.",
         tech: ['Rust', 'Document Engine', 'Node.js', 'AWS'],
       },
     ],
@@ -37,7 +26,7 @@ const WORK = [
     projects: [
       {
         name: 'Microservices Platform',
-        desc: "So Noumena was this freelancer platform and I basically built its entire nervous system. Twelve microservices, all talking through Amazon SNS, zero dropped messages, 50ms latency. I designed the Apollo Federation gateway — the thing that makes a dozen GraphQL schemas play nice. Oh and I also invented their in-app currency. Like literally designed a token economy. I created money, bro.",
+        desc: "Built the entire backend nervous system of a global freelancer platform. Twelve microservices communicating through Amazon SNS — zero dropped messages, 50ms latency. Designed the Apollo Federation gateway that makes a dozen GraphQL schemas work as one. Also designed their in-app token economy for freelancer transactions. Literally created a currency.",
         tech: ['Apollo Federation', 'GraphQL', 'AWS SNS/SQS', 'Docker', 'PostgreSQL'],
       },
     ],
@@ -50,12 +39,12 @@ const WORK = [
     projects: [
       {
         name: 'Discovery Engine',
-        desc: "This is the one I flex the hardest. Tokopedia is basically Indonesia's Amazon right? I built APIs for their product discovery engine — shows you stuff before you know you want it. The rendering was SO fast that Google featured it at I/O. And then they featured it AGAIN the next year. Two times at Google I/O. TTFB clocked at 87ms. I peaked at 23 and honestly I'm okay with that.",
+        desc: "APIs for Indonesia's largest e-commerce platform — the product discovery engine that shows you things before you know you want them. The rendering was fast enough that Google featured it at I/O. Then featured it again the next year. Two appearances at Google I/O off the same work. TTFB clocked at 87ms.",
         tech: ['React', 'Node.js', 'GraphQL', 'Go'],
       },
       {
         name: 'Intools',
-        desc: "Admin weapon for managing Discovery sale pages. Every flash sale, every campaign page that moved millions in GMV — all managed through this tool I built. Content pipelines, live previews, the whole thing.",
+        desc: "Internal admin tool for managing Discovery sale pages. Every flash sale, every campaign page that moved millions in GMV — all orchestrated through this. Content pipelines, live previews, real-time publishing.",
         tech: ['React', 'Ant Design', 'Kubernetes'],
       },
     ],
@@ -67,12 +56,12 @@ const WORK = [
     projects: [
       {
         name: 'Kokaihop 3.0',
-        desc: "Where the Big Bang happened. First real gig, lead API dev, and they said 'handle 2,000 concurrent users.' So I plugged in ElasticSearch for 20ms search, RabbitMQ for async processing, ran Node in cluster mode like a madman. MongoDB schemas, Apollo Server, the full quantum stack. Everything from scratch.",
+        desc: "First real gig, lead API developer. They said handle 2,000 concurrent users — so the answer was ElasticSearch for 20ms search, RabbitMQ for async processing, Node in cluster mode. MongoDB schemas, Apollo Server, everything from scratch. The full stack, built ground up.",
         tech: ['Apollo Server', 'GraphQL', 'MongoDB', 'ElasticSearch', 'RabbitMQ'],
       },
       {
         name: 'Bharti AXA PWA',
-        desc: "Insurance forms so complex they needed their own dimension of Redux state. Multilevel form wizard, offline-first PWA, conditional logic branches everywhere. State management so clean it could've been a conference talk.",
+        desc: "Progressive Web App for insurance — multilevel form wizard with conditional logic branches everywhere. Offline-first, Redux state management complex enough to be its own conference talk.",
         tech: ['React', 'Redux', 'Apollo Client', 'PWA'],
       },
     ],
@@ -84,11 +73,21 @@ const WORK = [
     projects: [
       {
         name: 'Man the Bay',
-        desc: "Solo mission for Urban-Ed Academy — built their digital report card for a 4-year fellowship in the Bay Area. Full MERN stack, one-person army. When you believe in the cause, you become the entire engineering department.",
+        desc: "Solo build for Urban-Ed Academy — a digital report card for their 4-year fellowship program in the Bay Area. Full MERN stack, one-person engineering department. When the cause matters, you ship the whole thing yourself.",
         tech: ['React', 'Node.js', 'Express', 'MongoDB'],
       },
     ],
   },
+];
+
+// ─── Skills — 6 broad pillars ────────────────────────────────────────────────
+const SKILLS = [
+  { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
+  { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
+  { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
+  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
+  { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
+  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
 ];
 
 export default function DeveloperSection() {
@@ -100,10 +99,10 @@ export default function DeveloperSection() {
         <div className={styles.dossierItem}><span className={styles.dLabel}>Current</span><span className={styles.dValue}>Emirates NBD</span></div>
         <div className={styles.dossierItem}><span className={styles.dLabel}>Stack</span><span className={styles.dValue}>React · Node · Rust</span></div>
         <div className={styles.dossierItem}><span className={styles.dLabel}>Featured</span><span className={styles.dValue}>2× Google I/O</span></div>
-        <div className={styles.dossierItem}><span className={styles.dLabel}>Running</span><span className={styles.dValue}>Burj2Burj</span></div>
+        <div className={styles.dossierItem}><span className={styles.dLabel}>B2B</span><span className={styles.dValue}>Burj2Burj Finisher</span></div>
       </div>
 
-      {/* ── DOWNLOADS — proper download buttons ── */}
+      {/* ── DOWNLOADS ── */}
       <div className={styles.downloads}>
         <a href="/mahesh-inder-resume.pdf" download="Mahesh_Inder_Resume.pdf" className={styles.dlBtn}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -115,20 +114,7 @@ export default function DeveloperSection() {
         </a>
       </div>
 
-      {/* ── SKILLS ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Skills</h2>
-        <div className={styles.skillGrid}>
-          {SKILLS.map((s) => (
-            <div key={s.name} className={styles.skillCard}>
-              <h3 className={styles.skillName}>{s.name}</h3>
-              <p className={styles.skillTools}>{s.tools}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── THE WORK — all visible, no accordions ── */}
+      {/* ── THE WORK — all visible ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>The Work</h2>
 
@@ -158,6 +144,19 @@ export default function DeveloperSection() {
             ))}
           </div>
         ))}
+      </section>
+
+      {/* ── SKILLS — after work ── */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Skills</h2>
+        <div className={styles.skillGrid}>
+          {SKILLS.map((s) => (
+            <div key={s.name} className={styles.skillCard}>
+              <h3 className={styles.skillName}>{s.name}</h3>
+              <p className={styles.skillTools}>{s.tools}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ── FOOTER ── */}
