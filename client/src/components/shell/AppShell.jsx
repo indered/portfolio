@@ -439,23 +439,6 @@ export default function AppShell({ directPersona = null }) {
         )}
       </AnimatePresence>
 
-      {/* First-visit hint — "seven lives. click a planet." */}
-      <AnimatePresence>
-        {showHint && (
-          <motion.div
-            className={styles.hintOverlay}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            onClick={dismissHint}
-          >
-            <span className={styles.hintLine}>seven lives.</span>
-            <span className={styles.hintDot}>·</span>
-            <span className={styles.hintLine}>click a planet.</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Star discovery — coin arcs fly from star to wallet */}
       <AnimatePresence>

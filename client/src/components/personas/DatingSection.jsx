@@ -8,38 +8,10 @@ const PROFILE = {
   location: 'Dubai, UAE',
   occupation: 'Software engineer & blockchain architect',
   height: "5'11\"",
-  religion: 'Sikh',
   education: 'Computer Science',
-  hometown: 'Punjab, India',
+  hometown: 'Dubai, UAE',
 };
 
-const PHOTOS = [
-  {
-    id: 1,
-    num: '01',
-    caption: 'Running the Dubai Marathon at sunrise — certified pavement destroyer.',
-  },
-  {
-    id: 2,
-    num: '02',
-    caption: 'The beach is my second office. Less productive, better views.',
-  },
-  {
-    id: 3,
-    num: '03',
-    caption: 'Late-night sessions. Will play you a song if you ask nicely.',
-  },
-  {
-    id: 4,
-    num: '04',
-    caption: 'DIFC: where the decisions cost more than therapy.',
-  },
-  {
-    id: 5,
-    num: '05',
-    caption: '27 countries. Still deciding where home is.',
-  },
-];
 
 const PROMPTS = [
   {
@@ -80,24 +52,6 @@ const STATS = [
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function PhotoSlot({ photo }) {
-  const noiseUrl =
-    "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E";
-
-  return (
-    <figure className={styles.photoSlot}>
-      <div
-        className={styles.photoImage}
-        style={{ backgroundImage: `url("${noiseUrl}")` }}
-        aria-hidden="true"
-      >
-        <span className={styles.photoNum}>{photo.num}</span>
-      </div>
-      <figcaption className={styles.photoCaption}>{photo.caption}</figcaption>
-    </figure>
-  );
-}
-
 function PromptBlock({ question, answer }) {
   return (
     <article className={styles.promptBlock} aria-label={question}>
@@ -134,7 +88,6 @@ export default function DatingSection() {
           <span className={styles.pill} role="listitem">{PROFILE.height}</span>
           <span className={styles.pill} role="listitem">{PROFILE.hometown}</span>
           <span className={styles.pill} role="listitem">{PROFILE.education}</span>
-          <span className={styles.pill} role="listitem">{PROFILE.religion}</span>
         </div>
       </header>
 
@@ -146,36 +99,17 @@ export default function DatingSection() {
         answer={PROMPTS[0].answer}
       />
 
-      {/* ── Photo grid row 1 ─────────────────────────────────────────────── */}
-      <section className={styles.photoGrid} aria-label="Photo gallery">
-        {PHOTOS.slice(0, 2).map((p) => (
-          <PhotoSlot key={p.id} photo={p} />
-        ))}
-      </section>
-
       {/* ── Prompt 2 ─────────────────────────────────────────────────────── */}
       <PromptBlock
         question={PROMPTS[1].question}
         answer={PROMPTS[1].answer}
       />
 
-      {/* ── Photo grid row 2 ─────────────────────────────────────────────── */}
-      <section className={styles.photoGrid} aria-label="Photo gallery continued">
-        {PHOTOS.slice(2, 4).map((p) => (
-          <PhotoSlot key={p.id} photo={p} />
-        ))}
-      </section>
-
       {/* ── Prompt 3 ─────────────────────────────────────────────────────── */}
       <PromptBlock
         question={PROMPTS[2].question}
         answer={PROMPTS[2].answer}
       />
-
-      {/* ── Photo 5 full-width ───────────────────────────────────────────── */}
-      <section className={`${styles.photoGrid} ${styles.photoGridSingle}`} aria-label="Feature photo">
-        <PhotoSlot photo={PHOTOS[4]} />
-      </section>
 
       {/* ── Prompts 4 & 5 ────────────────────────────────────────────────── */}
       <PromptBlock
