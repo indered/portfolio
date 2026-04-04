@@ -136,9 +136,12 @@ function TimelineEntry({ entry, isActive, onClick }) {
   const yearStart = entry.period.split('—')[0].trim().split(' ').pop();
 
   return (
-    <div
+    <article
       className={`${styles.timelineEntry} ${isActive ? styles.timelineEntryActive : ''}`}
       onClick={onClick}
+      role="listitem"
+      aria-expanded={isActive}
+      aria-label={`${entry.role} at ${entry.company}, ${entry.period}`}
     >
       {/* Year stamp */}
       <div className={styles.entryYear}>
@@ -149,7 +152,7 @@ function TimelineEntry({ entry, isActive, onClick }) {
       </div>
 
       {/* Connector */}
-      <div className={styles.entryConnector}>
+      <div className={styles.entryConnector} aria-hidden="true">
         <div className={styles.connectorDot} />
         <div className={styles.connectorLine} />
       </div>
@@ -200,10 +203,10 @@ function TimelineEntry({ entry, isActive, onClick }) {
           className={styles.expandToggle}
           aria-label={isActive ? 'Collapse details' : 'Expand details'}
         >
-          <span>{isActive ? '×' : '+'}</span>
+          <span aria-hidden="true">{isActive ? '×' : '+'}</span>
         </button>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -248,13 +251,15 @@ function ProjectCard({ project }) {
       className={`${styles.projectCard} ${project.featured ? styles.projectCardFeatured : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      role="listitem"
+      aria-label={`${project.title}: ${project.subtitle}`}
     >
       {/* Thin top accent line */}
-      <div className={styles.cardAccentBar} />
+      <div className={styles.cardAccentBar} aria-hidden="true" />
 
       {/* Featured badge */}
       {project.featured && (
-        <div className={styles.featuredLabel}>FEATURED</div>
+        <div className={styles.featuredLabel} role="status" aria-label="Featured project">FEATURED</div>
       )}
 
       <div className={styles.cardBody}>
@@ -361,7 +366,7 @@ export default function DeveloperSection() {
   };
 
   return (
-    <div className={styles.developer}>
+    <div className={styles.developer} role="main">
 
       {/* ── DOT GRID BACKGROUND ── */}
       <div className={styles.dotGridWrap} aria-hidden="true">
@@ -369,18 +374,18 @@ export default function DeveloperSection() {
       </div>
 
       {/* ── HERO ── */}
-      <section className={styles.hero}>
+      <section className={styles.hero} aria-labelledby="developer-heading">
         <div className={styles.heroInner}>
           {/* Location / role badge */}
-          <div className={styles.locationBadge}>
-            <span className={styles.locationDot} />
+          <div className={styles.locationBadge} aria-label="Location and role">
+            <span className={styles.locationDot} aria-hidden="true" />
             <span>Dubai, UAE</span>
-            <span className={styles.locationSep}>·</span>
+            <span className={styles.locationSep} aria-hidden="true">·</span>
             <span>Full Stack Developer</span>
           </div>
 
           {/* Big title */}
-          <h2 className={styles.heroTitle}>
+          <h2 id="developer-heading" className={styles.heroTitle}>
             <span className={styles.heroTitleLine1}>The</span>
             <span className={styles.heroTitleLine2}>Architect</span>
           </h2>
@@ -424,10 +429,10 @@ export default function DeveloperSection() {
       </section>
 
       {/* ── SKILLS ── */}
-      <section className={styles.skillsSection}>
+      <section className={styles.skillsSection} aria-labelledby="skills-heading">
         <div className={styles.sectionHeader}>
           <SectionLabel>Tech Stack</SectionLabel>
-          <h3 className={styles.sectionTitle}>Skills &amp; Tools</h3>
+          <h3 id="skills-heading" className={styles.sectionTitle}>Skills &amp; Tools</h3>
         </div>
 
         <SkillCloud
@@ -437,13 +442,13 @@ export default function DeveloperSection() {
       </section>
 
       {/* ── EXPERIENCE ── */}
-      <section className={styles.experienceSection}>
+      <section className={styles.experienceSection} aria-labelledby="experience-heading">
         <div className={styles.sectionHeader}>
           <SectionLabel>Career History</SectionLabel>
-          <h3 className={styles.sectionTitle}>Experience</h3>
+          <h3 id="experience-heading" className={styles.sectionTitle}>Experience</h3>
         </div>
 
-        <div className={styles.timeline}>
+        <div className={styles.timeline} role="list" aria-label="Work experience timeline">
           {EXPERIENCE.map((entry) => (
             <TimelineEntry
               key={entry.id}
@@ -456,13 +461,13 @@ export default function DeveloperSection() {
       </section>
 
       {/* ── PROJECTS ── */}
-      <section className={styles.projectsSection}>
+      <section className={styles.projectsSection} aria-labelledby="projects-heading">
         <div className={styles.sectionHeader}>
           <SectionLabel>Selected Work</SectionLabel>
-          <h3 className={styles.sectionTitle}>Projects</h3>
+          <h3 id="projects-heading" className={styles.sectionTitle}>Projects</h3>
         </div>
 
-        <div className={styles.projectsGrid}>
+        <div className={styles.projectsGrid} role="list" aria-label="Featured projects">
           {PROJECTS.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
@@ -470,17 +475,18 @@ export default function DeveloperSection() {
       </section>
 
       {/* ── FOOTER CTA ── */}
-      <div className={styles.footerCta}>
+      <footer className={styles.footerCta} aria-label="Contact call to action">
         <p className={styles.footerCtaText}>
           Systems built to last. Let&apos;s build something together.
         </p>
         <a
           href="mailto:hi@indered.in"
           className={styles.footerCtaLink}
+          aria-label="Send email to Mahesh Inder"
         >
           Get in touch
         </a>
-      </div>
+      </footer>
     </div>
   );
 }

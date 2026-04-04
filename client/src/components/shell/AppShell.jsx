@@ -9,11 +9,14 @@ import PlanetPreviewCard from './PlanetPreviewCard';
 import PaperBurnIntro from '../intro/PaperBurnIntro';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
+import { useSEO } from '../../hooks/useSEO';
 import styles from './AppShell.module.scss';
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
 export default function AppShell() {
+  // Reset SEO to default when in hub view (null = default config)
+  const { updateSEO } = useSEO(null);
   const [view, setView] = useState('intro');
   const [introJustFinished, setIntroJustFinished] = useState(false);
   const [activePlanet, setActivePlanet] = useState(null);

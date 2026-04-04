@@ -100,16 +100,16 @@ function PhotoSlot({ photo }) {
 
 function PromptBlock({ question, answer }) {
   return (
-    <div className={styles.promptBlock}>
-      <p className={styles.promptQuestion}>{question}</p>
+    <article className={styles.promptBlock} aria-label={question}>
+      <h3 className={styles.promptQuestion}>{question}</h3>
       <p className={styles.promptAnswer}>{answer}</p>
-    </div>
+    </article>
   );
 }
 
 function StatCard({ stat }) {
   return (
-    <div className={styles.statCard}>
+    <div className={styles.statCard} role="listitem" aria-label={`${stat.label}: ${stat.value}, ${stat.sub}`}>
       <span className={styles.statValue}>{stat.value}</span>
       <span className={styles.statLabel}>{stat.label}</span>
       <span className={styles.statSub}>{stat.sub}</span>
@@ -121,20 +121,20 @@ function StatCard({ stat }) {
 
 export default function DatingSection() {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} role="main">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <header className={styles.hero}>
+      <header className={styles.hero} aria-labelledby="dating-heading">
         <p className={styles.heroEyebrow}>The Eligible Bachelor</p>
-        <h1 className={styles.heroName}>{PROFILE.name}</h1>
-        <p className={styles.heroAge}>{PROFILE.age}</p>
+        <h1 id="dating-heading" className={styles.heroName}>{PROFILE.name}</h1>
+        <p className={styles.heroAge} aria-label={`Age: ${PROFILE.age}`}>{PROFILE.age}</p>
         <p className={styles.heroOccupation}>{PROFILE.occupation}</p>
         <p className={styles.heroLocation}>{PROFILE.location}</p>
-        <div className={styles.heroPills}>
-          <span className={styles.pill}>{PROFILE.height}</span>
-          <span className={styles.pill}>{PROFILE.hometown}</span>
-          <span className={styles.pill}>{PROFILE.education}</span>
-          <span className={styles.pill}>{PROFILE.religion}</span>
+        <div className={styles.heroPills} role="list" aria-label="Profile details">
+          <span className={styles.pill} role="listitem">{PROFILE.height}</span>
+          <span className={styles.pill} role="listitem">{PROFILE.hometown}</span>
+          <span className={styles.pill} role="listitem">{PROFILE.education}</span>
+          <span className={styles.pill} role="listitem">{PROFILE.religion}</span>
         </div>
       </header>
 
@@ -215,9 +215,9 @@ export default function DatingSection() {
       <hr className={styles.divider} />
 
       {/* ── Stats ────────────────────────────────────────────────────────── */}
-      <section className={styles.statsSection}>
-        <h2 className={styles.statsSectionLabel}>By the numbers</h2>
-        <div className={styles.statsGrid}>
+      <section className={styles.statsSection} aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className={styles.statsSectionLabel}>By the numbers</h2>
+        <div className={styles.statsGrid} role="list" aria-label="Personal statistics">
           {STATS.map((s) => (
             <StatCard key={s.label} stat={s} />
           ))}

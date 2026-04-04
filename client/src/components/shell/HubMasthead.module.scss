@@ -114,10 +114,9 @@
 
 // Tiny chevron indicates the button opens a menu
 .logoChevron {
-  display: block;
-  font-size: 9px;
+  display: inline-block;
+  font-size: 8px;
   color: rgba(255, 255, 255, 0.3);
-  margin-top: 4px;
   line-height: 1;
 }
 
@@ -172,48 +171,29 @@
   }
 }
 
-// Ghost monogram — barely visible, brand mark for those who notice
-.logoMark {
+// SVG logo image
+.logoImg {
   display: block;
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.45em;
-  color: rgba(255, 255, 255, 0.16);
-  text-transform: uppercase;
-  margin-bottom: 3px;
+  height: 44px;
+  width: auto;
 }
 
-// Full name — crisp and legible
-.logoName {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.82);
-  text-transform: uppercase;
-  line-height: 1;
+// Meta row — subtitle + chevron
+.logoMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
 }
 
 // Sub-descriptor — extreme tracking, near-invisible
 .logoSub {
-  display: block;
   font-family: var(--font-mono);
-  font-size: 8.5px;
-  letter-spacing: 0.22em;
-  color: rgba(255, 255, 255, 0.22);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.25);
   text-transform: uppercase;
-  margin-top: 4px;
-}
-
-// Anchoring rule — thin line below the logo block
-.logoRule {
-  display: block;
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin-top: 8px;
 }
 
 // ── Responsive — hide big masthead on small screens ───────────────────────────

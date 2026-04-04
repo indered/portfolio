@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useCallback } from 'react';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
 import { useMobileSwipe } from '../../hooks/useMobileSwipe';
+import { useSEO } from '../../hooks/useSEO';
 import styles from './PersonaApp.module.scss';
 
 const PERSONA_COMPONENTS = {
@@ -29,6 +30,9 @@ export default function PersonaApp({
   const PersonaComponent = PERSONA_COMPONENTS[personaId];
   const { earnTokens }   = useTokens();
   const contentRef       = useRef(null);
+
+  // Update SEO metadata for this section
+  useSEO(personaId);
 
   const currentIndex = personaIds.indexOf(personaId);
   const prevId = currentIndex > 0 ? personaIds[currentIndex - 1] : null;

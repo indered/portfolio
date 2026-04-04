@@ -104,6 +104,17 @@ $fo-accent:   #A8C490;
   color: $fo-cream;
   margin: 0 0 20px;
   text-shadow: 0 0 60px rgba(168, 196, 144, 0.12);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 200ms ease, text-shadow 200ms ease;
+
+    &:hover {
+      color: $fo-accent;
+      text-shadow: 0 0 80px rgba(168, 196, 144, 0.25);
+    }
+  }
 }
 
 // ── Eyebrow ───────────────────────────────────────────────────────────────────
@@ -142,62 +153,38 @@ $fo-accent:   #A8C490;
   font-weight: 600;
 }
 
-// ── Waitlist ──────────────────────────────────────────────────────────────────
-.waitlist {
-  display: flex;
-  flex-direction: column;
+// ── Visit button ──────────────────────────────────────────────────────────────
+.visitBtn {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 360px;
-}
-
-.waitlistLabel {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: $fo-muted;
-}
-
-.waitlistRow {
-  display: flex;
-  width: 100%;
-  border: 1px solid rgba(139, 163, 112, 0.18);
-  border-radius: 6px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.waitlistInput {
-  flex: 1;
-  padding: 11px 16px;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: $fo-cream-dim;
-  letter-spacing: 0.04em;
-
-  &::placeholder {
-    color: $fo-muted;
-  }
-}
-
-.waitlistBtn {
-  padding: 11px 18px;
+  gap: 10px;
+  padding: 14px 28px;
   background: rgba(139, 163, 112, 0.12);
-  border: none;
-  border-left: 1px solid rgba(139, 163, 112, 0.18);
+  border: 1px solid rgba(139, 163, 112, 0.25);
+  border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: $fo-green;
-  cursor: not-allowed;
-  opacity: 0.55;
-  transition: opacity 200ms ease;
+  text-decoration: none;
+  transition: all 200ms ease;
+
+  svg {
+    opacity: 0.7;
+    transition: transform 200ms ease, opacity 200ms ease;
+  }
+
+  &:hover {
+    background: rgba(139, 163, 112, 0.2);
+    border-color: rgba(139, 163, 112, 0.4);
+    color: $fo-accent;
+
+    svg {
+      transform: translate(2px, -2px);
+      opacity: 1;
+    }
+  }
 }
 
 // ── Bottom minerals ───────────────────────────────────────────────────────────

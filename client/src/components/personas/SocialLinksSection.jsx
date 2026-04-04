@@ -92,8 +92,9 @@ function SocialCard({ link }) {
       rel="noopener noreferrer"
       className={styles.card}
       style={{ '--hover-color': meta.hoverColor }}
+      aria-label={`${link.name}: ${meta.handle} - ${meta.label} (opens in new tab)`}
     >
-      <div className={styles.cardIcon} style={{ color: meta.hoverColor }}>
+      <div className={styles.cardIcon} style={{ color: meta.hoverColor }} aria-hidden="true">
         {icon}
       </div>
 
@@ -103,7 +104,7 @@ function SocialCard({ link }) {
         <span className={styles.cardDesc}>{meta.description}</span>
       </div>
 
-      <span className={styles.cardCta}>{meta.label} →</span>
+      <span className={styles.cardCta} aria-hidden="true">{meta.label} →</span>
     </a>
   );
 }
@@ -158,27 +159,27 @@ export default function SocialLinksSection() {
   const cards = SOCIAL_LINKS.filter(l => l.icon !== 'mail');
 
   return (
-    <div className={styles.social}>
+    <div className={styles.social} role="main">
 
       {/* ── Current Status hero ── */}
-      <div className={styles.hero}>
-        <div className={styles.statusLine}>
+      <section className={styles.hero} aria-labelledby="social-heading">
+        <div className={styles.statusLine} role="status" aria-label="Current availability">
           <span className={styles.statusDot} aria-hidden="true" />
           <span className={styles.statusText}>
             Open to senior engineering roles&nbsp;&nbsp;·&nbsp;&nbsp;Available for consulting
           </span>
         </div>
-        <h2 className={styles.heroName}>{ABOUT.name}</h2>
+        <h2 id="social-heading" className={styles.heroName}>{ABOUT.name}</h2>
         <p className={styles.heroLocation}>Full Stack Developer&nbsp;&nbsp;·&nbsp;&nbsp;{ABOUT.location}</p>
         <div className={styles.heroRule} aria-hidden="true" />
-      </div>
+      </section>
 
       {/* ── Cards grid ── */}
-      <div className={styles.grid}>
+      <nav className={styles.grid} aria-label="Social media links">
         {cards.map((link, i) => (
           <SocialCard key={link.name} link={link} index={i} />
         ))}
-      </div>
+      </nav>
 
       {/* ── Email section ── */}
       <EmailBlock />

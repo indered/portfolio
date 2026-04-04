@@ -138,18 +138,22 @@ export default function HubMasthead({ visible }) {
               aria-label="Mahesh Inder — download CV or cover letter"
               aria-expanded={menuOpen}
             >
-              <span className={styles.logoMark}>MI</span>
-              <span className={styles.logoName}>Mahesh Inder</span>
-              <span className={styles.logoSub}>Full Stack · Dubai</span>
-              <span className={styles.logoRule} />
-              <motion.span
-                className={styles.logoChevron}
-                animate={{ rotate: menuOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-                aria-hidden="true"
-              >
-                ▾
-              </motion.span>
+              <img
+                src="/logo.svg"
+                alt="Mahesh Inder"
+                className={styles.logoImg}
+              />
+              <div className={styles.logoMeta}>
+                <span className={styles.logoSub}>Full Stack · Dubai</span>
+                <motion.span
+                  className={styles.logoChevron}
+                  animate={{ rotate: menuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  aria-hidden="true"
+                >
+                  ▾
+                </motion.span>
+              </div>
             </button>
 
             {/* Dropdown menu */}

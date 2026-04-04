@@ -82,10 +82,10 @@ function ReadingList() {
 
 export default function ThinkerSection() {
   return (
-    <div className={styles.thinker}>
+    <div className={styles.thinker} role="main">
 
       {/* ── Magazine dateline ── */}
-      <div className={styles.dateline} aria-label="Publication dateline">
+      <div className={styles.dateline} aria-label="Publication dateline" role="banner">
         <span>Vol.&thinsp;I</span>
         <span className={styles.datelineSep}>&mdash;</span>
         <span>Dubai, UAE</span>
@@ -95,10 +95,10 @@ export default function ThinkerSection() {
       <div className={styles.datelineRule} aria-hidden="true" />
 
       {/* ── Header ── */}
-      <header className={styles.header}>
-        <h2 className={styles.title}>
+      <header className={styles.header} aria-labelledby="thinker-heading">
+        <h2 id="thinker-heading" className={styles.title}>
           From the Gurudwara
-          <br className={styles.titleBreak} />
+          <br className={styles.titleBreak} aria-hidden="true" />
           to the Cosmos
         </h2>
 

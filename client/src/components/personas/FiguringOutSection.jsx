@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import styles from './FiguringOutSection.module.scss';
 
 // ── Mineral crystal SVG ───────────────────────────────────────────────────────
 function Crystal() {
   return (
-    <svg className={styles.crystal} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className={styles.crystal} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
       {/* Hexagonal crystal facets */}
       <polygon
         points="28,4 46,14 46,34 28,44 10,34 10,14"
@@ -31,7 +30,7 @@ function Crystal() {
 // ── Minerals bottom decoration ────────────────────────────────────────────────
 function MineralsBg() {
   return (
-    <svg className={styles.minerals} viewBox="0 0 800 180" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className={styles.minerals} viewBox="0 0 800 180" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation">
       {/* Left cluster */}
       <polygon points="60,180 90,120 120,160 150,100 180,140 190,180" stroke="#8BA370" strokeWidth="1" fill="rgba(139,163,112,0.08)"/>
       <polygon points="80,180 100,130 125,150" stroke="#8BA370" strokeWidth="0.6" fill="none" opacity="0.5"/>
@@ -48,16 +47,14 @@ function MineralsBg() {
 
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function FiguringOutSection() {
-  const [email, setEmail] = useState('');
-
   return (
-    <section className={styles.section}>
+    <section className={styles.section} aria-labelledby="figuring-out-heading">
       <MineralsBg />
 
       <div className={styles.inner}>
         {/* Badge */}
-        <div className={styles.badge}>
-          <span className={styles.badgeDot} />
+        <div className={styles.badge} role="status" aria-label="Launch status">
+          <span className={styles.badgeDot} aria-hidden="true" />
           <span className={styles.badgeText}>Launching Soon</span>
         </div>
 
@@ -65,8 +62,15 @@ export default function FiguringOutSection() {
         <Crystal />
 
         {/* Brand name */}
-        <h1 className={styles.brandName}>
-          Figuring Out
+        <h1 id="figuring-out-heading" className={styles.brandName}>
+          <a
+            href="https://figuringout-web.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Figuring Out - Visit the electrolyte brand website (opens in new tab)"
+          >
+            Figuring Out
+          </a>
         </h1>
 
         {/* Eyebrow */}
@@ -74,7 +78,7 @@ export default function FiguringOutSection() {
           an electrolyte brand · Dubai
         </p>
 
-        <div className={styles.divider} />
+        <div className={styles.divider} aria-hidden="true" />
 
         {/* Tagline */}
         <p className={styles.tagline}>
@@ -84,23 +88,19 @@ export default function FiguringOutSection() {
           </span>
         </p>
 
-        {/* Waitlist */}
-        <div className={styles.waitlist}>
-          <span className={styles.waitlistLabel}>Get notified at launch</span>
-          <div className={styles.waitlistRow}>
-            <input
-              className={styles.waitlistInput}
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              disabled
-            />
-            <button className={styles.waitlistBtn} disabled>
-              Notify me
-            </button>
-          </div>
-        </div>
+        {/* Visit link */}
+        <a
+          href="https://figuringout-web.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.visitBtn}
+          aria-label="Visit Figuring Out website (opens in new tab)"
+        >
+          Visit Website
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </a>
       </div>
     </section>
   );
