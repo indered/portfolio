@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cron from 'node-cron';
 
 import connectDB from './config/db.js';
 import guestbookRoutes from './routes/guestbook.js';
@@ -90,6 +91,20 @@ app.use((err, req, res, _next) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Self-ping every 10 minutes to prevent Render free tier sleep
+  if (process.env.RENDER_EXTERNAL_URL || process.env.NODE_ENV === 'production') {
+    const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+    cron.schedule('*/10 * * * *', async () => {
+      try {
+        await fetch(`${url}/api/health`);
+        console.log('Keep-alive ping sent');
+      } catch (err) {
+        console.error('Keep-alive ping failed:', err.message);
+      }
+    });
+    console.log('Keep-alive cron scheduled (every 10 min)');
+  }
 });
 
 export default app;
