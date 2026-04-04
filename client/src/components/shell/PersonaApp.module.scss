@@ -216,16 +216,8 @@
   opacity: 0.5;
 }
 
-.attributionName {
-  color: var(--persona-color, var(--color-accent-1));
-  opacity: 0.9;
-}
-
-.attributionClaude {
-  background: linear-gradient(90deg, #cc785c, #d4956a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.attributionHighlight {
+  color: #4a9eff;
   opacity: 0.9;
 }
 

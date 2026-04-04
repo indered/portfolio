@@ -151,7 +151,7 @@ export default function PersonaApp({
 
         {/* ── Attribution footer */}
         <footer className={styles.attribution}>
-          was building a cv, ended up building a solar system
+          was building a <span className={styles.attributionHighlight}>cv</span>, ended up building a <span className={styles.attributionHighlight}>solar system</span>
         </footer>
       </div>
     </div>
