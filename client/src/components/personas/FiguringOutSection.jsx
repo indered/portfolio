@@ -19,23 +19,23 @@ export default function FiguringOutSection() {
         </div>
 
         <p className={styles.story}>
-          Running 10K in 42 degree Dubai heat. Stopped at a store. Every sports drink on the shelf
-          was loaded with sugar and chemicals. Looked for something clean. It did not exist.
-          So I decided to make it.
+          Started running marathons in Dubai. Fell in love with the discipline, the heat, the sunrise
+          routes. But every time I reached for hydration, it tasted like medicine or candy. Why can't
+          staying hydrated taste good? Inspired by Humantra, I started figuring it out.
         </p>
 
         <div className={styles.cards}>
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>0g Sugar</h4>
-            <p className={styles.cardDesc}>No added sugar. No artificial sweeteners.</p>
+            <h4 className={styles.cardTitle}>Tastes Good</h4>
+            <p className={styles.cardDesc}>Hydration that you actually look forward to drinking.</p>
           </div>
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>Real Minerals</h4>
-            <p className={styles.cardDesc}>Sodium, potassium, magnesium. What your body needs.</p>
+            <h4 className={styles.cardTitle}>Clean Label</h4>
+            <p className={styles.cardDesc}>No sugar, no junk. Just real electrolytes.</p>
           </div>
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>Made in Dubai</h4>
-            <p className={styles.cardDesc}>Designed for desert heat. Tested on marathon runners.</p>
+            <h4 className={styles.cardTitle}>Born in Dubai</h4>
+            <p className={styles.cardDesc}>Made for runners, by a runner, in the desert.</p>
           </div>
         </div>
 

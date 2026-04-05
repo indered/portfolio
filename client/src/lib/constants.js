@@ -27,10 +27,10 @@ export const PERSONAS = {
   },
   blockchain: {
     id: 'blockchain',
-    title: 'Figuring Out',
-    icon: '💧',
+    title: 'Ventures',
+    icon: '🚀',
     color: 'var(--color-persona-blockchain)',
-    tagline: "In the world where everyone is figuring out, at least we figured out the hydration right.",
+    tagline: "Building things outside of work. Hydration brand and a programming language.",
     orbitRadius: 1,
     orbitSpeed: 30,
     orbitOffset: 103,
@@ -47,7 +47,7 @@ export const PERSONAS = {
   },
   dating: {
     id: 'dating',
-    title: 'About Me',
+    title: 'Personal',
     icon: '💘',
     color: 'var(--color-persona-dating)',
     tagline: "Schrödinger's Boyfriend: simultaneously perfect and a red flag until observed.",
@@ -96,7 +96,7 @@ export const PLANET_CONFIG = {
     roughness: 0.55, metalness: 0.2,
   },
   blockchain: {
-    realName: 'Figuring Out',
+    realName: 'Ventures',
     meshColor: '#8BA370', emissive: '#3D5C30', size: 0.92, orbitRadius: 7, orbitSpeed: 0.2,
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#B8D4A8', atmosphereOpacity: 0.18,
     roughness: 0.55, metalness: 0.15,

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'motion/react';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
 import { useMobileSwipe } from '../../hooks/useMobileSwipe';
@@ -92,12 +93,18 @@ export default function PersonaApp({
 
   if (!persona || !PersonaComponent) return null;
 
+  const slideX = direction === 'right' ? '100vw' : '-100vw';
+
   return (
-    <div
+    <motion.div
       className={styles.personaApp}
       data-persona={personaId}
       style={{ '--persona-color': config?.meshColor }}
       ref={contentRef}
+      initial={{ x: slideX, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: direction === 'right' ? '-100vw' : '100vw', opacity: 0 }}
+      transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
     >
       {/* ── Planetary atmosphere — persona color bleeds from top */}
       <div className={styles.atmosphereGlow} aria-hidden="true" />
@@ -178,6 +185,6 @@ export default function PersonaApp({
           was building a <span className={styles.attributionHighlight}>cv</span>, ended up building a <span className={styles.attributionHighlight}>solar system</span>
         </footer>
       </div>
-    </div>
+    </motion.div>
   );
 }
