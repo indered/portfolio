@@ -192,6 +192,8 @@
   min-height: 100dvh;
   // Leave room for the dock on desktop, safe area on iOS
   padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  // Prevent CLS from lazy-loaded content
+  contain: layout;
 }
 
 // ── Attribution footer ────────────────────────────────────────────────────────

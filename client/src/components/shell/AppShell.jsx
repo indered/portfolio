@@ -90,13 +90,13 @@ export default function AppShell({ directPersona = null }) {
     }
   }, []);
 
-  // Preload the SolarSystem chunk immediately so it is ready the instant intro ends.
-  // We intentionally do NOT mount SolarSystem during intro (prevents a 1-frame WebGL
-  // flash before visibility:hidden can take effect), but we still want the module
-  // downloaded in parallel with the intro animation.
+  // Preload the SolarSystem chunk only when entering via hub (not direct persona routes).
+  // This avoids loading 1MB+ of Three.js on pages like /architect that don't use 3D.
   useEffect(() => {
-    import('../solar-system/SolarSystem').catch(() => {});
-  }, []);
+    if (!directPersona) {
+      import('../solar-system/SolarSystem').catch(() => {});
+    }
+  }, [directPersona]);
 
   // Force appropriate theme per view
   useEffect(() => {
