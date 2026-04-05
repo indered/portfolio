@@ -23,6 +23,7 @@ const ROUTES = [
   { path: '/thoughts', file: 'thoughts/index.html' },
   { path: '/about', file: 'about/index.html' },
   { path: '/brand', file: 'brand/index.html' },
+  { path: '/stats', file: 'stats/index.html' },
 ];
 
 const MIME = {

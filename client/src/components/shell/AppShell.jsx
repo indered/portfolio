@@ -11,6 +11,7 @@ import PaperBurnIntro from '../intro/PaperBurnIntro';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
 import { useSEO } from '../../hooks/useSEO';
+import { useAnalytics, trackPlanetClick } from '../../hooks/useAnalytics';
 import styles from './AppShell.module.scss';
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
@@ -31,6 +32,7 @@ export default function AppShell({ directPersona = null }) {
   // Reset SEO to default when in hub view (null = default config)
   // Set default SEO only in hub view. Pass false to skip when PersonaApp handles it.
   useSEO(directPersona ? false : null);
+  useAnalytics(directPersona ? PERSONA_ROUTES[directPersona] : '/');
   const [view, setView] = useState(directPersona ? 'persona' : 'intro');
   const [introJustFinished, setIntroJustFinished] = useState(false);
   const [activePlanet, setActivePlanet] = useState(directPersona);
@@ -259,6 +261,7 @@ export default function AppShell({ directPersona = null }) {
   const handlePlanetClick = useCallback((planetId) => {
     if (view !== 'hub') return;
     dismissHint();
+    trackPlanetClick(planetId);
     setDriftSettled(false);  // hide preview card immediately
     setTargetPlanet(planetId);
     setView('transitioning');
