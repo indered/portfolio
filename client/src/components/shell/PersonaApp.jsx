@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
 import { useMobileSwipe } from '../../hooks/useMobileSwipe';
@@ -51,6 +51,19 @@ export default function PersonaApp({
     onSwipeLeft:  handleSwipeLeft,
     onSwipeRight: handleSwipeRight,
   });
+
+  // Swipe hint for mobile
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'ontouchstart' in window && !localStorage.getItem('swipe_hint_seen')) {
+      const t = setTimeout(() => setShowSwipeHint(true), 1500);
+      const t2 = setTimeout(() => {
+        setShowSwipeHint(false);
+        localStorage.setItem('swipe_hint_seen', '1');
+      }, 5000);
+      return () => { clearTimeout(t); clearTimeout(t2); };
+    }
+  }, []);
 
   useEffect(() => {
     earnTokens('EXPLORE_SECTION');
@@ -136,6 +149,15 @@ export default function PersonaApp({
           />
         ))}
       </nav>
+
+      {/* ── Swipe hint (mobile only, first visit) */}
+      {showSwipeHint && (
+        <div className={styles.swipeHint} onClick={() => setShowSwipeHint(false)}>
+          <span className={styles.swipeArrowLeft}>‹</span>
+          <span className={styles.swipeText}>swipe to switch</span>
+          <span className={styles.swipeArrowRight}>›</span>
+        </div>
+      )}
 
       {/* ── Persona content */}
       <div className={styles.content}>

@@ -2,55 +2,43 @@ import styles from './FiguringOutSection.module.scss';
 
 export default function FiguringOutSection() {
   return (
-    <section className={styles.section} aria-labelledby="figuring-out-heading">
-      <div className={styles.inner}>
+    <div className={styles.page} role="main">
 
-        {/* Origin story */}
-        <div className={styles.origin}>
-          <span className={styles.originLabel}>The Origin</span>
-          <p className={styles.originText}>
-            I was running 10K in Dubai heat. 42 degrees. Drenched. Stopped at a store,
-            picked up a sports drink. Sugar, artificial colors, chemicals I couldn't pronounce.
-            Thought to myself: there has to be something better. There wasn't. So I decided to make it.
-          </p>
-        </div>
+      <h2 className={styles.pageTitle}>Ventures</h2>
 
-        {/* Brand */}
-        <div className={styles.brand}>
-          <span className={styles.badge}>Launching Soon</span>
-          <h1 id="figuring-out-heading" className={styles.brandName}>
+      {/* ═══ FIGURING OUT ═══ */}
+      <section className={styles.venture}>
+        <div className={styles.ventureHeader}>
+          <span className={styles.status}>Launching Soon</span>
+          <h3 className={styles.ventureName}>
             <a href="https://figuringout.club" target="_blank" rel="noopener noreferrer">
               Figuring Out
             </a>
-          </h1>
-          <p className={styles.brandSub}>
-            Clean hydration for people who move.
-          </p>
+          </h3>
+          <p className={styles.ventureType}>Electrolyte brand, Dubai</p>
         </div>
 
-        {/* What it is */}
-        <div className={styles.pitch}>
-          <div className={styles.pitchCard}>
-            <h3 className={styles.pitchTitle}>0g Sugar</h3>
-            <p className={styles.pitchDesc}>No added sugar. No artificial sweeteners. Just electrolytes.</p>
-          </div>
-          <div className={styles.pitchCard}>
-            <h3 className={styles.pitchTitle}>Real Minerals</h3>
-            <p className={styles.pitchDesc}>Sodium, potassium, magnesium. What your body actually needs.</p>
-          </div>
-          <div className={styles.pitchCard}>
-            <h3 className={styles.pitchTitle}>Made in Dubai</h3>
-            <p className={styles.pitchDesc}>Designed for desert heat. Tested on marathon runners.</p>
-          </div>
-        </div>
-
-        {/* Tagline */}
-        <p className={styles.tagline}>
-          In the world where everyone is figuring out,
-          <span className={styles.highlight}> we figured out the hydration.</span>
+        <p className={styles.story}>
+          Running 10K in 42 degree Dubai heat. Stopped at a store. Every sports drink on the shelf
+          was loaded with sugar and chemicals. Looked for something clean. It did not exist.
+          So I decided to make it.
         </p>
 
-        {/* CTA */}
+        <div className={styles.cards}>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>0g Sugar</h4>
+            <p className={styles.cardDesc}>No added sugar. No artificial sweeteners.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Real Minerals</h4>
+            <p className={styles.cardDesc}>Sodium, potassium, magnesium. What your body needs.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Made in Dubai</h4>
+            <p className={styles.cardDesc}>Designed for desert heat. Tested on marathon runners.</p>
+          </div>
+        </div>
+
         <a
           href="https://figuringout.club"
           target="_blank"
@@ -62,8 +50,40 @@ export default function FiguringOutSection() {
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </a>
+      </section>
 
-      </div>
-    </section>
+      {/* ═══ WREN ═══ */}
+      <section className={styles.venture}>
+        <div className={styles.ventureHeader}>
+          <span className={styles.statusDev}>In Development</span>
+          <h3 className={styles.ventureName}>Wren</h3>
+          <p className={styles.ventureType}>Programming language for AI-assisted development</p>
+        </div>
+
+        <p className={styles.story}>
+          Modern web development is increasingly driven by AI agents. But current languages were not
+          built for that. Wren is a web development language designed from the ground up to work
+          seamlessly with AI coding agents like Claude. Small, readable, opinionated.
+        </p>
+
+        <div className={styles.cards}>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>AI-Native</h4>
+            <p className={styles.cardDesc}>Syntax that AI agents can read, write, and reason about naturally.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Web-First</h4>
+            <p className={styles.cardDesc}>Built for the web. Components, routing, state management built in.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Opinionated</h4>
+            <p className={styles.cardDesc}>One way to do things. Less decisions, faster shipping.</p>
+          </div>
+        </div>
+
+        <span className={styles.comingSoon}>Coming 2026</span>
+      </section>
+
+    </div>
   );
 }

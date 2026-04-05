@@ -201,6 +201,69 @@
   }
 }
 
+// ── Swipe hint (mobile) ──────────────────────────────────────────────────────
+.swipeHint {
+  display: none;
+
+  @media (hover: none) {
+    display: flex;
+    position: fixed;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    z-index: 10;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 22px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 100px;
+    animation: swipeHintFade 5s ease forwards;
+  }
+}
+
+.swipeText {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.swipeArrowLeft,
+.swipeArrowRight {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.swipeArrowLeft {
+  animation: nudgeLeft 1.2s ease-in-out infinite;
+}
+
+.swipeArrowRight {
+  animation: nudgeRight 1.2s ease-in-out infinite;
+}
+
+@keyframes nudgeLeft {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-5px); }
+}
+
+@keyframes nudgeRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+@keyframes swipeHintFade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
 // ── Content ───────────────────────────────────────────────────────────────────
 .content {
   min-height: 100dvh;
@@ -312,15 +375,15 @@
 
   // Back button: just the arrow, no text
   .backButton {
-    font-size: 0;         // hide "Solar System" text
-    padding: var(--space-xs);
+    font-size: 0;
+    padding: var(--space-sm);
     border: none;
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 48px;
+    min-height: 48px;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
     }
   }
 
@@ -328,8 +391,8 @@
   .personaIcon { display: none; }
 
   .personaTitle {
-    font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
     text-align: center;
     flex: 1;
   }
@@ -339,39 +402,23 @@
 
   .headerNav {
     display: flex;
-    gap: 2px;
+    gap: 4px;
   }
 
   .headerNavBtn {
-    padding: var(--space-xs);
-    min-width: 40px;
-    min-height: 40px;
+    padding: var(--space-sm);
+    min-width: 48px;
+    min-height: 48px;
     @include flex-center;
-    opacity: 0.6;
-    border-radius: var(--border-radius-sm);
+    opacity: 0.7;
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.04);
 
-    &:hover { opacity: 1; }
+    &:hover, &:active { opacity: 1; background: rgba(255, 255, 255, 0.08); }
   }
 
   .navArrow {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-}
-
-@include responsive('mobile') {
-  .header { padding: var(--space-2xs) var(--space-xs); }
-
-  .backButton {
-    min-width: 36px;
-    min-height: 36px;
-    padding: var(--space-2xs);
-
-    svg { width: 16px; height: 16px; }
-  }
-
-  .headerNavBtn {
-    min-width: 36px;
-    min-height: 36px;
+    font-size: 1.3rem;
+    font-weight: 700;
   }
 }

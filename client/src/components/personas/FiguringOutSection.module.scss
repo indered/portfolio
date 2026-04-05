@@ -1,153 +1,147 @@
 @use '../../styles/mixins' as *;
 
-// Figuring Out — cream/teal theme matching figuringout.club
-$cream:     #FDF8F3;
-$dark:      #1A1A1A;
-$mid:       #4A4A4A;
-$light:     #8A8A8A;
-$teal:      #14B8A6;
-$teal-dark: #0D8A72;
-$teal-bg:   rgba(20, 184, 166, 0.08);
-$rule:      rgba(0, 0, 0, 0.08);
+$bg:     #FAFAF8;
+$black:  #111;
+$dark:   #222;
+$mid:    #555;
+$rule:   #ddd;
+$teal:   #14B8A6;
+$teal-bg: rgba(20, 184, 166, 0.08);
+$purple: #7C3AED;
+$purple-bg: rgba(124, 58, 237, 0.08);
 
-.section {
-  min-height: 100vh;
-  background: $cream;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 2rem);
+.page {
+  background: $bg;
+  color: $black;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 2rem);
+  min-height: 100%;
 }
 
-.inner {
-  max-width: 600px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2rem, 4vw, 3rem);
-}
-
-// ── ORIGIN STORY ─────────────────────────────
-.origin {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.originLabel {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: $teal;
-  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: $black;
+  margin: 0 0 clamp(1.5rem, 3vw, 2rem);
+  padding-bottom: 12px;
+  border-bottom: 3px solid $black;
 }
 
-.originText {
-  font-family: var(--font-body);
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: $dark;
-  margin: 0;
-}
-
-// ── BRAND ────────────────────────────────────
-.brand {
+// ── VENTURE SECTION ──────────────────────────
+.venture {
+  padding: clamp(1.5rem, 3vw, 2rem) 0;
+  border-bottom: 1px solid $rule;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+  gap: clamp(1rem, 2vw, 1.5rem);
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
-.badge {
+.ventureHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status {
   display: inline-block;
+  width: fit-content;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: $teal-dark;
+  letter-spacing: 0.1em;
+  color: #0D8A72;
   background: $teal-bg;
-  padding: 4px 12px;
+  padding: 4px 10px;
   border: 1px solid rgba(20, 184, 166, 0.2);
   border-radius: 100px;
 }
 
-.brandName {
+.statusDev {
+  display: inline-block;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $purple;
+  background: $purple-bg;
+  padding: 4px 10px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 100px;
+}
+
+.ventureName {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 0.9;
-  color: $dark;
+  letter-spacing: -0.02em;
+  color: $black;
   margin: 0;
+  line-height: 1;
 
   a {
     color: inherit;
     text-decoration: none;
     transition: color 200ms;
 
-    &:hover {
-      color: $teal;
-    }
+    &:hover { color: $teal; }
   }
 }
 
-.brandSub {
-  font-family: var(--font-body);
-  font-size: 1rem;
+.ventureType {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   color: $mid;
   margin: 0;
 }
 
-// ── PITCH CARDS ──────────────────────────────
-.pitch {
+// ── STORY ────────────────────────────────────
+.story {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: $dark;
+  margin: 0;
+}
+
+// ── CARDS ────────────────────────────────────
+.cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: $rule;
   border: 1px solid $rule;
 
-  @include tablet {
-    grid-template-columns: 1fr;
-  }
+  @include tablet { grid-template-columns: 1fr; }
 }
 
-.pitchCard {
-  background: $cream;
-  padding: clamp(16px, 3vw, 24px);
+.card {
+  background: $bg;
+  padding: clamp(14px, 2vw, 20px);
 }
 
-.pitchTitle {
+.cardTitle {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: $dark;
-  margin: 0 0 6px;
+  color: $black;
+  margin: 0 0 4px;
 }
 
-.pitchDesc {
+.cardDesc {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: $mid;
   line-height: 1.5;
   margin: 0;
-}
-
-// ── TAGLINE ──────────────────────────────────
-.tagline {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  font-style: italic;
-  color: $mid;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.highlight {
-  color: $dark;
-  font-weight: 600;
-  font-style: normal;
 }
 
 // ── CTA ──────────────────────────────────────
@@ -155,27 +149,27 @@ $rule:      rgba(0, 0, 0, 0.08);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: $dark;
-  color: $cream;
+  padding: 10px 20px;
+  background: $black;
+  color: $bg;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-decoration: none;
   transition: background 200ms;
   align-self: flex-start;
 
-  svg {
-    opacity: 0.6;
-    transition: all 200ms;
-  }
+  svg { opacity: 0.6; transition: all 200ms; }
 
   &:hover {
     background: $teal;
-
-    svg {
-      opacity: 1;
-      transform: translate(2px, -2px);
-    }
+    svg { opacity: 1; transform: translate(2px, -2px); }
   }
+}
+
+.comingSoon {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: $purple;
+  letter-spacing: 0.08em;
 }
