@@ -79,7 +79,7 @@ export default function DatingSection() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <header className={styles.hero} aria-labelledby="dating-heading">
-        <p className={styles.heroEyebrow}>The Eligible Bachelor</p>
+        <p className={styles.heroEyebrow}>About Me</p>
         <h1 id="dating-heading" className={styles.heroName}>{PROFILE.name}</h1>
         <p className={styles.heroAge} aria-label={`Age: ${PROFILE.age}`}>{PROFILE.age}</p>
         <p className={styles.heroOccupation}>{PROFILE.occupation}</p>
