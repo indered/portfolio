@@ -1,28 +1,8 @@
-# robots.txt for maheshinder.in
-# Mahesh Inder - Full Stack Developer Portfolio
-
-# Allow all crawlers
 User-agent: *
 Allow: /
 
-# Specific Google bot rules
-User-agent: Googlebot
-Allow: /
-
-# Specific Bing bot rules
-User-agent: Bingbot
-Allow: /
-
-# Block access to any admin or private paths (if applicable)
 Disallow: /api/
 Disallow: /_*
-Disallow: /admin/
 
-# Sitemap location
 Sitemap: https://maheshinder.in/sitemap.xml
-
-# Crawl-delay for polite crawling (optional, respected by some bots)
-# Crawl-delay: 10
-
-# Host directive (for some search engines)
 Host: https://maheshinder.in

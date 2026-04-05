@@ -7,6 +7,16 @@ import AppShell from './components/shell/AppShell';
 
 const TokenWallet = lazy(() => import('./components/tokens/TokenWallet'));
 
+// Route-to-persona mapping
+const PERSONA_ROUTES = [
+  { path: '/architect', persona: 'developer' },
+  { path: '/runner', persona: 'runner' },
+  { path: '/ventures', persona: 'blockchain' },
+  { path: '/connect', persona: 'social' },
+  { path: '/thoughts', persona: 'thinker' },
+  { path: '/about', persona: 'dating' },
+];
+
 function App() {
   return (
     <ThemeProvider>
@@ -16,7 +26,9 @@ function App() {
           <TokenWallet />
         </Suspense>
         <Routes>
-          <Route path="/architect" element={<AppShell directPersona="developer" />} />
+          {PERSONA_ROUTES.map(({ path, persona }) => (
+            <Route key={path} path={path} element={<AppShell directPersona={persona} />} />
+          ))}
           <Route path="/*" element={<AppShell />} />
         </Routes>
       </TokenProvider>

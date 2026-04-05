@@ -15,11 +15,22 @@ import styles from './AppShell.module.scss';
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
+// Persona ID to route path mapping
+const PERSONA_ROUTES = {
+  developer: '/architect',
+  runner: '/runner',
+  blockchain: '/ventures',
+  social: '/connect',
+  thinker: '/thoughts',
+  dating: '/about',
+};
+
 export default function AppShell({ directPersona = null }) {
   const navigate = useNavigate();
   const location = useLocation();
   // Reset SEO to default when in hub view (null = default config)
-  const { updateSEO } = useSEO(null);
+  // Set default SEO only in hub view. Pass false to skip when PersonaApp handles it.
+  useSEO(directPersona ? false : null);
   const [view, setView] = useState(directPersona ? 'persona' : 'intro');
   const [introJustFinished, setIntroJustFinished] = useState(false);
   const [activePlanet, setActivePlanet] = useState(directPersona);
@@ -257,7 +268,7 @@ export default function AppShell({ directPersona = null }) {
         setActivePlanet(planetId);
         setView('persona');
         setTargetPlanet(null);
-        if (planetId === 'developer') navigate('/architect', { replace: true });
+        if (PERSONA_ROUTES[planetId]) navigate(PERSONA_ROUTES[planetId], { replace: true });
       }, 1800);
     }
   }, [view, use3D, navigate]);
@@ -269,7 +280,7 @@ export default function AppShell({ directPersona = null }) {
     setActivePlanet(targetPlanet);
     setView('persona');
     setTargetPlanet(null);
-    if (targetPlanet === 'developer') navigate('/architect', { replace: true });
+    if (PERSONA_ROUTES[targetPlanet]) navigate(PERSONA_ROUTES[targetPlanet], { replace: true });
   }, [targetPlanet, navigate]);
 
   const handleBack = useCallback(() => {
@@ -325,7 +336,7 @@ export default function AppShell({ directPersona = null }) {
 
     // Always direct content swap — no solar system revisit, no warp overlay
     setActivePlanet(planetId);
-    navigate(planetId === 'developer' ? '/architect' : '/', { replace: true });
+    navigate(PERSONA_ROUTES[planetId] || '/', { replace: true });
   }, [view, activePlanet, isExitingToHub, navigate]);
 
   // Called when camera has landed at destination planet

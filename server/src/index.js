@@ -58,9 +58,19 @@ if (process.env.NODE_ENV === 'production') {
   const clientDist = path.join(__dirname, '../../client/dist');
   app.use(express.static(clientDist));
 
-  // SPA fallback — serve index.html for all non-API routes (Express 5 syntax)
+  // SPA fallback — try prerendered HTML first, then index.html
   app.get('/{*path}', (req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'));
+    const routePath = req.path === '/' ? '' : req.path.replace(/^\//, '');
+    const prerendered = path.join(clientDist, routePath, 'index.html');
+
+    // Check if a prerendered file exists for this route
+    import('fs').then(({ existsSync }) => {
+      if (routePath && existsSync(prerendered)) {
+        res.sendFile(prerendered);
+      } else {
+        res.sendFile(path.join(clientDist, 'index.html'));
+      }
+    });
   });
 }
 

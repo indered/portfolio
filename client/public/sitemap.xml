@@ -1,71 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
-  <!-- Homepage / Solar System Hub -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://maheshinder.in/</loc>
-    <lastmod>2026-04-03</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- Developer Section - Main Portfolio -->
   <url>
-    <loc>https://maheshinder.in/#developer</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/architect</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- Runner Section - Fitness/Strava -->
   <url>
-    <loc>https://maheshinder.in/#runner</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/runner</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
-  <!-- Figuring Out Section - Electrolyte Brand -->
   <url>
-    <loc>https://maheshinder.in/#blockchain</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/ventures</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
-  <!-- Social Links Section -->
   <url>
-    <loc>https://maheshinder.in/#social</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/connect</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-
-  <!-- Thinker Section - Thoughts/Blog -->
   <url>
-    <loc>https://maheshinder.in/#thinker</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/thoughts</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
-  <!-- Dating/Bachelor Profile Section -->
   <url>
-    <loc>https://maheshinder.in/#dating</loc>
-    <lastmod>2026-04-03</lastmod>
+    <loc>https://maheshinder.in/about</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!-- Resume PDF -->
-  <url>
-    <loc>https://maheshinder.in/mahesh-inder-resume.pdf</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
 </urlset>
