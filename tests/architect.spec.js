@@ -67,7 +67,7 @@ test.describe('Architect (/architect) Page', () => {
   });
 
   test('footer "Get in touch" link has correct mailto', async ({ page }) => {
-    const ctaLink = page.locator('a[href="mailto:hello@maheshinder.in"]');
+    const ctaLink = page.locator('a[href="mailto:mahesh.inder85@gmail.com"]');
     await expect(ctaLink).toBeVisible({ timeout: 5000 });
     await expect(ctaLink).toContainText('Get in touch');
   });
