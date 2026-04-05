@@ -230,9 +230,11 @@
 // --- "press space or scroll to explore" prompt ---
 .explorePrompt {
   position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
   z-index: 6;
   pointer-events: auto;
   cursor: pointer;
@@ -262,17 +264,11 @@
   &:active {
     background: rgba(74, 158, 255, 0.25);
     border-color: rgba(74, 158, 255, 0.6);
-    transform: translateX(-50%) scale(0.97);
+    transform: scale(0.97);
   }
 
   @media (max-width: 768px) {
-    top: auto;
     bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-    left: 0;
-    right: 0;
-    transform: none;
-    margin: 0 auto;
-    width: fit-content;
     max-width: calc(100% - 32px);
     padding: 10px 20px;
   }

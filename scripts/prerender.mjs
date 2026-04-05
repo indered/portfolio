@@ -22,6 +22,7 @@ const ROUTES = [
   { path: '/connect', file: 'connect/index.html' },
   { path: '/thoughts', file: 'thoughts/index.html' },
   { path: '/about', file: 'about/index.html' },
+  { path: '/brand', file: 'brand/index.html' },
 ];
 
 const MIME = {
