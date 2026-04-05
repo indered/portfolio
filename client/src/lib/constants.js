@@ -47,7 +47,7 @@ export const PERSONAS = {
   },
   dating: {
     id: 'dating',
-    title: 'The Eligible Bachelor',
+    title: 'About Me',
     icon: '💘',
     color: 'var(--color-persona-dating)',
     tagline: "Schrödinger's Boyfriend: simultaneously perfect and a red flag until observed.",

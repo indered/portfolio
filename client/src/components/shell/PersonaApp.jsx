@@ -103,18 +103,20 @@ export default function PersonaApp({
           </button>
         </div>
         <span className={styles.personaTitle}>
-          {persona.icon} {persona.title}
+          <span className={styles.personaIcon}>{persona.icon}</span> {persona.title}
           <span className={styles.realName}>{config?.realName}</span>
         </span>
         <div className={styles.headerNav}>
           {prevId && (
             <button className={styles.headerNavBtn} onClick={() => !isExiting && onNavigate(prevId)}>
-              ← {PERSONAS[prevId].icon}
+              <span className={styles.navArrow}>&larr;</span>
+              <span className={styles.navEmoji}>{PERSONAS[prevId].icon}</span>
             </button>
           )}
           {nextId && (
             <button className={styles.headerNavBtn} onClick={() => !isExiting && onNavigate(nextId)}>
-              {PERSONAS[nextId].icon} →
+              <span className={styles.navEmoji}>{PERSONAS[nextId].icon}</span>
+              <span className={styles.navArrow}>&rarr;</span>
             </button>
           )}
         </div>
