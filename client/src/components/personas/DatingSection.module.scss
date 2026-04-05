@@ -1,330 +1,76 @@
 @use '../../styles/mixins' as *;
 
-// ============================================================
-// DatingSection — Hinge-inspired Dating Profile
-// Warm coral palette, card-based prompts, premium feel
-// ============================================================
+$bg:     #FAFAF8;
+$black:  #111;
+$dark:   #222;
+$mid:    #555;
+$accent: var(--persona-color);
 
-// Hinge-inspired warm palette
-$bg:       #FAF8F5;
-$surface:  #FFFFFF;
-$border:   rgba(0, 0, 0, 0.06);
-$text:     #1A1A1A;
-$text-2:   #6B6B6B;
-$text-3:   rgba(0, 0, 0, 0.35);
-$coral:    #E8654A;                        // Hinge coral
-$coral-soft: rgba(232, 101, 74, 0.08);
-$coral-mid: rgba(232, 101, 74, 0.15);
-$shadow:   0 2px 12px rgba(0, 0, 0, 0.06);
-
-// ── Root ─────────────────────────────────────────────────────
-.container {
+.page {
   background: $bg;
-  min-height: 100vh;
-  color: $text;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
-  max-width: 520px;
-  margin-inline: auto;
-  padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
-
-  @include responsive('tablet') {
-    padding: var(--space-2xl) var(--space-md) var(--space-3xl);
-  }
-
-  @include responsive('mobile') {
-    padding: var(--space-xl) var(--space-sm) var(--space-3xl);
-    gap: var(--space-lg);
-  }
-}
-
-// ── Hero ─────────────────────────────────────────────────────
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  text-align: left;
-}
-
-.heroEyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: $coral;
-  margin: 0;
-  opacity: 0.8;
-}
-
-.heroName {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 6vw, 5rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  color: $text;
-  margin: 0;
-}
-
-.heroAge {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 4vw, 2rem);
-  font-weight: 400;
-  color: $text-2;
-  margin: 0;
-  line-height: 1;
-}
-
-.heroOccupation {
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  color: $text-2;
-  margin: 0;
-  line-height: 1.5;
-  margin-top: var(--space-xs);
-}
-
-.heroLocation {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: $text-3;
-  margin: 0;
-  letter-spacing: 0.04em;
-}
-
-.heroPills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: var(--space-sm);
-}
-
-.pill {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: var(--border-radius-full);
-  background: $coral-soft;
-  color: $coral;
-  min-height: 32px;
+  color: $black;
+  min-height: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 2rem);
 }
 
-// ── Dividers ─────────────────────────────────────────────────
-.divider {
-  border: none;
-  height: 1px;
-  background: $border;
-  margin: 0;
-}
+.letter {
+  max-width: 560px;
+  width: 100%;
 
-.dividerThin {
-  border: none;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  margin: var(--space-xl) 0;
-}
+  p {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    line-height: 1.8;
+    color: $dark;
+    margin: 0 0 clamp(1rem, 2vw, 1.5rem);
 
-// ── Prompt Block ─────────────────────────────────────────────
-// Hinge-style Q + A card
-.promptBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-lg) var(--space-xl);
-  background: $surface;
-  border-radius: 20px;
-  box-shadow: $shadow;
-  position: relative;
-  overflow: hidden;
+    &:first-child {
+      font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+      font-weight: 600;
+      color: $black;
+    }
 
-  // Coral accent line at top
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, $coral, #F0856E);
+    &:last-of-type {
+      margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    }
   }
 }
 
-.promptQuestion {
-  font-family: var(--font-display);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: $text;
-  margin: 0;
-  line-height: 1.3;
-}
-
-.promptAnswer {
-  font-family: var(--font-serif);
-  font-size: var(--font-size-md);
-  font-style: italic;
-  line-height: 1.65;
-  color: $text-2;
-  margin: 0;
-
-  @include responsive('mobile') {
-    font-size: var(--font-size-base);
-  }
-}
-
-// ── Photo Grid ───────────────────────────────────────────────
-.photoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
-
-  @include responsive('mobile') {
-    grid-template-columns: 1fr;
-  }
-}
-
-.photoGridSingle {
-  grid-template-columns: 1fr;
-}
-
-.photoSlot {
+.actions {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-radius: 20px;
-  overflow: hidden;
-  background: $surface;
-  box-shadow: $shadow;
-  margin: 0;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.photoImage {
-  aspect-ratio: 4/5;
-  background-color: #F0EDE8;
-  background-size: cover;
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: var(--space-sm);
-}
-
-.photoNum {
+.cta {
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 4px 8px;
-  border-radius: 4px;
-}
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+  background: $black;
+  text-decoration: none;
+  padding: 12px 24px;
+  transition: background 200ms;
 
-.photoCaption {
-  font-family: var(--font-serif);
-  font-size: 0.85rem;
-  font-style: italic;
-  line-height: 1.5;
-  color: $text-2;
-  padding: var(--space-md);
-  margin: 0;
-}
-
-// ── Compatibility Section ─────────────────────────────────────
-.compatSection {
-  display: flex;
-  flex-direction: column;
-  background: $surface;
-  border-radius: 20px;
-  box-shadow: $shadow;
-  overflow: hidden;
-}
-
-.compatBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-xl);
-}
-
-.compatHeading {
-  font-family: var(--font-display);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  color: $coral;
-  margin: 0;
-  line-height: 1.3;
-}
-
-.compatBody {
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.7;
-  color: $text-2;
-  margin: 0;
-}
-
-// ── Stats Section ─────────────────────────────────────────────
-.statsSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.statsSectionLabel {
-  font-family: var(--font-display);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: $text;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
-
-  @include responsive('mobile') {
-    grid-template-columns: repeat(2, 1fr);
+  &:hover {
+    background: $accent;
   }
 }
 
-.statCard {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--space-md);
-  background: $surface;
-  border-radius: 16px;
-  box-shadow: $shadow;
-  text-align: center;
-}
+.igLink {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: $mid;
+  text-decoration: none;
+  transition: color 200ms;
 
-.statValue {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 4vw, 1.8rem);
-  font-weight: 700;
-  color: $coral;
-  line-height: 1;
-}
-
-.statLabel {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: $text;
-  line-height: 1.35;
-}
-
-.statSub {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  color: $text-3;
-  font-style: italic;
-  line-height: 1.35;
+  &:hover {
+    color: $black;
+  }
 }
