@@ -32,13 +32,13 @@ export default function BirthFogController({ active, onRevealComplete }) {
 
     const tl = gsap.timeline();
 
-    // Camera pulls back to orbital view
+    // Camera pulls back to orbital view (smooth, no sudden jump)
     tl.to(camera.position, {
       x: 0,
       y: 8,
       z: 22,
-      duration: 4.5,
-      ease: 'power2.out',
+      duration: 5.5,
+      ease: 'power1.inOut',
       onUpdate: () => {
         // Gradually narrow FOV as we pull back (wide birth → calm orbit)
         const pullProgress = camera.position.z / 22;
@@ -48,12 +48,12 @@ export default function BirthFogController({ active, onRevealComplete }) {
       },
     }, 0);
 
-    // Fog clears — starts 0.4s after camera begins
+    // Fog clears gradually
     const fogProxy = { density: 0.4 };
     tl.to(fogProxy, {
       density: 0,
-      duration: 4.0,
-      ease: 'power2.out',
+      duration: 5.0,
+      ease: 'power1.inOut',
       onUpdate: () => {
         if (scene.fog) scene.fog.density = fogProxy.density;
       },

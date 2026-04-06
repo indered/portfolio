@@ -69,14 +69,14 @@ export default function HubMasthead({ visible }) {
       setShowLogo(true);
       return;
     }
-    // Big text plays, then crossfades out as logo fades in
-    setShowBig(true);
-    const t1 = setTimeout(() => setShowBig(false), 2800);
+    // Delay big text slightly so solar system fades in first
+    const t0 = setTimeout(() => setShowBig(true), 800);
+    const t1 = setTimeout(() => setShowBig(false), 3600);
     const t2 = setTimeout(() => {
       setShowLogo(true);
       mastheadHasPlayed = true;
-    }, 3000);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    }, 3800);
+    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
   }, [visible]);
 
   // Close menu on outside click
