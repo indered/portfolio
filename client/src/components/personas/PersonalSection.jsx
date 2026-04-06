@@ -1,4 +1,4 @@
-import styles from './DatingSection.module.scss';
+import styles from './PersonalSection.module.scss';
 
 export default function DatingSection() {
   return (

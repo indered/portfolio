@@ -9,8 +9,8 @@ import styles from './PersonaApp.module.scss';
 const PERSONA_COMPONENTS = {
   developer: lazy(() => import('../personas/DeveloperSection')),
   runner:    lazy(() => import('../personas/RunnerSection')),
-  blockchain:lazy(() => import('../personas/FiguringOutSection')),
-  dating:    lazy(() => import('../personas/DatingSection')),
+  blockchain:lazy(() => import('../personas/VenturesSection')),
+  dating:    lazy(() => import('../personas/PersonalSection')),
   social:    lazy(() => import('../personas/SocialLinksSection')),
   thinker:   lazy(() => import('../personas/ThinkerSection')),
 };

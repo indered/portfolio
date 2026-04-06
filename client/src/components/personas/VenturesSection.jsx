@@ -1,4 +1,4 @@
-import styles from './FiguringOutSection.module.scss';
+import styles from './VenturesSection.module.scss';
 
 export default function FiguringOutSection() {
   return (

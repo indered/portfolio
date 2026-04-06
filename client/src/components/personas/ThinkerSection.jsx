@@ -47,7 +47,7 @@ const READING_LIST = [
   {
     title: 'The Alchemist',
     author: 'Paulo Coelho',
-    note: 'Read at 18. Still true.',
+    note: 'A story about following your heart.',
   },
   {
     title: 'Thinking, Fast and Slow',
