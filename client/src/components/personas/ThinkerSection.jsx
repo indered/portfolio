@@ -87,9 +87,9 @@ export default function ThinkerSection() {
       {/* ── Magazine dateline ── */}
       <div className={styles.dateline} aria-label="Publication dateline" role="banner">
         <span>Vol.&thinsp;I</span>
-        <span className={styles.datelineSep}>&mdash;</span>
+        <span className={styles.datelineSep}>·</span>
         <span>Dubai, UAE</span>
-        <span className={styles.datelineSep}>&mdash;</span>
+        <span className={styles.datelineSep}>·</span>
         <span>February 2026</span>
       </div>
       <div className={styles.datelineRule} aria-hidden="true" />
@@ -103,7 +103,7 @@ export default function ThinkerSection() {
         </h2>
 
         <p className={styles.subtitle}>
-          How Guru Nanak and Stephen Hawking helped a Sikh boy find his own answers.
+          How Guru Nanak and Stephen Hawking helped me find my own answers.
         </p>
 
         <div className={styles.headerRule} aria-hidden="true" />
@@ -113,7 +113,7 @@ export default function ThinkerSection() {
       <article className={styles.essay}>
 
         <p className={styles.dropCap}>
-          I grew up in a Sikh family. We went to gurudwara on Sundays. I wore a kara.
+          I grew up in a Sikh family. We went to gurudwara every day before school. I wear a kada.
           I folded my hands and closed my eyes when everyone else did. I believed because
           everyone around me believed. That was enough for a long time.
         </p>
@@ -141,7 +141,7 @@ export default function ThinkerSection() {
           the cover looked cool. I stayed because the words made my head spin in the best way.
         </p>
 
-        <PullQuote attribution="— Stephen Hawking, The Grand Design">
+        <PullQuote attribution="— Stephen Hawking, A Brief History of Time">
           The universe doesn&apos;t need a creator. It can and will create itself from nothing.
         </PullQuote>
 
@@ -155,8 +155,8 @@ export default function ThinkerSection() {
         <SectionDivider />
 
         <p>
-          I am not angry at religion. I am grateful. Sikhism taught me good things — be kind, work
-          hard, share your food, treat everyone equal. Guru Nanak was a rebel. He questioned the
+          I am not angry at religion. I am grateful. Sikhism taught me good things. Be kind, work
+          hard, share your food, treat everyone equal, and sewa. Guru Nanak was a rebel. He questioned the
           Brahmins. He questioned the Mullahs. He sat with the poor when kings invited him to dinner.
         </p>
 
