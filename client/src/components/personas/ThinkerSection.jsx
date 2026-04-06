@@ -181,12 +181,8 @@ export default function ThinkerSection() {
       {/* ── Reading list colophon ── */}
       <ReadingList />
 
-      {/* ── Footer colophon ── */}
       <footer className={styles.colophon}>
         <div className={styles.colophonRule} aria-hidden="true" />
-        <p className={styles.colophonText}>
-          Written in simple words, because big ideas don&apos;t need big words.
-        </p>
       </footer>
 
     </div>
