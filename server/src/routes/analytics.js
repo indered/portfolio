@@ -54,9 +54,25 @@ router.get('/stats', async (req, res) => {
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: today } }).then(r => r.length),
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: d7 } }).then(r => r.length),
 
+      // Planet popularity - normalize old IDs to route paths
       AnalyticsEvent.aggregate([
         { $match: { type: 'planet_click', createdAt: { $gte: d30 } } },
-        { $group: { _id: '$planet', count: { $sum: 1 } } },
+        { $addFields: {
+          normalizedPlanet: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$planet', 'developer'] }, then: '/architect' },
+                { case: { $eq: ['$planet', 'blockchain'] }, then: '/ventures' },
+                { case: { $eq: ['$planet', 'dating'] }, then: '/about' },
+                { case: { $eq: ['$planet', 'social'] }, then: '/connect' },
+                { case: { $eq: ['$planet', 'thinker'] }, then: '/thoughts' },
+                { case: { $eq: ['$planet', 'runner'] }, then: '/runner' },
+              ],
+              default: '$planet',
+            }
+          }
+        }},
+        { $group: { _id: '$normalizedPlanet', count: { $sum: 1 } } },
         { $sort: { count: -1 } },
       ]),
 

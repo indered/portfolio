@@ -4,7 +4,13 @@
  * waits for SEO meta tags to update, then saves the rendered HTML.
  */
 
-import { chromium } from 'playwright';
+let chromium;
+try {
+  chromium = (await import('playwright')).chromium;
+} catch {
+  console.log('Playwright not available, skipping prerender.');
+  process.exit(0);
+}
 import { createServer } from 'http';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname, extname } from 'path';

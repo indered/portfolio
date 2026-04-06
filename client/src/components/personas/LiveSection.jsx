@@ -46,13 +46,12 @@ export default function LiveSection() {
       {/* Big numbers */}
       <div className={styles.bigNumbers}>
         <div className={styles.bigCard}>
-          <span className={styles.bigValue}>{data.starsDiscovered.toLocaleString()}</span>
-          <span className={styles.bigLabel}>Stars discovered</span>
-          <span className={styles.bigSub}>by visitors clicking the sky</span>
-        </div>
-        <div className={styles.bigCard}>
           <span className={styles.bigValue}>{data.totalPageViews.toLocaleString()}</span>
           <span className={styles.bigLabel}>Pages explored</span>
+        </div>
+        <div className={styles.bigCard}>
+          <span className={styles.bigValue}>{(data.planetPopularity || []).reduce((s, p) => s + p.count, 0).toLocaleString()}</span>
+          <span className={styles.bigLabel}>Planet clicks</span>
         </div>
         <div className={styles.bigCard}>
           <span className={styles.bigValue}>{data.resumeDownloads}</span>
