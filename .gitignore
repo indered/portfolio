@@ -31,3 +31,9 @@ coverage/
 # Temp files
 .tmp/
 temp/
+test-results/
+.claude/worktrees/
+.claude/skills/
+test-results/
+.claude/worktrees/
+.claude/skills/
