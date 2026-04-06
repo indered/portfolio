@@ -148,11 +148,45 @@ $bar-bg: #eee;
   text-align: right;
 }
 
+.barFillHot {
+  background: #ef4444;
+}
+
+.hotBadge {
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 4px;
+  letter-spacing: 0.08em;
+}
+
 .empty {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: $light;
   margin: 0;
+}
+
+.funText {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: $dark;
+  margin: 0;
+}
+
+.peakGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: $rule;
+  border: 1px solid $rule;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 // ── DAILY CHART ──────────────────────────────
