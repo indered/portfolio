@@ -22,6 +22,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy (Render, Cloudflare etc)
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 

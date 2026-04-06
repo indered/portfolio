@@ -21,13 +21,13 @@ export default function LiveSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/analytics/fun')
+    fetch('/api/analytics/stats')
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
 
     const interval = setInterval(() => {
-      fetch('/api/analytics/fun').then(r => r.json()).then(setData).catch(() => {});
+      fetch('/api/analytics/stats').then(r => r.json()).then(setData).catch(() => {});
     }, 30000);
     return () => clearInterval(interval);
   }, []);
