@@ -118,9 +118,15 @@
 
 .closeBtn {
   @include mixins.button-reset;
-  font-size: var(--font-size-xl);
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
-  line-height: 1;
+  border-top: 1px solid var(--color-border);
   transition: color var(--transition-fast);
 
   &:hover {

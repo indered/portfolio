@@ -58,6 +58,19 @@ export default function TokenWallet() {
   const [floatingPlus, setFloatingPlus] = useState(null);
   const [coinParticles, setCoinParticles] = useState([]);
   const prevTokensRef = useRef(sessionTokens);
+  const walletRef = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!expanded) return;
+    const handleClick = (e) => {
+      if (walletRef.current && !walletRef.current.contains(e.target)) {
+        setExpanded(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [expanded]);
 
   const { currentCause } = TOKEN_CONFIG;
   const tokenValueINR = currentCause.tokenValue; // ₹0.50 per token
@@ -102,7 +115,7 @@ export default function TokenWallet() {
   }).format(equivalentINR);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={walletRef}>
       {/* Collapsed Pill */}
       <motion.button
         className={styles.pill}
@@ -159,13 +172,6 @@ export default function TokenWallet() {
           >
             <div className={styles.cardHeader}>
               <h3 className={styles.cardTitle}>Inder Tokens</h3>
-              <button
-                className={styles.closeBtn}
-                onClick={() => setExpanded(false)}
-                aria-label="Close wallet"
-              >
-                &times;
-              </button>
             </div>
 
             {/* Session Tokens */}
@@ -219,6 +225,14 @@ export default function TokenWallet() {
               <h4 className={styles.causeTitle}>{currentCause.title}</h4>
               <p className={styles.causeDesc}>{currentCause.description}</p>
             </div>
+
+            <button
+              className={styles.closeBtn}
+              onClick={() => setExpanded(false)}
+              aria-label="Close wallet"
+            >
+              Close
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
