@@ -261,7 +261,7 @@ export default function AppShell({ directPersona = null }) {
   const handlePlanetClick = useCallback((planetId) => {
     if (view !== 'hub') return;
     dismissHint();
-    trackPlanetClick(planetId);
+    trackPlanetClick(PERSONA_ROUTES[planetId] || planetId);
     setDriftSettled(false);  // hide preview card immediately
     setTargetPlanet(planetId);
     setView('transitioning');

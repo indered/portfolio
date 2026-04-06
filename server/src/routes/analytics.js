@@ -3,9 +3,16 @@ import AnalyticsEvent from '../models/AnalyticsEvent.js';
 
 const router = Router();
 
+// IPs to exclude from tracking (set EXCLUDE_IPS env var, comma-separated)
+const EXCLUDE_IPS = (process.env.EXCLUDE_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+
 // POST /api/analytics/event — fire-and-forget
 router.post('/event', (req, res) => {
   res.status(202).json({ ok: true });
+
+  // Skip excluded IPs (your own traffic)
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+  if (EXCLUDE_IPS.length && EXCLUDE_IPS.includes(clientIp)) return;
 
   const { type, route, planet, duration, sessionId, device, referrer } = req.body;
   if (!type || !sessionId) return;
