@@ -183,9 +183,9 @@ export default function TokenWallet() {
             </div>
 
             {/* Total Tokens */}
-            <div className={styles.sessionBlock}>
+            <div className={styles.totalBlock}>
               <span className={styles.sessionLabel}>All Time Total</span>
-              <span className={styles.sessionCount}>
+              <span className={styles.totalCount}>
                 <AnimatedCounter value={totalTokens} />
               </span>
             </div>

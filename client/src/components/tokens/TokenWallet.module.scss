@@ -162,6 +162,19 @@
   }
 }
 
+.totalBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.totalCount {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
 // --- Recent Action ---
 .recentAction {
   display: flex;
