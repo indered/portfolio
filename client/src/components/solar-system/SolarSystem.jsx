@@ -196,15 +196,14 @@ export default function SolarSystem({ visible, targetPlanetId, onPlanetClick, on
   return (
     <div className={`${styles.canvas} ${!visible ? styles.hidden : ''}`}>
       <Canvas
-        camera={{ position: entering ? [0, 0.5, 2.5] : [0, 8, 22], fov: entering ? 75 : (window.innerWidth <= 768 ? 65 : 50) }}
+        camera={{ position: entering ? [0, 0.5, 2.5] : [0, 8, 22], fov: window.innerWidth <= 768 ? 65 : 50 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false }}
         onCreated={({ gl, scene, camera: cam }) => {
           gl.setClearColor('#050510');
           if (entering) {
-            scene.fog = new THREE.FogExp2('#050510', 0.4);
+            scene.fog = new THREE.FogExp2('#050510', 0.5);
             cam.position.set(0, 0.5, 2.5);
-            cam.fov = 75;
             cam.updateProjectionMatrix();
           }
         }}

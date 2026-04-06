@@ -14,9 +14,9 @@ export default function BirthFogController({ active, onRevealComplete }) {
   // before the canvas becomes visible (prevents the 1-frame flash on birth)
   useLayoutEffect(() => {
     if (active) {
-      scene.fog = new THREE.FogExp2('#050510', 0.4);
+      scene.fog = new THREE.FogExp2('#050510', 0.5);
       camera.position.set(0, 0.5, 2.5);
-      camera.fov = 75;
+      camera.fov = 50;
       camera.updateProjectionMatrix();
       camera.lookAt(0, 0, 0);
     } else {
@@ -40,10 +40,6 @@ export default function BirthFogController({ active, onRevealComplete }) {
       duration: 5.5,
       ease: 'power1.inOut',
       onUpdate: () => {
-        // Gradually narrow FOV as we pull back (wide birth → calm orbit)
-        const pullProgress = camera.position.z / 22;
-        camera.fov = THREE.MathUtils.lerp(75, 50, Math.min(pullProgress, 1));
-        camera.updateProjectionMatrix();
         camera.lookAt(0, 0, 0);
       },
     }, 0);
