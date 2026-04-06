@@ -167,7 +167,7 @@ export default function HubMasthead({ visible }) {
 
             {/* Live stats button */}
             <button
-              className={styles.paperworkBtn}
+              className={styles.liveBtn}
               onClick={() => navigate('/live')}
               aria-label="View live stats"
             >

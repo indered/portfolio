@@ -28,6 +28,11 @@ export default function StatsSection() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Force light theme
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
+
   useEffect(() => {
     fetch('/api/analytics/stats')
       .then(r => r.json())

@@ -159,6 +159,35 @@
   }
 }
 
+// Live button — always visible (including mobile)
+.liveBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: rgba(74, 158, 255, 0.1);
+  border: 1px solid rgba(74, 158, 255, 0.25);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(74, 158, 255, 0.8);
+  transition: all 200ms ease;
+
+  svg { flex-shrink: 0; opacity: 0.7; }
+
+  &:hover {
+    background: rgba(74, 158, 255, 0.2);
+    border-color: rgba(74, 158, 255, 0.5);
+    color: #fff;
+    svg { opacity: 1; }
+  }
+}
+
 // Dropdown — dark glass card
 .menu {
   position: absolute;
