@@ -24,6 +24,7 @@ const ROUTES = [
   { path: '/about', file: 'about/index.html' },
   { path: '/brand', file: 'brand/index.html' },
   { path: '/stats', file: 'stats/index.html' },
+  { path: '/live', file: 'live/index.html' },
 ];
 
 const MIME = {

@@ -8,6 +8,7 @@ import AppShell from './components/shell/AppShell';
 const TokenWallet = lazy(() => import('./components/tokens/TokenWallet'));
 const BrandSection = lazy(() => import('./components/personas/BrandSection'));
 const StatsSection = lazy(() => import('./components/personas/StatsSection'));
+const LiveSection = lazy(() => import('./components/personas/LiveSection'));
 
 // Route-to-persona mapping
 const PERSONA_ROUTES = [
@@ -33,6 +34,7 @@ function App() {
           ))}
           <Route path="/brand" element={<Suspense fallback={null}><BrandSection /></Suspense>} />
           <Route path="/stats" element={<Suspense fallback={null}><StatsSection /></Suspense>} />
+          <Route path="/live" element={<Suspense fallback={null}><LiveSection /></Suspense>} />
           <Route path="/*" element={<AppShell />} />
         </Routes>
       </TokenProvider>

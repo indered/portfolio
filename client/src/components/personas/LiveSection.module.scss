@@ -1,0 +1,251 @@
+@use '../../styles/mixins' as *;
+
+$bg:      #0a0a0f;
+$surface: rgba(255, 255, 255, 0.04);
+$border:  rgba(255, 255, 255, 0.08);
+$white:   #fff;
+$dim:     rgba(255, 255, 255, 0.5);
+$faint:   rgba(255, 255, 255, 0.25);
+$accent:  #4a9eff;
+$green:   #34d399;
+
+.page {
+  background: $bg;
+  color: $white;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 2rem);
+  min-height: 100vh;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: $accent;
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: $faint;
+  margin: 6px 0 clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: 0.06em;
+}
+
+.loading {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: $dim;
+  text-align: center;
+  padding: 4rem 0;
+}
+
+// ── BIG NUMBERS ──────────────────────────────
+.bigNumbers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: $border;
+  border: 1px solid $border;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.bigCard {
+  background: $bg;
+  padding: clamp(16px, 3vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bigValue {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: $white;
+}
+
+.bigLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: $dim;
+}
+
+.bigSub {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: $faint;
+  font-style: italic;
+}
+
+// ── SECTIONS ─────────────────────────────────
+.section {
+  padding: clamp(1.25rem, 3vw, 1.75rem) 0;
+  border-bottom: 1px solid $border;
+
+  &:last-of-type { border-bottom: none; }
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: $dim;
+  margin: 0 0 clamp(0.75rem, 2vw, 1rem);
+}
+
+.funFact {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: $dim;
+  margin: 0;
+  line-height: 1.6;
+
+  strong {
+    color: $white;
+    font-weight: 700;
+  }
+}
+
+// ── PLANET BARS ──────────────────────────────
+.planetBars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.planetBar {
+  display: grid;
+  grid-template-columns: 110px 1fr 60px;
+  align-items: center;
+  gap: 10px;
+}
+
+.planetName {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: $dim;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barTrack {
+  height: 6px;
+  background: $surface;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: $accent;
+  border-radius: 3px;
+  min-width: 4px;
+}
+
+.planetTime {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: $faint;
+  text-align: right;
+}
+
+// ── TIME GRID ────────────────────────────────
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: $border;
+  border: 1px solid $border;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+
+  @include mobile { grid-template-columns: repeat(2, 1fr); }
+}
+
+.timeCard {
+  background: $bg;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.timeEmoji {
+  font-size: 1.4rem;
+}
+
+.timeValue {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: $white;
+}
+
+.timeLabel {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $dim;
+}
+
+.timeSub {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: $faint;
+}
+
+// ── DEVICES ──────────────────────────────────
+.deviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deviceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.deviceName {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $white;
+  text-transform: capitalize;
+  min-width: 80px;
+}
+
+.deviceCount {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: $accent;
+}
+
+.deviceVibe {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: $faint;
+  font-style: italic;
+}

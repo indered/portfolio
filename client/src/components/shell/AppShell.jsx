@@ -11,7 +11,7 @@ import PaperBurnIntro from '../intro/PaperBurnIntro';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
 import { useSEO } from '../../hooks/useSEO';
-import { useAnalytics, trackPlanetClick } from '../../hooks/useAnalytics';
+import { useAnalytics, trackPlanetClick, trackStarClick } from '../../hooks/useAnalytics';
 import styles from './AppShell.module.scss';
 
 const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
@@ -135,6 +135,7 @@ export default function AppShell({ directPersona = null }) {
   // Star discovery — fire coin arc from star screen pos to wallet corner
   const handleStarClick = useCallback(({ x, y }) => {
     earnTokens('DISCOVER_STAR');
+    trackStarClick();
 
     const walletX = window.innerWidth  - 48;
     const walletY = window.innerHeight - 48;

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import styles from './HubMasthead.module.scss';
 
 // Module-level flag — accurate regardless of React render batching timing
@@ -56,6 +57,7 @@ function IconBriefcase() {
 // First hub visit → play full magazine reveal, then crossfade to compact logo
 // Subsequent visits → show compact logo immediately
 export default function HubMasthead({ visible }) {
+  const navigate = useNavigate();
   const [showBig, setShowBig]   = useState(false);
   const [showLogo, setShowLogo] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -161,6 +163,18 @@ export default function HubMasthead({ visible }) {
             >
               <IconBriefcase />
               <span>Paperwork</span>
+            </button>
+
+            {/* Live stats button */}
+            <button
+              className={styles.paperworkBtn}
+              onClick={() => navigate('/live')}
+              aria-label="View live stats"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              <span>Live</span>
             </button>
 
             {/* Dropdown menu */}

@@ -18,10 +18,9 @@ router.post('/event', (req, res) => {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
   if (EXCLUDE_IPS.length && EXCLUDE_IPS.includes(clientIp)) return;
 
-  const { type, route, planet, duration, sessionId, device, referrer } = req.body;
+  const { type, route, planet, duration, sessionId, device, referrer, returnVisitor, meta } = req.body;
   if (!type || !sessionId) return;
 
-  // Extract country/city from Cloudflare or Render headers
   const country = req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || null;
   const city = req.headers['cf-ipcity'] || req.headers['x-vercel-ip-city'] || null;
 
@@ -35,6 +34,8 @@ router.post('/event', (req, res) => {
     country,
     city,
     referrer: referrer || null,
+    returnVisitor: returnVisitor || false,
+    meta: meta || null,
   }).catch(() => {});
 });
 
@@ -141,6 +142,95 @@ router.get('/stats', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Stats unavailable' });
+  }
+});
+
+// GET /api/analytics/fun — fun public stats
+router.get('/fun', async (req, res) => {
+  try {
+    const [
+      totalStars,
+      totalPageViews,
+      resumeDownloads,
+      speedRunRecord,
+      planetTime,
+      peakHours,
+      returnRate,
+      devicePersonality,
+      linkedInClicks,
+    ] = await Promise.all([
+      // Total stars discovered
+      AnalyticsEvent.countDocuments({ type: 'star_click' }),
+
+      // Total page views ever
+      AnalyticsEvent.countDocuments({ type: 'page_view' }),
+
+      // Resume downloads
+      AnalyticsEvent.countDocuments({ type: 'resume_download' }),
+
+      // Speed run record (fastest to visit all 6 planets)
+      AnalyticsEvent.findOne({ type: 'speed_run' }).sort({ duration: 1 }).lean(),
+
+      // Time per planet (avg seconds)
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'time_per_planet', duration: { $gt: 0, $lt: 600 } } },
+        { $group: { _id: '$route', avg: { $avg: '$duration' }, total: { $sum: '$duration' } } },
+        { $sort: { avg: -1 } },
+      ]),
+
+      // Peak hours (visits by hour of day, UTC)
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view' } },
+        { $group: { _id: { $hour: '$createdAt' }, count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+
+      // Return visitor rate
+      (async () => {
+        const total = await AnalyticsEvent.distinct('sessionId', { type: 'page_view' });
+        const returning = await AnalyticsEvent.distinct('sessionId', { type: 'page_view', returnVisitor: true });
+        return total.length > 0 ? Math.round((returning.length / total.length) * 100) : 0;
+      })(),
+
+      // Device personality breakdown
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view' } },
+        { $group: { _id: '$device', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+      ]),
+
+      // LinkedIn clicks
+      AnalyticsEvent.countDocuments({ type: 'link_click', 'meta.label': 'LinkedIn' }),
+    ]);
+
+    // Total scroll distance (rough: avg page height ~3000px * total page views)
+    const scrollDistancePx = totalPageViews * 3000;
+    const scrollDistanceKm = (scrollDistancePx * 0.0000002645).toFixed(2); // px to km (very rough)
+
+    // Night owls vs early birds
+    const nightOwls = peakHours.filter(h => h._id >= 22 || h._id < 6).reduce((s, h) => s + h.count, 0);
+    const earlyBirds = peakHours.filter(h => h._id >= 6 && h._id < 12).reduce((s, h) => s + h.count, 0);
+    const afternoon = peakHours.filter(h => h._id >= 12 && h._id < 18).reduce((s, h) => s + h.count, 0);
+    const evening = peakHours.filter(h => h._id >= 18 && h._id < 22).reduce((s, h) => s + h.count, 0);
+
+    res.json({
+      starsDiscovered: totalStars,
+      totalPageViews,
+      resumeDownloads,
+      speedRunRecord: speedRunRecord ? speedRunRecord.duration : null,
+      planetTime,
+      peakHours,
+      nightOwls,
+      earlyBirds,
+      afternoon,
+      evening,
+      returnVisitorRate: returnRate,
+      devicePersonality,
+      linkedInClicks,
+      scrollDistanceKm,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Fun stats unavailable' });
   }
 });
 
