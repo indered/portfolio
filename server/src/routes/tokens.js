@@ -9,9 +9,9 @@ const router = Router();
 // Default cause fallback when no DB document exists
 const DEFAULT_CAUSE = {
   month: new Date().toISOString().slice(0, 7), // "YYYY-MM"
-  title: 'Education for Underprivileged Kids',
-  description: 'Every token earned funds educational resources for children who need it most.',
-  tokenValue: 0.10,
+  title: 'Books Over Brooms',
+  description: 'Supporting education for children of household helpers, washermen, and daily wage workers. The people who take care of us deserve to see their kids in classrooms, not following the same cycle.',
+  tokenValue: 0.50,
   totalTokens: 0,
   active: true,
 };

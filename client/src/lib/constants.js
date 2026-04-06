@@ -410,8 +410,8 @@ export const TOKEN_CONFIG = {
   },
   currentCause: {
     month: 'April 2026',
-    title: 'Mid-day Meals for Govt Schools',
-    description: 'I donate to Akshaya Patra Foundation every month. Your tokens add to my contribution — feeding kids in government schools across India.',
-    tokenValue: 0.50, // INR per token
+    title: 'Books Over Brooms',
+    description: 'Supporting education for children of household helpers, washermen, and daily wage workers. The people who take care of us deserve to see their kids in classrooms, not following the same cycle.',
+    tokenValue: 0.50,
   },
 };
