@@ -69,7 +69,18 @@ export default function CameraController({
   });
 
   const birthRevealRef = useRef(birthRevealActive);
-  useEffect(() => { birthRevealRef.current = birthRevealActive; }, [birthRevealActive]);
+  useEffect(() => {
+    // When birth reveal ends, sync orbit state to where the camera actually is
+    // so there's no jump when orbit code takes over
+    if (birthRevealRef.current && !birthRevealActive) {
+      const o = orbit.current;
+      const pos = camera.position;
+      o.radius = pos.length();
+      o.phi = Math.asin(pos.y / o.radius);
+      o.theta = Math.atan2(pos.x, pos.z);
+    }
+    birthRevealRef.current = birthRevealActive;
+  }, [birthRevealActive, camera]);
 
   const driftModeRef = useRef(false);
   useEffect(() => { driftModeRef.current = driftMode; }, [driftMode]);
