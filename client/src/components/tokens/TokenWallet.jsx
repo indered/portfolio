@@ -53,7 +53,7 @@ function CoinIcon() {
 }
 
 export default function TokenWallet() {
-  const { sessionTokens, recentAction } = useTokens();
+  const { sessionTokens, totalTokens, recentAction } = useTokens();
   const [expanded, setExpanded] = useState(false);
   const [floatingPlus, setFloatingPlus] = useState(null);
   const [coinParticles, setCoinParticles] = useState([]);
@@ -94,7 +94,7 @@ export default function TokenWallet() {
     : '';
 
   // Calculate equivalent donation in INR
-  const equivalentINR = sessionTokens * tokenValueINR;
+  const equivalentINR = totalTokens * tokenValueINR;
   const formattedINR = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
@@ -170,9 +170,17 @@ export default function TokenWallet() {
 
             {/* Session Tokens */}
             <div className={styles.sessionBlock}>
-              <span className={styles.sessionLabel}>Your Tokens</span>
+              <span className={styles.sessionLabel}>This Session</span>
               <span className={styles.sessionCount}>
                 <AnimatedCounter value={sessionTokens} />
+              </span>
+            </div>
+
+            {/* Total Tokens */}
+            <div className={styles.sessionBlock}>
+              <span className={styles.sessionLabel}>All Time Total</span>
+              <span className={styles.sessionCount}>
+                <AnimatedCounter value={totalTokens} />
               </span>
             </div>
 

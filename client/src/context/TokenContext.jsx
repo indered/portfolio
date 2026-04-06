@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const TOKEN_ACTIONS = {
   EXPLORE_SECTION: 1,
@@ -7,37 +7,42 @@ const TOKEN_ACTIONS = {
   CLICK_PLANET: 1,
   VIEW_PROJECT: 1,
   PLAY_MUSIC: 1,
+  DISCOVER_STAR: 1,
 };
 
 const TokenContext = createContext();
 
 export function TokenProvider({ children }) {
   const [sessionTokens, setSessionTokens] = useState(0);
+  const [totalTokens, setTotalTokens] = useState(0);
   const [recentAction, setRecentAction] = useState(null);
-  const [earnedActions, setEarnedActions] = useState(new Set());
+
+  // Fetch global total on mount
+  useEffect(() => {
+    fetch('/api/tokens/stats')
+      .then(r => r.json())
+      .then(d => { if (d.totalTokens) setTotalTokens(d.totalTokens); })
+      .catch(() => {});
+  }, []);
 
   const earnTokens = useCallback((action) => {
     const amount = TOKEN_ACTIONS[action];
     if (!amount) return;
 
-    // Prevent duplicate earnings for section explores (one-time per section)
-    if (action === 'EXPLORE_SECTION') {
-      // Allow multiple section explores
-    }
-
     setSessionTokens(prev => prev + amount);
+    setTotalTokens(prev => prev + amount);
     setRecentAction({ action, amount, timestamp: Date.now() });
 
-    // Fire API call to record (fire and forget)
+    // Fire and forget DB write
     fetch('/api/tokens/earn', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action, amount }),
-    }).catch(() => {}); // Silent fail
+    }).catch(() => {});
   }, []);
 
   return (
-    <TokenContext.Provider value={{ sessionTokens, recentAction, earnTokens }}>
+    <TokenContext.Provider value={{ sessionTokens, totalTokens, recentAction, earnTokens }}>
       {children}
     </TokenContext.Provider>
   );
