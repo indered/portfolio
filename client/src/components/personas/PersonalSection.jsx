@@ -12,8 +12,7 @@ export default function DatingSection() {
         <p>
           I'm a software engineer at Emirates NBD in Dubai. I run long distances here,
           mostly because I like sunrises and quiet mornings. I'm also trying to build
-          a hydration brand called Figuring Out, because I think electrolytes should
-          taste better than they do.
+          a hydration brand, because I think electrolytes should taste better than they do.
         </p>
 
         <p>
