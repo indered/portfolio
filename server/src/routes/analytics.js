@@ -3,8 +3,12 @@ import AnalyticsEvent from '../models/AnalyticsEvent.js';
 
 const router = Router();
 
-// IPs to exclude from tracking (set EXCLUDE_IPS env var, comma-separated)
-const EXCLUDE_IPS = (process.env.EXCLUDE_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+// IPs to exclude from tracking (owner's traffic)
+const EXCLUDE_IPS = [
+  '49.43.112.234',
+  '2405:201:601b:e86d:d935:805b:f264:6b8a',
+  ...(process.env.EXCLUDE_IPS || '').split(',').map(s => s.trim()).filter(Boolean),
+];
 
 // POST /api/analytics/event — fire-and-forget
 router.post('/event', (req, res) => {
