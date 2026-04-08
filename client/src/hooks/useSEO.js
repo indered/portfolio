@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 
-const BASE_URL = 'https://www.maheshinder.in';
+const BASE_URL = 'https://maheshinder.in';
 const SITE_NAME = 'Mahesh Inder Portfolio';
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.jpg`;
 
