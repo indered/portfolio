@@ -373,17 +373,16 @@
   // Hide logo, keep back arrow only
   .logoLink { display: none; }
 
-  // Back button: just the arrow, no text
+  // Back button: arrow + "Solar System" label
   .backButton {
-    font-size: 0;
-    padding: var(--space-sm);
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs) var(--space-sm);
     border: none;
-    min-width: 48px;
-    min-height: 48px;
+    min-height: 40px;
 
     svg {
-      width: 22px;
-      height: 22px;
+      width: 16px;
+      height: 16px;
     }
   }
 
