@@ -11,9 +11,6 @@ const SETTLE = 300;
 const SAYINGS = [
   'asked her out. she said maybe. still running.',
   'was writing a cv, ended up making a solar system.',
-  'she said no. the road said nothing.',
-  'the code compiles. the man does not.',
-  'the heart breaks at sea level. the legs do not.',
   'she wanted red flags. i only had green commits.',
   'dubai. 28 degrees. 5am. single.',
   'the only thing faster than my code is how quickly they stop replying.',
@@ -26,17 +23,21 @@ export default function PaperBurnIntro({ onComplete }) {
   const textContainerRef = useRef(null);
   const completedRef = useRef(false);
 
-  const text = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
+  const [text] = useState(() => SAYINGS[Math.floor(Math.random() * SAYINGS.length)]);
+
+  // Reset refs array to match current text length
+  lettersRef.current.length = text.length;
 
   const setLetterRef = useCallback((el, i) => {
     if (el) lettersRef.current[i] = el;
   }, []);
 
   useEffect(() => {
+    // Wait for fonts + next frame to ensure all refs are populated
     document.fonts.ready.then(() => {
-      runAnimation();
+      requestAnimationFrame(() => runAnimation());
     });
-  }, []);
+  }, [runAnimation]);
 
   const runAnimation = useCallback(() => {
     const wrapper = wrapperRef.current;
