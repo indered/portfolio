@@ -16,7 +16,7 @@ const SEO_CONFIG = {
     title: 'Mahesh Inder | Developer Portfolio, Full Stack Engineer Dubai',
     description: 'Senior Full Stack Developer at Emirates NBD with 7+ years experience. Expert in React, Node.js, GraphQL, Rust, and AWS. APIs featured twice at Google I/O.',
     keywords: 'Mahesh Inder Developer, Full Stack Portfolio, React Developer Dubai, Node.js Engineer UAE, GraphQL Expert',
-    canonical: `${BASE_URL}/architect`,
+    canonical: `${BASE_URL}/work`,
     ogType: 'profile',
   },
   runner: {

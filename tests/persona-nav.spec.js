@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Persona Navigation', () => {
-  test('/architect route shows correct URL', async ({ page }) => {
-    await page.goto('/architect');
+  test('/work route shows correct URL', async ({ page }) => {
+    await page.goto('/work');
     await page.waitForTimeout(2000);
-    expect(page.url()).toContain('/architect');
+    expect(page.url()).toContain('/work');
   });
 
   test('position dots are visible on persona page', async ({ page }) => {
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(2000);
 
     const positionNav = page.locator('nav[aria-label="Section navigation"]');
@@ -20,7 +20,7 @@ test.describe('Persona Navigation', () => {
   });
 
   test('arrow key navigation works between planets', async ({ page }) => {
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(2000);
 
     // Developer is first in PERSONA_IDS, pressing ArrowRight should go to runner
@@ -40,7 +40,7 @@ test.describe('Persona Navigation', () => {
   });
 
   test('escape key triggers back navigation', async ({ page }) => {
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(2000);
 
     await page.keyboard.press('Escape');
@@ -51,7 +51,7 @@ test.describe('Persona Navigation', () => {
   });
 
   test('attribution footer text is present', async ({ page }) => {
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(2000);
 
     const attribution = page.locator('text=was building a');

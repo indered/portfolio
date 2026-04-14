@@ -18,7 +18,7 @@ const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
 // Persona ID to route path mapping
 const PERSONA_ROUTES = {
-  developer: '/architect',
+  developer: '/work',
   runner: '/runner',
   blockchain: '/ventures',
   social: '/connect',

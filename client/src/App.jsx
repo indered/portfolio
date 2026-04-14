@@ -12,7 +12,8 @@ const LiveSection = lazy(() => import('./components/personas/LiveSection'));
 
 // Route-to-persona mapping
 const PERSONA_ROUTES = [
-  { path: '/architect', persona: 'developer' },
+  { path: '/work', persona: 'developer' },
+  { path: '/architect', persona: 'developer' }, // legacy — already shared with people
   { path: '/runner', persona: 'runner' },
   { path: '/ventures', persona: 'blockchain' },
   { path: '/connect', persona: 'social' },

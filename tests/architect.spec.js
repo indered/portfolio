@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Architect (/architect) Page', () => {
+test.describe('Work (/work) Page', () => {
   test.beforeEach(async ({ page }) => {
-    // Direct navigation to /architect bypasses intro
-    await page.goto('/architect');
+    // Direct navigation to /work bypasses intro
+    await page.goto('/work');
     await page.waitForTimeout(2000);
   });
 

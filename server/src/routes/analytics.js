@@ -61,7 +61,7 @@ router.get('/stats', async (req, res) => {
           normalizedPlanet: {
             $switch: {
               branches: [
-                { case: { $eq: ['$planet', 'developer'] }, then: '/architect' },
+                { case: { $eq: ['$planet', 'developer'] }, then: '/work' },
                 { case: { $eq: ['$planet', 'blockchain'] }, then: '/ventures' },
                 { case: { $eq: ['$planet', 'dating'] }, then: '/about' },
                 { case: { $eq: ['$planet', 'social'] }, then: '/connect' },

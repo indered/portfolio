@@ -21,20 +21,20 @@ test.describe('Visual Regression', () => {
     });
   });
 
-  test('architect desktop', async ({ page }) => {
+  test('work desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(3000);
-    await expect(page).toHaveScreenshot('architect-desktop.png', {
+    await expect(page).toHaveScreenshot('work-desktop.png', {
       maxDiffPixelRatio: 0.1,
     });
   });
 
-  test('architect mobile', async ({ page }) => {
+  test('work mobile', async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
-    await page.goto('/architect');
+    await page.goto('/work');
     await page.waitForTimeout(3000);
-    await expect(page).toHaveScreenshot('architect-mobile.png', {
+    await expect(page).toHaveScreenshot('work-mobile.png', {
       maxDiffPixelRatio: 0.1,
     });
   });
