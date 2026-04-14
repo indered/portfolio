@@ -14,6 +14,7 @@ const LiveSection = lazy(() => import('./components/personas/LiveSection'));
 const PERSONA_ROUTES = [
   { path: '/about', persona: 'about' },
   { path: '/work', persona: 'work' },
+  { path: '/architect', persona: 'work' },
   { path: '/connect', persona: 'connect' },
   { path: '/runner', persona: 'runner' },
   { path: '/ventures', persona: 'ventures' },
