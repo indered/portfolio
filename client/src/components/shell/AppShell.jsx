@@ -293,16 +293,10 @@ export default function AppShell({ directPersona = null }) {
       navigate('/', { replace: true });
     }
 
-    // If opened via direct route (e.g. /work), reload to full hub
-    if (directPersona) {
-      window.location.href = '/';
-      return;
-    }
-
-    if (use3D) {
+    if (use3D && !directPersona) {
       setIsExitingToHub(true);
       document.documentElement.setAttribute('data-theme', 'dark');
-      setDriftSettled(false); // hide card while PersonaApp fades
+      setDriftSettled(false);
 
       if (!driftModeRef.current) {
         window.__solarSystemResetCamera?.();
@@ -314,12 +308,11 @@ export default function AppShell({ directPersona = null }) {
         setView('hub');
 
         if (driftModeRef.current) {
-          // Camera is already at drift position — allow settled callback to re-fire
-          // so the preview card reappears without needing a new scroll
           driftControlRef.current?.resetSettled();
         }
       }, 700);
     } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
       setActivePlanet(null);
       setView('hub');
     }
