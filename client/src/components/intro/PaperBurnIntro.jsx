@@ -32,13 +32,6 @@ export default function PaperBurnIntro({ onComplete }) {
     if (el) lettersRef.current[i] = el;
   }, []);
 
-  useEffect(() => {
-    // Wait for fonts + next frame to ensure all refs are populated
-    document.fonts.ready.then(() => {
-      requestAnimationFrame(() => runAnimation());
-    });
-  }, [runAnimation]);
-
   const runAnimation = useCallback(() => {
     const wrapper = wrapperRef.current;
     const letters = lettersRef.current;
@@ -122,6 +115,12 @@ export default function PaperBurnIntro({ onComplete }) {
       }, null, `>+${SETTLE / 1000}`);
     }
   }, [onComplete]);
+
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      requestAnimationFrame(() => runAnimation());
+    });
+  }, [runAnimation]);
 
   return (
     <div ref={wrapperRef} className={styles.wrapper}>

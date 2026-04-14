@@ -7,7 +7,7 @@
 export const PERSONAS = {
   developer: {
     id: 'developer',
-    title: 'The Architect',
+    title: 'Work',
     icon: '💻',
     color: 'var(--color-persona-developer)',
     tagline: "Systems built to last. Code written to be read. Architecture that doesn't apologise.",
