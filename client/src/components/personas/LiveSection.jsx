@@ -5,13 +5,13 @@ import styles from './LiveSection.module.scss';
 const MiniPlanet = lazy(() => import('./MiniPlanet'));
 
 const ROUTE_NAMES = {
-  '/work': 'Work', '/runner': 'The Long Run', '/ventures': 'Ventures',
-  '/connect': 'Connect', '/thoughts': 'The Thinker', '/about': 'Personal',
+  '/about': 'Personal', '/work': 'Work', '/connect': 'Connect',
+  '/runner': 'The Long Run', '/ventures': 'Ventures', '/thoughts': 'The Thinker',
 };
 
 const ROUTE_TO_ID = {
-  '/work': 'developer', '/runner': 'runner', '/ventures': 'blockchain',
-  '/connect': 'social', '/thoughts': 'thinker', '/about': 'dating',
+  '/about': 'about', '/work': 'work', '/connect': 'connect',
+  '/runner': 'runner', '/ventures': 'ventures', '/thoughts': 'thoughts',
 };
 
 const DEVICE_VIBE = {

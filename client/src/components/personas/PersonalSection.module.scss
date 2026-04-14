@@ -27,14 +27,38 @@ $accent: var(--persona-color);
     color: $dark;
     margin: 0 0 clamp(1rem, 2vw, 1.5rem);
 
-    &:first-child {
-      font-size: clamp(1.1rem, 1.8vw, 1.25rem);
-      font-weight: 600;
-      color: $black;
-    }
-
     &:last-of-type {
       margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    }
+  }
+}
+
+.intro {
+  font-size: clamp(1.1rem, 1.8vw, 1.25rem) !important;
+  font-weight: 600 !important;
+  color: $black !important;
+  letter-spacing: 0.01em;
+}
+
+.hobbies {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+
+  li {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    line-height: 1.8;
+    color: $dark;
+    padding-left: 1.2em;
+    position: relative;
+
+    &::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: $mid;
+      font-weight: 700;
     }
   }
 }

@@ -23,7 +23,6 @@ const PORT = 4567;
 const ROUTES = [
   { path: '/', file: 'index.html' },
   { path: '/work', file: 'work/index.html' },
-  { path: '/architect', file: 'architect/index.html' },
   { path: '/runner', file: 'runner/index.html' },
   { path: '/ventures', file: 'ventures/index.html' },
   { path: '/connect', file: 'connect/index.html' },

@@ -7,12 +7,12 @@ import { useSEO } from '../../hooks/useSEO';
 import styles from './PersonaApp.module.scss';
 
 const PERSONA_COMPONENTS = {
-  developer: lazy(() => import('../personas/DeveloperSection')),
+  about:     lazy(() => import('../personas/PersonalSection')),
+  work:      lazy(() => import('../personas/DeveloperSection')),
+  connect:   lazy(() => import('../personas/SocialLinksSection')),
   runner:    lazy(() => import('../personas/RunnerSection')),
-  blockchain:lazy(() => import('../personas/VenturesSection')),
-  dating:    lazy(() => import('../personas/PersonalSection')),
-  social:    lazy(() => import('../personas/SocialLinksSection')),
-  thinker:   lazy(() => import('../personas/ThinkerSection')),
+  ventures:  lazy(() => import('../personas/VenturesSection')),
+  thoughts:  lazy(() => import('../personas/ThinkerSection')),
 };
 
 // Use the ordered list from constants

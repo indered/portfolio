@@ -18,12 +18,12 @@ const SolarSystem = lazy(() => import('../solar-system/SolarSystem'));
 
 // Persona ID to route path mapping
 const PERSONA_ROUTES = {
-  developer: '/work',
+  about: '/about',
+  work: '/work',
+  connect: '/connect',
   runner: '/runner',
-  blockchain: '/ventures',
-  social: '/connect',
-  thinker: '/thoughts',
-  dating: '/about',
+  ventures: '/ventures',
+  thoughts: '/thoughts',
 };
 
 export default function AppShell({ directPersona = null }) {
@@ -93,7 +93,7 @@ export default function AppShell({ directPersona = null }) {
   }, []);
 
   // Preload the SolarSystem chunk only when entering via hub (not direct persona routes).
-  // This avoids loading 1MB+ of Three.js on pages like /architect that don't use 3D.
+  // This avoids loading 1MB+ of Three.js on pages like /work that don't use 3D.
   useEffect(() => {
     if (!directPersona) {
       import('../solar-system/SolarSystem').catch(() => {});
@@ -293,8 +293,9 @@ export default function AppShell({ directPersona = null }) {
       navigate('/', { replace: true });
     }
 
-    // If opened via direct route (e.g. /architect), go to full hub
+    // If opened via direct route (e.g. /work), reload to full hub
     if (directPersona) {
+      window.location.href = '/';
       return;
     }
 

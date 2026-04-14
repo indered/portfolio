@@ -5,11 +5,11 @@
 
 // --- Personas (Orbital Navigation) ---
 export const PERSONAS = {
-  developer: {
-    id: 'developer',
+  work: {
+    id: 'work',
     title: 'Work',
     icon: '💻',
-    color: 'var(--color-persona-developer)',
+    color: 'var(--color-persona-work)',
     tagline: "Systems built to last. Code written to be read. Architecture that doesn't apologise.",
     orbitRadius: 1,
     orbitSpeed: 20,
@@ -25,11 +25,11 @@ export const PERSONAS = {
     orbitSpeed: 25,
     orbitOffset: 51,
   },
-  blockchain: {
-    id: 'blockchain',
+  ventures: {
+    id: 'ventures',
     title: 'Ventures',
     icon: '🚀',
-    color: 'var(--color-persona-blockchain)',
+    color: 'var(--color-persona-ventures)',
     tagline: "Building things outside of work. Hydration brand and a programming language.",
     orbitRadius: 1,
     orbitSpeed: 30,
@@ -45,31 +45,31 @@ export const PERSONAS = {
     orbitSpeed: 22,
     orbitOffset: 154,
   },
-  dating: {
-    id: 'dating',
+  about: {
+    id: 'about',
     title: 'Personal',
     icon: '💘',
-    color: 'var(--color-persona-dating)',
+    color: 'var(--color-persona-about)',
     tagline: "Schrödinger's Boyfriend: simultaneously perfect and a red flag until observed.",
     orbitRadius: 1,
     orbitSpeed: 16,
     orbitOffset: 230,
   },
-  social: {
-    id: 'social',
+  connect: {
+    id: 'connect',
     title: 'The Network Node',
     icon: '🌐',
-    color: 'var(--color-persona-social)',
+    color: 'var(--color-persona-connect)',
     tagline: 'Every connection is a new dimension. The social fabric of spacetime.',
     orbitRadius: 1,
     orbitSpeed: 35,
     orbitOffset: 257,
   },
-  thinker: {
-    id: 'thinker',
+  thoughts: {
+    id: 'thoughts',
     title: 'The Thinker',
     icon: '📖',
-    color: 'var(--color-persona-thinker)',
+    color: 'var(--color-persona-thoughts)',
     tagline: 'Guru Nanak taught me to question. Hawking showed me where questions lead.',
     orbitRadius: 1,
     orbitSpeed: 40,
@@ -79,11 +79,11 @@ export const PERSONAS = {
 
 // --- Planet 3D Config (Solar System Scene) ---
 // Planet visuals inspired by real solar system bodies
-// Developer=Earth (blue, life), Runner=Mars (red, endurance), Blockchain=Neptune (deep purple, mystery)
-// Music=Venus (hot pink, atmosphere), Fashion=Saturn (rings, golden), Social=Jupiter (massive, colorful)
-// Thinker=Pluto (distant, quiet, small)
+// Work=Earth (blue, life), Runner=Mars (red, endurance), Ventures=Neptune (green, growth)
+// Music=Venus (hot pink, atmosphere), About=Aphrodite (pink, personal), Connect=Jupiter (massive, colorful)
+// Thoughts=Pluto (distant, quiet, small)
 export const PLANET_CONFIG = {
-  developer: {
+  work: {
     realName: 'Earth',
     meshColor: '#2a7fe0', emissive: '#0d3a80', size: 1.35, orbitRadius: 4, orbitSpeed: 0.3,
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#4ab0ff', atmosphereOpacity: 0.18,
@@ -95,7 +95,7 @@ export const PLANET_CONFIG = {
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#ff6633', atmosphereOpacity: 0.1,
     roughness: 0.55, metalness: 0.2,
   },
-  blockchain: {
+  ventures: {
     realName: 'Ventures',
     meshColor: '#8BA370', emissive: '#3D5C30', size: 0.92, orbitRadius: 7, orbitSpeed: 0.2,
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#B8D4A8', atmosphereOpacity: 0.18,
@@ -107,19 +107,19 @@ export const PLANET_CONFIG = {
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#ffcc66', atmosphereOpacity: 0.25,
     roughness: 0.3, metalness: 0.25,
   },
-  dating: {
+  about: {
     realName: 'Aphrodite',
     meshColor: '#e0527a', emissive: '#80102e', size: 0.68, orbitRadius: 10, orbitSpeed: 0.15,
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#ff80ab', atmosphereOpacity: 0.28,
     roughness: 0.25, metalness: 0.3,
   },
-  social: {
+  connect: {
     realName: 'Jupiter',
     meshColor: '#c8a070', emissive: '#5a3e20', size: 0.98, orbitRadius: 11.5, orbitSpeed: 0.12,
     hasRing: false, hasAtmosphere: true, atmosphereColor: '#e0b888', atmosphereOpacity: 0.14,
     roughness: 0.4, metalness: 0.2,
   },
-  thinker: {
+  thoughts: {
     realName: 'Pluto',
     meshColor: '#8b7d6b', emissive: '#302820', size: 0.48, orbitRadius: 14, orbitSpeed: 0.08,
     hasRing: false, hasAtmosphere: false,
@@ -128,20 +128,20 @@ export const PLANET_CONFIG = {
 };
 
 // --- Ordered persona IDs — used for drift navigation sequencing ---
-// Note: 'music' temporarily hidden, 'dating' moved to last position
-export const PERSONA_IDS = ['developer', 'runner', 'blockchain', 'social', 'thinker', 'dating'];
+// Note: 'music' temporarily hidden
+export const PERSONA_IDS = ['about', 'work', 'connect', 'runner', 'ventures', 'thoughts'];
 
 // --- Gravitational Drift — horizontal lineup ---
 // Planets align on the X-axis when drift activates.
 // Camera performs a pure horizontal dolly (only x changes; y=5, z=16 fixed).
 // Sun stays at origin. Each scroll/swipe step = one planet to the right.
 export const DRIFT_POSITIONS = {
-  developer:  { pos: [ 6, 0, 0], cam: [ 6, 5, 16] },
-  runner:     { pos: [12, 0, 0], cam: [12, 5, 16] },
-  blockchain: { pos: [18, 0, 0], cam: [18, 5, 16] },
-  social:     { pos: [24, 0, 0], cam: [24, 5, 16] },
-  thinker:    { pos: [30, 0, 0], cam: [30, 5, 16] },
-  dating:     { pos: [36, 0, 0], cam: [36, 5, 16] },
+  about:      { pos: [ 6, 0, 0], cam: [ 6, 5, 16] },
+  work:       { pos: [12, 0, 0], cam: [12, 5, 16] },
+  connect:    { pos: [18, 0, 0], cam: [18, 5, 16] },
+  runner:     { pos: [24, 0, 0], cam: [24, 5, 16] },
+  ventures:   { pos: [30, 0, 0], cam: [30, 5, 16] },
+  thoughts:   { pos: [36, 0, 0], cam: [36, 5, 16] },
 };
 
 // Derived — camera X positions in persona order. CameraController uses these
@@ -242,7 +242,7 @@ export const PROJECTS = [
     impact: 'Microservices handling 10K+ daily active freelancers',
     link: '#',
     github: '#',
-    color: 'var(--color-persona-blockchain)',
+    color: 'var(--color-persona-ventures)',
   },
   {
     id: 2,
@@ -255,7 +255,7 @@ export const PROJECTS = [
     impact: '2x Google I/O featured, millions in GMV',
     link: 'https://tokopedia.com/discovery/kejar-disk',
     github: '#',
-    color: 'var(--color-persona-developer)',
+    color: 'var(--color-persona-work)',
     featured: true,
   },
   {

@@ -3,7 +3,7 @@ import { motion, useInView } from 'motion/react';
 import { PERSONAS, STARTUP_INFO } from '../../lib/constants';
 import styles from './BlockchainAISection.module.scss';
 
-const persona = PERSONAS.blockchain;
+const persona = PERSONAS.ventures;
 
 // ── Network graph data — neutral gray, entrance animation only ────────────────
 const NODES = [

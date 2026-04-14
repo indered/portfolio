@@ -35,7 +35,7 @@ test.describe('Persona Navigation', () => {
     await page.keyboard.press('ArrowLeft');
     await page.waitForTimeout(1000);
 
-    const developerSection = page.locator('[data-persona="developer"]');
+    const developerSection = page.locator('[data-persona="work"]');
     await expect(developerSection).toBeVisible({ timeout: 5000 });
   });
 

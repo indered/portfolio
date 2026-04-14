@@ -14,13 +14,13 @@ const LAUNCH_PHRASES = [
 ];
 
 const FLAVOR_TEXTS = {
-  developer: 'Compiling the universe...',
+  about: 'Calibrating the romance algorithm...',
+  work: 'Compiling the universe...',
+  connect: 'Establishing quantum link...',
   runner: 'Km 32. Mind takes over.',
-  blockchain: 'Replenishing the cosmos...',
+  ventures: 'Replenishing the cosmos...',
+  thoughts: 'Entering the silence of deep space...',
   music: 'Dropping the beat...',
-  dating: 'Calibrating the romance algorithm...',
-  social: 'Establishing quantum link...',
-  thinker: 'Entering the silence of deep space...',
 };
 
 export default function TransitionOverlay({ active, planetId }) {

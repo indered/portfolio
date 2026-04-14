@@ -8,8 +8,8 @@ test.describe('Work (/work) Page', () => {
   });
 
   test('direct navigation loads developer section', async ({ page }) => {
-    // The persona app should be mounted with data-persona="developer"
-    const personaApp = page.locator('[data-persona="developer"]');
+    // The persona app should be mounted with data-persona="work"
+    const personaApp = page.locator('[data-persona="work"]');
     await expect(personaApp).toBeVisible({ timeout: 5000 });
   });
 

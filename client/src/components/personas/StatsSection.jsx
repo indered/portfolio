@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import styles from './StatsSection.module.scss';
 
 const ROUTE_NAMES = {
-  '/work': 'Work', '/runner': 'Runner', '/ventures': 'Ventures',
-  '/connect': 'Connect', '/thoughts': 'Thinker', '/about': 'Personal',
+  '/about': 'Personal', '/work': 'Work', '/connect': 'Connect',
+  '/runner': 'Runner', '/ventures': 'Ventures', '/thoughts': 'Thinker',
 };
 
 function Stat({ label, value, sub }) {

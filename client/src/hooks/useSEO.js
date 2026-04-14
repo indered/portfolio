@@ -12,7 +12,7 @@ const SEO_CONFIG = {
     canonical: BASE_URL,
     ogType: 'website',
   },
-  developer: {
+  work: {
     title: 'Mahesh Inder | Developer Portfolio, Full Stack Engineer Dubai',
     description: 'Senior Full Stack Developer at Emirates NBD with 7+ years experience. Expert in React, Node.js, GraphQL, Rust, and AWS. APIs featured twice at Google I/O.',
     keywords: 'Mahesh Inder Developer, Full Stack Portfolio, React Developer Dubai, Node.js Engineer UAE, GraphQL Expert',
@@ -26,28 +26,28 @@ const SEO_CONFIG = {
     canonical: `${BASE_URL}/runner`,
     ogType: 'profile',
   },
-  blockchain: {
+  ventures: {
     title: 'Figuring Out | Electrolyte Brand Dubai, Founded by Mahesh Inder',
     description: 'Figuring Out is an electrolyte brand launching in Dubai. Founded by Mahesh Inder. We figured out the hydration.',
     keywords: 'Figuring Out, Electrolyte Brand Dubai, Hydration UAE, Mahesh Inder Startup',
     canonical: `${BASE_URL}/ventures`,
     ogType: 'business.business',
   },
-  social: {
+  connect: {
     title: 'Connect with Mahesh Inder | GitHub, LinkedIn, Contact',
     description: 'Connect with Mahesh Inder on GitHub, LinkedIn, Instagram. Open to senior engineering roles and consulting. Based in Dubai, UAE.',
     keywords: 'Mahesh Inder Contact, Mahesh Inder LinkedIn, Mahesh Inder GitHub, Hire Developer Dubai',
     canonical: `${BASE_URL}/connect`,
     ogType: 'profile',
   },
-  thinker: {
+  thoughts: {
     title: 'Mahesh Inder | Thoughts on Philosophy and Life',
     description: 'Personal reflections from Mahesh Inder on Guru Nanak, Stephen Hawking, faith, and reason.',
     keywords: 'Mahesh Inder Blog, Thoughts Philosophy, Personal Essays, Life Reflections',
     canonical: `${BASE_URL}/thoughts`,
     ogType: 'article',
   },
-  dating: {
+  about: {
     title: 'About Mahesh Inder | Personal Profile, Dubai',
     description: 'Meet Mahesh Inder. 28, Software Engineer, Marathon Runner, based in Dubai.',
     keywords: 'Mahesh Inder Personal, About Mahesh Inder, Software Engineer Dubai',

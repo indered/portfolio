@@ -1,37 +1,43 @@
+import { useMemo } from 'react';
 import styles from './PersonalSection.module.scss';
 
+function getAge() {
+  const birth = new Date(1997, 3, 19); // April 19, 1997
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
 export default function DatingSection() {
+  const age = useMemo(() => getAge(), []);
+
   return (
     <div className={styles.page} role="main">
 
       <div className={styles.letter}>
-        <p>
-          Hi. I'm Mahesh. I built this solar system because a normal portfolio felt boring.
+        <p className={styles.intro}>
+          I'm Mahesh, {age} years old, originally from Ayodhya in India.
         </p>
 
         <p>
-          I'm a software engineer at Emirates NBD in Dubai. I run long distances here,
-          mostly because I like sunrises and quiet mornings. I'm also trying to build
-          a hydration brand, because I think electrolytes should taste better than they do.
+          I grew up there and moved to Noida for my engineering degree.
+          After college I stayed in the Delhi NCR area and worked as a
+          software developer for a few years. Then I got an opportunity
+          in Dubai and took it. I've been here since, currently working
+          at Emirates NBD.
         </p>
 
         <p>
-          I grew up in Ayodhya, lived in Delhi, and moved to Dubai. Each city taught
-          me something different.
-        </p>
-
-        <p>
-          I started thinking a lot more with age. About faith, about the universe,
-          about what matters.
-        </p>
-
-        <p>
-          If you made it this far, thank you. That means a lot.
+          Outside of work I like running, mixing music on DJ decks,
+          playing ukulele, making coffee and trying new recipes in
+          the kitchen. I'm not great at all of them but I enjoy the process.
         </p>
 
         <div className={styles.actions}>
           <a href="mailto:mahesh.inder85@gmail.com" className={styles.cta}>
-            Get in touch &rarr;
+            Say hello &rarr;
           </a>
           <a
             href="https://www.instagram.com/mahesh.inder_/"

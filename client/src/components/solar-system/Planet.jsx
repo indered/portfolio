@@ -218,7 +218,7 @@ export default function Planet({ persona, config, onClick, onRegister, driftMode
       ctx.fill();
     }
 
-    if (['social', 'fashion', 'blockchain'].includes(persona.id)) {
+    if (['connect', 'fashion', 'ventures'].includes(persona.id)) {
       for (let band = 0; band < 8; band++) {
         const y = (band / 8) * size + Math.random() * 20;
         const bandColor = band % 2 === 0 ? lightColor : darkColor;
@@ -227,8 +227,8 @@ export default function Planet({ persona, config, onClick, onRegister, driftMode
       }
     }
 
-    if (['developer', 'runner', 'thinker'].includes(persona.id)) {
-      const capColor = persona.id === 'developer' ? '#ffffff' : '#e0d8cc';
+    if (['work', 'runner', 'thoughts'].includes(persona.id)) {
+      const capColor = persona.id === 'work' ? '#ffffff' : '#e0d8cc';
       ctx.fillStyle = capColor;
       ctx.globalAlpha = 0.3;
       ctx.beginPath();
@@ -240,7 +240,7 @@ export default function Planet({ persona, config, onClick, onRegister, driftMode
       ctx.globalAlpha = 1;
     }
 
-    if (persona.id === 'developer') {
+    if (persona.id === 'work') {
       for (let i = 0; i < 15; i++) {
         const x = Math.random() * size;
         const y = 30 + Math.random() * (size - 60);
