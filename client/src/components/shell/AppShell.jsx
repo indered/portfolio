@@ -33,7 +33,8 @@ export default function AppShell({ directPersona = null }) {
   // Set default SEO only in hub view. Pass false to skip when PersonaApp handles it.
   useSEO(directPersona ? false : null);
   useAnalytics(directPersona ? PERSONA_ROUTES[directPersona] : '/');
-  const [view, setView] = useState(directPersona ? 'persona' : 'intro');
+  const introSeen = sessionStorage.getItem('introSeen');
+  const [view, setView] = useState(directPersona ? 'persona' : (introSeen ? 'hub' : 'intro'));
   const [introJustFinished, setIntroJustFinished] = useState(false);
   const [activePlanet, setActivePlanet] = useState(directPersona);
   const [targetPlanet, setTargetPlanet] = useState(null);
@@ -128,6 +129,7 @@ export default function AppShell({ directPersona = null }) {
   }, [travelTick]);
 
   const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem('introSeen', '1');
     setIntroJustFinished(true);
     setView('hub');
   }, []);
