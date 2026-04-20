@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { trackResumeDownload, trackLinkClick } from '../../hooks/useAnalytics';
 import styles from './DeveloperSection.module.scss';
 
@@ -8,7 +9,7 @@ const SKILLS = [
   { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
   { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
   { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
-  { name: 'AI / Web3', tools: 'LangChain · Solidity · Ethereum' },
+  { name: 'AI / Web3', tools: 'LangChain · RAG · Solidity · Ethereum' },
 ];
 
 // ─── The Work ────────────────────────────────────────────────────────────────
@@ -92,6 +93,7 @@ const WORK = [
 ];
 
 export default function DeveloperSection() {
+  const navigate = useNavigate();
   return (
     <div className={styles.page} role="main">
 
@@ -111,6 +113,14 @@ export default function DeveloperSection() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Cover Letter
         </a>
+      </div>
+
+      {/* ── ASK CTA ── */}
+      <div className={styles.askCta}>
+        <span>Got a specific question?</span>
+        <button onClick={() => navigate('/ask')} className={styles.askBtn}>
+          Ask my AI &rarr;
+        </button>
       </div>
 
       {/* ── SKILLS — on top ── */}

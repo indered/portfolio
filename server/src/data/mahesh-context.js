@@ -59,7 +59,7 @@ Freelancing (Nov 2021 - Apr 2022, 6 months)
 Primary Stack: MERN (MongoDB, Express, React, Node.js)
 Languages: JavaScript, TypeScript, Python, Rust, Solidity, C++
 Frontend: React, Next.js, Redux, Apollo Client, HTML5, CSS3, Sass
-Backend: Node.js, Express, Apollo Server, GraphQL, REST, Kafka, LangChain, Ethereum, ElasticSearch, RabbitMQ
+Backend: Node.js, Express, Apollo Server, GraphQL, REST, Kafka, LangChain, RAG, Ethereum, ElasticSearch, RabbitMQ
 Databases: MongoDB, PostgreSQL, MySQL
 DevOps: AWS (EC2, ECS, SNS, SQS, Lambda), OpenSearch, Docker, Heroku
 Total Experience: ${totalExp}+ years in full stack development

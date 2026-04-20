@@ -13,7 +13,7 @@ $accent:  var(--persona-color);
   background: $paper;
   color: $black;
   min-height: 100%;
-  max-width: 720px;
+  max-width: 960px;
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 5vw, 2rem);
 }
@@ -60,6 +60,38 @@ $accent:  var(--persona-color);
     border-color: $accent;
     color: $accent;
     svg { opacity: 1; transform: translateY(2px); }
+  }
+}
+
+// ── ASK CTA ─────────────────────────────────
+.askCta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+
+  span {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: $mid;
+  }
+}
+
+.askBtn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #4a9eff;
+  background: none;
+  border: 1px solid rgba(74, 158, 255, 0.25);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(74, 158, 255, 0.06);
+    border-color: rgba(74, 158, 255, 0.4);
   }
 }
 
