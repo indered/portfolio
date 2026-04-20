@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import { useTokens } from '../../context/TokenContext';
@@ -13,7 +14,6 @@ const PERSONA_COMPONENTS = {
   runner:    lazy(() => import('../personas/RunnerSection')),
   ventures:  lazy(() => import('../personas/VenturesSection')),
   thoughts:  lazy(() => import('../personas/ThinkerSection')),
-  ask:       lazy(() => import('../personas/AskSection')),
 };
 
 // Use the ordered list from constants
@@ -27,6 +27,7 @@ export default function PersonaApp({
   direction  = 'right',
   hubLabel   = 'Solar System',
 }) {
+  const navigate         = useNavigate();
   const persona          = PERSONAS[personaId];
   const config           = PLANET_CONFIG[personaId];
   const PersonaComponent = PERSONA_COMPONENTS[personaId];
@@ -172,6 +173,16 @@ export default function PersonaApp({
         <Suspense fallback={null}>
           <PersonaComponent />
         </Suspense>
+
+        {/* ── Ask AI nudge (not shown on the Ask page itself) */}
+        {personaId !== 'ask' && (
+          <div className={styles.askNudge}>
+            <span className={styles.askNudgeText}>Too lazy to read? Let AI do the talking.</span>
+            <button className={styles.askNudgeBtn} onClick={() => navigate('/ask')}>
+              🔮 Ask Mahesh
+            </button>
+          </div>
+        )}
 
         {/* ── Escape to cosmos hint */}
         <div className={styles.escapeHint}>

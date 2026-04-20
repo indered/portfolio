@@ -4,13 +4,19 @@ import { maheshContext } from '../data/mahesh-context.js';
 
 const router = Router();
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+let groq = null;
+function getGroq() {
+  if (!groq && process.env.GROQ_API_KEY) {
+    groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  }
+  return groq;
+}
 
 const SYSTEM_PROMPT = `You are Mahesh Inder's portfolio assistant. You answer questions about Mahesh based only on the data provided below. Be concise, friendly, and sound like a normal person. No long dashes. No emojis. No fancy language.
 
-If someone asks something you don't have data for, just say you don't know that about Mahesh.
+If someone asks something you don't have data for, say you don't know that and suggest they reach out to Mahesh directly at maheshinder.in/connect or email him at mahesh.inder85@gmail.com.
 
-If someone asks something unrelated to Mahesh, politely redirect them.
+If someone asks something unrelated to Mahesh, politely redirect them and mention they can reach Mahesh at maheshinder.in/connect.
 
 Here is everything you know about Mahesh:
 
@@ -56,11 +62,12 @@ router.post('/', async (req, res) => {
       return res.status(429).json({ error: 'Too many messages. Try again in a minute.' });
     }
 
-    if (!process.env.GROQ_API_KEY) {
+    const client = getGroq();
+    if (!client) {
       return res.status(503).json({ error: 'Chat is not configured yet.' });
     }
 
-    const completion = await groq.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: 'llama-3.1-8b-instant',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },

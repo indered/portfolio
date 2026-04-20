@@ -1,5 +1,40 @@
 @use '../../styles/mixins' as *;
 
+// ─── Ask AI button — top-left on hub ──────────────────────────────────────────
+.askBtn {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 10px;
+  color: rgba(167, 139, 250, 0.85);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: askPulse 3s ease-in-out infinite;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.45);
+    color: #c4b5fd;
+  }
+}
+
+@keyframes askPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(139, 92, 246, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(139, 92, 246, 0.25); }
+}
+
 // ─── Retro CRT overlay — gives the hub a nostalgic feel ───────────────────────
 .retroOverlay {
   position: fixed;

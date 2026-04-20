@@ -310,6 +310,44 @@
   opacity: 0.9;
 }
 
+// ── Ask AI nudge ─────────────────────────────────────────────────────────────
+.askNudge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-3xl) var(--space-md) var(--space-xl);
+}
+
+.askNudgeText {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.askNudgeBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--border-radius-full);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  color: #a78bfa;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #c4b5fd;
+  }
+}
+
 // ── Escape hint ──────────────────────────────────────────────────────────────
 .escapeHint {
   display: flex;

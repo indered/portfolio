@@ -24,7 +24,6 @@ const PERSONA_ROUTES = {
   runner: '/runner',
   ventures: '/ventures',
   thoughts: '/thoughts',
-  ask: '/ask',
 };
 
 export default function AppShell({ directPersona = null }) {
@@ -382,6 +381,17 @@ export default function AppShell({ directPersona = null }) {
         </Suspense>
       ) : (
         !use3D && view === 'hub' && <MobileHub onPlanetClick={handlePlanetClick} />
+      )}
+
+      {/* Ask AI button — top-left, hub only */}
+      {view === 'hub' && (
+        <button
+          className={styles.askBtn}
+          onClick={() => navigate('/ask')}
+          aria-label="Ask Mahesh AI"
+        >
+          🔮 Ask
+        </button>
       )}
 
       {/* Hub masthead — big magazine reveal then compact logo */}
