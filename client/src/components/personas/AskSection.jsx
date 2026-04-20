@@ -131,7 +131,7 @@ export default function AskSection() {
           <p className={styles.subtitle}>the universe knows a thing or two about Mahesh</p>
         </div>
 
-        <div className={styles.conversation}>
+        <div className={`${styles.conversation} ${showSuggestions ? styles.emptyState : ''}`}>
           {showSuggestions && (
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((s, i) => (
