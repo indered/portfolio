@@ -9,6 +9,7 @@ const SUGGESTIONS = [
   { icon: '✦', text: 'What does Mahesh build?' },
   { icon: '◎', text: 'Tell me about his experience' },
   { icon: '⟡', text: 'What is his tech stack?' },
+  { icon: '◈', text: 'Tell me about his fintech work' },
 ];
 
 function getChatSessionId() {
@@ -22,10 +23,15 @@ function getChatSessionId() {
 
 export default function AskSection() {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
+  const chatSessionId = useRef(getChatSessionId());
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`_chat_${chatSessionId.current}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const chatSessionId = useRef(getChatSessionId());
   useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
@@ -42,6 +48,7 @@ export default function AskSection() {
 
   useEffect(() => {
     if (messages.length > 0) {
+      sessionStorage.setItem(`_chat_${chatSessionId.current}`, JSON.stringify(messages));
       endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [messages]);

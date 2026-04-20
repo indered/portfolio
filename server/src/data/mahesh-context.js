@@ -19,7 +19,7 @@ On weekends he DJs, plays ukulele, makes coffee, and cooks.
 
 ## Overview
 
-${totalExp}+ years of full stack development experience. Primary stack is MERN (MongoDB, Express, React, Node.js). He is a full stack developer, not just backend.
+${totalExp}+ years of full stack development experience. Primary stack is MERN (MongoDB, Express, React, Node.js). He is a full stack developer, not just backend. He architects fintech applications from banking to crypto.
 
 ## Current Role
 
