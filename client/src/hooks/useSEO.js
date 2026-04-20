@@ -48,7 +48,7 @@ const SEO_CONFIG = {
     ogType: 'article',
   },
   ask: {
-    title: 'Ask Mahesh Inder | AI Chat, Portfolio',
+    title: 'Ask the Cosmos | Chat with Mahesh Inder AI',
     description: 'Ask anything about Mahesh Inder. AI-powered chat that knows his work, projects, and story.',
     keywords: 'Ask Mahesh Inder, AI Chat Portfolio, Chat with Developer',
     canonical: `${BASE_URL}/ask`,

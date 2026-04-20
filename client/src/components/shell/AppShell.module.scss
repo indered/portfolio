@@ -10,10 +10,10 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(74, 158, 255, 0.08);
+  border: 1px solid rgba(74, 158, 255, 0.2);
   border-radius: 10px;
-  color: rgba(167, 139, 250, 0.85);
+  color: rgba(74, 158, 255, 0.75);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 500;
@@ -24,9 +24,9 @@
   animation: askPulse 3s ease-in-out infinite;
 
   &:hover {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.45);
-    color: #c4b5fd;
+    background: rgba(74, 158, 255, 0.15);
+    border-color: rgba(74, 158, 255, 0.35);
+    color: #4a9eff;
   }
 }
 
@@ -37,8 +37,8 @@
 }
 
 @keyframes askPulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(139, 92, 246, 0.1); }
-  50% { box-shadow: 0 0 16px rgba(139, 92, 246, 0.25); }
+  0%, 100% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.08); }
+  50% { box-shadow: 0 0 16px rgba(74, 158, 255, 0.2); }
 }
 
 // ─── Retro CRT overlay — gives the hub a nostalgic feel ───────────────────────

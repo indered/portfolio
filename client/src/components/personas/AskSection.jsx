@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackPageView } from '../../hooks/useAnalytics';
 import { useSEO } from '../../hooks/useSEO';
@@ -6,11 +6,9 @@ import MessageForm from '../shared/MessageForm';
 import styles from './AskSection.module.scss';
 
 const SUGGESTIONS = [
-  'What does Mahesh do?',
-  'Tell me about his projects',
-  'What tech stack does he use?',
-  'How did he end up in Dubai?',
-  'What is Arc Protocol?',
+  'What does Mahesh build?',
+  'Tell me about his experience',
+  'What is his tech stack?',
 ];
 
 function getChatSessionId() {
@@ -20,6 +18,51 @@ function getChatSessionId() {
     sessionStorage.setItem('_chatSid', id);
   }
   return id;
+}
+
+// Starfield background
+function Starfield() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let raf;
+
+    const isMobile = window.innerWidth < 768;
+    const count = isMobile ? 30 : 60;
+
+    const resize = () => { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; };
+    resize();
+
+    const stars = Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.3,
+      a: Math.random() * 0.3 + 0.15,
+      speed: Math.random() * 0.15 + 0.05,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        s.y -= s.speed;
+        if (s.y < 0) { s.y = canvas.height; s.x = Math.random() * canvas.width; }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    window.addEventListener('resize', resize);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
+
+  return <canvas ref={canvasRef} className={styles.starfield} />;
 }
 
 export default function AskSection() {
@@ -37,7 +80,6 @@ export default function AskSection() {
     document.documentElement.setAttribute('data-theme', 'dark');
     trackPageView('/ask');
     inputRef.current?.focus();
-    // Scroll to message form if hash is #message
     if (window.location.hash === '#message') {
       setTimeout(() => msgFormRef.current?.scrollIntoView({ behavior: 'smooth' }), 500);
     }
@@ -49,7 +91,7 @@ export default function AskSection() {
     }
   }, [messages]);
 
-  const send = async (text) => {
+  const send = useCallback(async (text) => {
     const msg = (text || input).trim();
     if (!msg || loading) return;
 
@@ -64,86 +106,65 @@ export default function AskSection() {
         body: JSON.stringify({ message: msg, sessionId: chatSessionId.current }),
       });
       const data = await res.json();
-      if (res.ok) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
-      } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.error || 'Something went wrong.' }]);
-      }
+      setMessages(prev => [...prev, { role: 'assistant', content: res.ok ? data.reply : (data.error || 'Something went wrong.') }]);
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Could not reach the server. Try again.' }]);
     }
     setLoading(false);
     inputRef.current?.focus();
-  };
+  }, [input, loading]);
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   };
 
   const showSuggestions = messages.length === 0;
 
   return (
     <div className={styles.page}>
-      {/* Chat section - fills viewport */}
+      <Starfield />
+      <div className={styles.orbitRing} />
+
       <div className={styles.chatSection}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Ask me anything</h2>
-          <p className={styles.subtitle}>
-            AI that actually knows me. Ask about my work, projects, or story.
-          </p>
+          <h2 className={styles.title}>Ask the cosmos</h2>
+          <p className={styles.subtitle}>the universe knows a thing or two about Mahesh</p>
         </div>
 
         <div className={styles.conversation}>
           {showSuggestions && (
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((s, i) => (
-                <button
-                  key={i}
-                  className={styles.suggestion}
-                  onClick={() => send(s)}
-                >
-                  {s}
-                </button>
+                <button key={i} className={styles.chip} onClick={() => send(s)}>{s}</button>
               ))}
             </div>
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`${styles.message} ${styles[msg.role]}`}>
-              {msg.role === 'assistant' && (
-                <span className={styles.avatar}>🔮</span>
-              )}
-              <div className={styles.bubble}>
-                <p>{msg.content}</p>
-              </div>
+            <div key={i} className={`${styles.msg} ${styles[msg.role]}`}>
+              {msg.role === 'assistant' && <span className={styles.glow} />}
+              <p>{msg.content}</p>
             </div>
           ))}
 
           {loading && (
-            <div className={`${styles.message} ${styles.assistant}`}>
-              <span className={styles.avatar}>🔮</span>
-              <div className={styles.bubble}>
-                <span className={styles.typing}>
-                  <span className={styles.dot} />
-                  <span className={styles.dot} />
-                  <span className={styles.dot} />
-                </span>
-              </div>
+            <div className={`${styles.msg} ${styles.assistant}`}>
+              <span className={styles.glow} />
+              <span className={styles.thinking}>
+                <span /><span /><span />
+              </span>
             </div>
           )}
 
           <div ref={endRef} />
         </div>
 
-        <div className={styles.inputArea}>
+        <div className={styles.inputBar}>
           <input
             ref={inputRef}
             type="text"
             className={styles.input}
-            placeholder="Type your question..."
+            placeholder="Ask the cosmos anything..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -154,8 +175,9 @@ export default function AskSection() {
             className={styles.sendBtn}
             onClick={() => send()}
             disabled={!input.trim() || loading}
+            aria-label="Send"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
@@ -163,19 +185,15 @@ export default function AskSection() {
         </div>
       </div>
 
-      {/* Message form - separate section below chat */}
       <div className={styles.formSection}>
         <div ref={msgFormRef}>
           <MessageForm />
         </div>
-
-        {/* Back to solar system */}
         <div className={styles.backArea}>
           <button className={styles.backBtn} onClick={() => navigate('/')}>
             ← Back to Solar System
           </button>
         </div>
-
       </div>
     </div>
   );
