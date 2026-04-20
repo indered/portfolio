@@ -350,16 +350,32 @@
 // ── Mobile ────────────────────────────────────────────────────────────────
 
 @media (max-width: 768px) {
+  .page {
+    padding-bottom: 0;
+  }
+
   .container {
     min-height: 60vh;
   }
 
   .conversation {
-    max-height: 45vh;
+    max-height: 40vh;
   }
 
   .suggestion {
     font-size: 0.8rem;
     padding: 8px 14px;
+  }
+
+  .inputArea {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: var(--color-bg-primary, #09090b);
+    margin: 0 -1rem;
+    padding: 8px 12px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
