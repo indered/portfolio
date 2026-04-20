@@ -25,4 +25,6 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
+      - key: INBOX_PIN
+        sync: false
     healthCheckPath: /api/health

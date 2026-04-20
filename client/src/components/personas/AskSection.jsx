@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { trackPageView } from '../../hooks/useAnalytics';
 import styles from './AskSection.module.scss';
 
 const SUGGESTIONS = [
@@ -10,13 +12,20 @@ const SUGGESTIONS = [
 ];
 
 export default function AskSection() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [msgForm, setMsgForm] = useState({ name: '', email: '', message: '' });
+  const [msgSent, setMsgSent] = useState(false);
+  const [msgError, setMsgError] = useState('');
+  const [msgLoading, setMsgLoading] = useState(false);
   const endRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    trackPageView('/ask');
     inputRef.current?.focus();
   }, []);
 
@@ -137,6 +146,81 @@ export default function AskSection() {
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
+          </button>
+        </div>
+
+        {/* Send a message form */}
+        <div className={styles.messageForm}>
+          <h3 className={styles.messageTitle}>Or just send me a message</h3>
+          <p className={styles.messageSubtitle}>I will get back to you, promise.</p>
+
+          {msgSent ? (
+            <div className={styles.messageSent}>
+              Message sent. I will read it soon.
+            </div>
+          ) : (
+            <form className={styles.form} onSubmit={async (e) => {
+              e.preventDefault();
+              if (!msgForm.name.trim() || !msgForm.email.trim() || !msgForm.message.trim()) return;
+              setMsgLoading(true);
+              setMsgError('');
+              try {
+                const res = await fetch('/api/messages', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(msgForm),
+                });
+                if (res.ok) {
+                  setMsgSent(true);
+                  setMsgForm({ name: '', email: '', message: '' });
+                } else {
+                  const data = await res.json();
+                  setMsgError(data.error || 'Could not send. Try again.');
+                }
+              } catch {
+                setMsgError('Could not reach the server. Try again.');
+              }
+              setMsgLoading(false);
+            }}>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="Your name"
+                value={msgForm.name}
+                onChange={(e) => setMsgForm(f => ({ ...f, name: e.target.value }))}
+                maxLength={100}
+                required
+              />
+              <input
+                type="email"
+                className={styles.formInput}
+                placeholder="Your email"
+                value={msgForm.email}
+                onChange={(e) => setMsgForm(f => ({ ...f, email: e.target.value }))}
+                maxLength={200}
+                required
+              />
+              <textarea
+                className={styles.formTextarea}
+                placeholder="Your message"
+                value={msgForm.message}
+                onChange={(e) => setMsgForm(f => ({ ...f, message: e.target.value }))}
+                maxLength={2000}
+                rows={4}
+                required
+              />
+              {msgError && <p className={styles.formError}>{msgError}</p>}
+              <button type="submit" className={styles.formBtn} disabled={msgLoading}>
+                {msgLoading ? 'Sending...' : 'Send message'}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Back to solar system */}
+        <div className={styles.backArea}>
+          <button className={styles.backBtn} onClick={() => navigate('/')}>
+            ← Back to Solar System
           </button>
         </div>
 
