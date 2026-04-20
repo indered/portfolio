@@ -1,0 +1,36 @@
+/* Shared base for all preview cards */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #09090b;
+  color: #f4f4f5;
+  -webkit-font-smoothing: antialiased;
+  padding: 20px 24px;
+  min-height: 100vh;
+}
+
+body.light {
+  background: #faf8f5;
+  color: #1a1a24;
+}
+
+body.persona {
+  background: #141210;
+  color: #E8E4DE;
+}
+
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+}
+.light .mono { color: rgba(0,0,0,0.45); }
+
+.display { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; font-weight: 700; }
+.serif { font-family: 'Newsreader', Georgia, serif; }
+.editorial { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; }

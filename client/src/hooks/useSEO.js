@@ -47,6 +47,13 @@ const SEO_CONFIG = {
     canonical: `${BASE_URL}/thoughts`,
     ogType: 'article',
   },
+  ask: {
+    title: 'Ask Mahesh Inder | AI Chat, Portfolio',
+    description: 'Ask anything about Mahesh Inder. AI-powered chat that knows his work, projects, and story.',
+    keywords: 'Ask Mahesh Inder, AI Chat Portfolio, Chat with Developer',
+    canonical: `${BASE_URL}/ask`,
+    ogType: 'website',
+  },
   about: {
     title: 'About Mahesh Inder | Dubai, Software Engineer',
     description: 'Meet Mahesh Inder. 28, Software Engineer, Marathon Runner, based in Dubai.',

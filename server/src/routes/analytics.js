@@ -67,6 +67,7 @@ router.get('/stats', async (req, res) => {
                 { case: { $eq: ['$planet', 'runner'] }, then: '/runner' },
                 { case: { $eq: ['$planet', 'ventures'] }, then: '/ventures' },
                 { case: { $eq: ['$planet', 'thoughts'] }, then: '/thoughts' },
+                { case: { $eq: ['$planet', 'ask'] }, then: '/ask' },
                 // Legacy IDs from before the rename
                 { case: { $eq: ['$planet', 'developer'] }, then: '/work' },
                 { case: { $eq: ['$planet', 'dating'] }, then: '/about' },

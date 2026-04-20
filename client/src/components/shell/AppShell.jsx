@@ -24,6 +24,7 @@ const PERSONA_ROUTES = {
   runner: '/runner',
   ventures: '/ventures',
   thoughts: '/thoughts',
+  ask: '/ask',
 };
 
 export default function AppShell({ directPersona = null }) {

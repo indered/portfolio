@@ -7,11 +7,13 @@ const MiniPlanet = lazy(() => import('./MiniPlanet'));
 const ROUTE_NAMES = {
   '/about': 'About', '/work': 'Work', '/connect': 'Connect',
   '/runner': 'The Long Run', '/ventures': 'Ventures', '/thoughts': 'The Thinker',
+  '/ask': 'Ask',
 };
 
 const ROUTE_TO_ID = {
   '/about': 'about', '/work': 'work', '/connect': 'connect',
   '/runner': 'runner', '/ventures': 'ventures', '/thoughts': 'thoughts',
+  '/ask': 'ask',
 };
 
 const DEVICE_VIBE = {

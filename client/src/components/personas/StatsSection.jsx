@@ -4,6 +4,7 @@ import styles from './StatsSection.module.scss';
 const ROUTE_NAMES = {
   '/about': 'About', '/work': 'Work', '/connect': 'Connect',
   '/runner': 'Runner', '/ventures': 'Ventures', '/thoughts': 'Thinker',
+  '/ask': 'Ask',
 };
 
 function Stat({ label, value, sub }) {

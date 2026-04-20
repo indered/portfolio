@@ -13,6 +13,7 @@ const PERSONA_COMPONENTS = {
   runner:    lazy(() => import('../personas/RunnerSection')),
   ventures:  lazy(() => import('../personas/VenturesSection')),
   thoughts:  lazy(() => import('../personas/ThinkerSection')),
+  ask:       lazy(() => import('../personas/AskSection')),
 };
 
 // Use the ordered list from constants

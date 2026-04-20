@@ -75,13 +75,23 @@ export const PERSONAS = {
     orbitSpeed: 40,
     orbitOffset: 309,
   },
+  ask: {
+    id: 'ask',
+    title: 'Ask',
+    icon: '🔮',
+    color: 'var(--color-persona-ask)',
+    tagline: 'Ask me anything. An AI that actually knows me answers.',
+    orbitRadius: 1,
+    orbitSpeed: 28,
+    orbitOffset: 350,
+  },
 };
 
 // --- Planet 3D Config (Solar System Scene) ---
 // Planet visuals inspired by real solar system bodies
 // Work=Earth (blue, life), Runner=Mars (red, endurance), Ventures=Neptune (green, growth)
 // Music=Venus (hot pink, atmosphere), About=Aphrodite (pink, personal), Connect=Jupiter (massive, colorful)
-// Thoughts=Pluto (distant, quiet, small)
+// Thoughts=Pluto (distant, quiet, small), Ask=Nebula (violet, AI chat)
 export const PLANET_CONFIG = {
   work: {
     realName: 'Earth',
@@ -125,11 +135,17 @@ export const PLANET_CONFIG = {
     hasRing: false, hasAtmosphere: false,
     roughness: 0.7, metalness: 0.12,
   },
+  ask: {
+    realName: 'Nebula',
+    meshColor: '#8B5CF6', emissive: '#3B1A8E', size: 0.58, orbitRadius: 15.5, orbitSpeed: 0.06,
+    hasRing: true, hasAtmosphere: true, atmosphereColor: '#a78bfa', atmosphereOpacity: 0.22,
+    roughness: 0.35, metalness: 0.3,
+  },
 };
 
 // --- Ordered persona IDs — used for drift navigation sequencing ---
 // Note: 'music' temporarily hidden
-export const PERSONA_IDS = ['about', 'work', 'connect', 'runner', 'ventures', 'thoughts'];
+export const PERSONA_IDS = ['about', 'work', 'connect', 'runner', 'ventures', 'thoughts', 'ask'];
 
 // --- Gravitational Drift — horizontal lineup ---
 // Planets align on the X-axis when drift activates.
@@ -142,6 +158,7 @@ export const DRIFT_POSITIONS = {
   runner:     { pos: [24, 0, 0], cam: [24, 5, 16] },
   ventures:   { pos: [30, 0, 0], cam: [30, 5, 16] },
   thoughts:   { pos: [36, 0, 0], cam: [36, 5, 16] },
+  ask:        { pos: [42, 0, 0], cam: [42, 5, 16] },
 };
 
 // Derived — camera X positions in persona order. CameraController uses these

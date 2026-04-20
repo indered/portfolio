@@ -13,6 +13,7 @@ import tokenRoutes from './routes/tokens.js';
 import stravaRoutes from './routes/strava.js';
 import musicRoutes from './routes/music.js';
 import analyticsRoutes from './routes/analytics.js';
+import chatRoutes from './routes/chat.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use('/api/tokens', tokenRoutes);
 app.use('/api/strava', stravaRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

@@ -20,6 +20,7 @@ const FLAVOR_TEXTS = {
   runner: 'Km 32. Mind takes over.',
   ventures: 'Replenishing the cosmos...',
   thoughts: 'Entering the silence of deep space...',
+  ask: 'Opening a channel...',
   music: 'Dropping the beat...',
 };
 
