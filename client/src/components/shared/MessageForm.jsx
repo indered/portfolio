@@ -33,8 +33,7 @@ export default function MessageForm() {
 
   return (
     <div className={styles.container} id="message">
-      <h3 className={styles.title}>Send me a message</h3>
-      <p className={styles.subtitle}>I will get back to you, promise.</p>
+      <p className={styles.or}>Or just write</p>
 
       {sent ? (
         <div className={styles.sent}>Message sent. I will read it soon.</div>
