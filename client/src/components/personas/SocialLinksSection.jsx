@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { SOCIAL_LINKS, ABOUT } from '../../lib/constants';
+import MessageForm from '../shared/MessageForm';
 import styles from './SocialLinksSection.module.scss';
 
 // ─── Platform meta — brand color is for hover glow only, NOT card backgrounds ──
@@ -146,7 +146,6 @@ function EmailBlock() {
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 export default function SocialLinksSection() {
-  const navigate = useNavigate();
   const cards = SOCIAL_LINKS.filter(l => l.icon !== 'mail');
 
   return (
@@ -175,18 +174,8 @@ export default function SocialLinksSection() {
       {/* ── Email section ── */}
       <EmailBlock />
 
-      {/* ── Ask AI + Send message ── */}
-      <div className={styles.askBlock}>
-        <p className={styles.askText}>Want to know more before reaching out?</p>
-        <div className={styles.askButtons}>
-          <button className={styles.askBtn} onClick={() => navigate('/ask')}>
-            🔮 Ask AI about me
-          </button>
-          <button className={styles.msgBtn} onClick={() => navigate('/ask#message')}>
-            Send a message
-          </button>
-        </div>
-      </div>
+      {/* ── Send a message ── */}
+      <MessageForm />
 
     </div>
   );
