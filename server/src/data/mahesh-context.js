@@ -91,6 +91,10 @@ LinkedIn: linkedin.com/in/mahesh-inder
 Instagram: @mahesh.inder_
 Portfolio: maheshinder.in
 
+## Freelance Rate
+
+40 USD/hour
+
 ## Hobbies
 
 DJing, playing ukulele, making coffee, cooking
