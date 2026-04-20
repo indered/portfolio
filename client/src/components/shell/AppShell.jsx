@@ -383,10 +383,10 @@ export default function AppShell({ directPersona = null }) {
         !use3D && view === 'hub' && <MobileHub onPlanetClick={handlePlanetClick} />
       )}
 
-      {/* Ask AI button — top-left, hub only, hidden during drift */}
-      {view === 'hub' && !driftMode && (
+      {/* Ask AI button — hub only, moves to top-right during drift */}
+      {view === 'hub' && (
         <button
-          className={styles.askBtn}
+          className={`${styles.askBtn} ${driftMode ? styles.askBtnDrift : ''}`}
           onClick={() => navigate('/ask')}
           aria-label="Ask Mahesh AI"
         >
