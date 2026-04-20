@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { TokenProvider } from './context/TokenContext';
 import CursorEffect from './components/layout/CursorEffect';
+import InboxButton from './components/layout/InboxButton';
 import AppShell from './components/shell/AppShell';
 
 const TokenWallet = lazy(() => import('./components/tokens/TokenWallet'));
@@ -29,6 +30,7 @@ function App() {
     <ThemeProvider>
       <TokenProvider>
         <CursorEffect />
+        <InboxButton />
         <Suspense fallback={null}>
           <TokenWallet />
         </Suspense>

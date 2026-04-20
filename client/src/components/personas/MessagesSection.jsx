@@ -97,6 +97,9 @@ export default function MessagesSection() {
     setPin(p);
     setAuthed(true);
     sessionStorage.setItem('_inbox_pin', p);
+    // Save as trusted device permanently
+    localStorage.setItem('_inbox_trusted_pin', btoa(p));
+    localStorage.setItem('_inbox_trusted', '1');
     // Offer biometric setup if available and not registered
     if (biometricAvailable && !localStorage.getItem(WEBAUTHN_CREDENTIAL_KEY)) {
       setShowBiometricPrompt(true);
@@ -146,14 +149,19 @@ export default function MessagesSection() {
     }
   };
 
-  // Auto-login from session or biometric
+  // Auto-login: trusted device (localStorage) > session > biometric
   useEffect(() => {
-    const saved = sessionStorage.getItem('_inbox_pin');
-    if (saved) {
-      setPin(saved);
-      fetchData(saved)
+    const trustedPin = localStorage.getItem('_inbox_trusted_pin');
+    const sessionPin = sessionStorage.getItem('_inbox_pin');
+    const autoPin = trustedPin ? atob(trustedPin) : sessionPin;
+    if (autoPin) {
+      setPin(autoPin);
+      fetchData(autoPin)
         .then(() => setAuthed(true))
-        .catch(() => sessionStorage.removeItem('_inbox_pin'));
+        .catch(() => {
+          localStorage.removeItem('_inbox_trusted_pin');
+          sessionStorage.removeItem('_inbox_pin');
+        });
     }
   }, []);
 
