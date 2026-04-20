@@ -1,3 +1,5 @@
+const totalExp = new Date().getFullYear() - 2019;
+
 export const maheshContext = `
 ## About Mahesh Inder
 
@@ -17,7 +19,7 @@ On weekends he DJs, plays ukulele, makes coffee, and cooks.
 
 ## Overview
 
-7+ years of full stack development experience. Primary stack is MERN (MongoDB, Express, React, Node.js). He is a full stack developer, not just backend.
+${totalExp}+ years of full stack development experience. Primary stack is MERN (MongoDB, Express, React, Node.js). He is a full stack developer, not just backend.
 
 ## Current Role
 
@@ -60,7 +62,7 @@ Frontend: React, Next.js, Redux, Apollo Client, HTML5, CSS3, Sass
 Backend: Node.js, Express, Apollo Server, GraphQL, REST, Kafka, LangChain, Ethereum, ElasticSearch, RabbitMQ
 Databases: MongoDB, PostgreSQL, MySQL
 DevOps: AWS (EC2, ECS, SNS, SQS, Lambda), OpenSearch, Docker, Heroku
-Total Experience: 7+ years in full stack development
+Total Experience: ${totalExp}+ years in full stack development
 
 ## Education
 
