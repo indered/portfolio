@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackPageView } from '../../hooks/useAnalytics';
+import { useSEO } from '../../hooks/useSEO';
 import MessageForm from '../shared/MessageForm';
 import styles from './AskSection.module.scss';
 
@@ -17,6 +18,7 @@ export default function AskSection() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
   const msgFormRef = useRef(null);
