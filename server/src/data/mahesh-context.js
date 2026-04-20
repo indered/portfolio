@@ -25,7 +25,7 @@ ${totalExp}+ years of full stack development experience. Primary stack is MERN (
 
 Senior Full Stack Engineer at Emirates NBD (Mar 2024 - Present, 2 years)
 - Built real-time payment tracking using event-driven architecture (Kafka, AWS Lambda)
-- Developed Statement Manager module for Business Online
+- Built Statement Manager for Business Online banking app that generates and downloads statements for accounts, loans, fixed deposits and credit cards
 - Polyglot backend in Rust and Node.js
 - Designed AI-powered document parsing pipelines using LangChain
 - Full stack role covering both frontend (React) and backend (Node.js, Rust)
@@ -100,6 +100,15 @@ GitHub: github.com/indered
 LinkedIn: linkedin.com/in/mahesh-inder
 Instagram: @mahesh.inder_
 Portfolio: maheshinder.in
+
+## Hiring Info (for recruiters)
+
+Availability: Actively looking for new opportunities
+Notice period: 1 week
+Work authorization: Holds UAE residence visa and Indian passport. Can legally work in India and Dubai.
+Work preference: Prefers remote work with flexibility to work while travelling. Open to relocation anywhere in the world with good pay and interesting work.
+Team lead experience: Yes. Has led small teams of 1 to 3 developers at Man the Bay (solo lead), Noumena, and Emirates NBD.
+Role target: Senior or Lead full stack engineer roles
 
 ## Freelance Rate
 

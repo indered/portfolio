@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTokens } from '../../context/TokenContext';
 import { TOKEN_CONFIG } from '../../lib/constants';
 import styles from './TokenWallet.module.scss';
+
+const HIDDEN_ROUTES = ['/ask', '/inbox'];
 
 function AnimatedCounter({ value }) {
   const [displayed, setDisplayed] = useState(0);
@@ -53,7 +56,10 @@ function CoinIcon() {
 }
 
 export default function TokenWallet() {
+  const location = useLocation();
   const { sessionTokens, totalTokens, recentAction } = useTokens();
+
+  if (HIDDEN_ROUTES.includes(location.pathname)) return null;
   const [expanded, setExpanded] = useState(false);
   const [floatingPlus, setFloatingPlus] = useState(null);
   const [coinParticles, setCoinParticles] = useState([]);
@@ -72,8 +78,8 @@ export default function TokenWallet() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [expanded]);
 
-  const { currentCause } = TOKEN_CONFIG;
-  const tokenValueINR = currentCause.tokenValue; // ₹0.50 per token
+  const { causes, tokenValue: tokenValueINR } = TOKEN_CONFIG;
+  const currentCause = causes[0];
 
   // Detect token earning — trigger floating +N and coin burst animation
   useEffect(() => {
@@ -216,15 +222,19 @@ export default function TokenWallet() {
                 <span className={styles.statLabel}>Equivalent Donation</span>
                 <span className={styles.statValue}>{formattedINR}</span>
               </div>
-              <p className={styles.conversionNote}>1 token = ₹0.50</p>
+              <p className={styles.conversionNote}>1 token = ₹1</p>
             </div>
 
-            {/* Current Cause */}
-            <div className={styles.causeBlock}>
-              <span className={styles.causeMonth}>{currentCause.month}</span>
-              <h4 className={styles.causeTitle}>{currentCause.title}</h4>
-              <p className={styles.causeDesc}>{currentCause.description}</p>
-            </div>
+            {/* Causes */}
+            {causes.map((cause, i) => (
+              <div key={i} className={styles.causeBlock}>
+                <span className={styles.causeMonth}>{cause.month}</span>
+                <h4 className={styles.causeTitle}>{cause.title}</h4>
+                <p className={styles.causeDesc}>{cause.description}</p>
+              </div>
+            ))}
+
+            <p className={styles.exploreNote}>The more you explore this portfolio, the more Inder Tokens you collect</p>
 
             <button
               className={styles.closeBtn}

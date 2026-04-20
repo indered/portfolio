@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import Groq from 'groq-sdk';
 import { maheshContext } from '../data/mahesh-context.js';
 import Conversation from '../models/Conversation.js';
@@ -33,34 +34,49 @@ Here is everything you know about Mahesh:
 
 ${maheshContext}`;
 
-// Simple in-memory rate limit: 10 messages per IP per minute
-const rateLimits = new Map();
-const RATE_LIMIT = 10;
-const RATE_WINDOW = 60000;
+// Chat-specific rate limit: 10 messages per IP per minute
+const chatLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { error: 'Too many messages. Try again in a minute.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-function checkRateLimit(ip) {
-  const now = Date.now();
-  const entry = rateLimits.get(ip);
-  if (!entry || now - entry.start > RATE_WINDOW) {
-    rateLimits.set(ip, { start: now, count: 1 });
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT) return false;
-  entry.count++;
-  return true;
+// Sanitize history from client
+function sanitizeHistory(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string')
+    .slice(-8)
+    .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }));
 }
 
-// Clean up old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of rateLimits) {
-    if (now - entry.start > RATE_WINDOW) rateLimits.delete(ip);
-  }
-}, 300000);
-
-router.post('/', async (req, res) => {
+// Fetch a conversation by sessionId (for shared links)
+router.get('/:sessionId', async (req, res) => {
   try {
-    const { message, sessionId } = req.body;
+    const { sessionId } = req.params;
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 50) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+    const convo = await Conversation.findOne({ sessionId }, { messages: 1, _id: 0 });
+    if (!convo) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+    const messages = convo.messages.map(m => ({
+      role: m.role,
+      content: m.content,
+    }));
+    res.json({ messages });
+  } catch (err) {
+    console.error('Fetch conversation error:', err.message);
+    res.status(500).json({ error: 'Could not load conversation.' });
+  }
+});
+
+router.post('/', chatLimiter, async (req, res) => {
+  try {
+    const { message, sessionId, history } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -68,30 +84,46 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Message too long. Keep it under 500 characters.' });
     }
 
-    const ip = req.ip || req.connection?.remoteAddress || 'unknown';
-    if (!checkRateLimit(ip)) {
-      return res.status(429).json({ error: 'Too many messages. Try again in a minute.' });
-    }
-
     const client = getGroq();
     if (!client) {
       return res.status(503).json({ error: 'Chat is not configured yet.' });
     }
 
-    const completion = await client.chat.completions.create({
+    const chatHistory = sanitizeHistory(history);
+
+    // Stream the response
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const stream = await client.chat.completions.create({
       model: 'llama-3.1-8b-instant',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
+        ...chatHistory,
         { role: 'user', content: message.trim() },
       ],
       temperature: 0.7,
       max_tokens: 400,
+      stream: true,
     });
 
-    const reply = completion.choices[0]?.message?.content || 'Sorry, I could not come up with a response.';
+    let fullReply = '';
+    for await (const chunk of stream) {
+      const token = chunk.choices[0]?.delta?.content || '';
+      if (token) {
+        fullReply += token;
+        res.write(`data: ${JSON.stringify({ token })}\n\n`);
+      }
+    }
 
-    // Save conversation to DB
-    if (sessionId) {
+    res.write('data: [DONE]\n\n');
+    res.end();
+
+    // Save conversation to DB after stream ends
+    if (sessionId && fullReply) {
+      const ip = req.ip || req.connection?.remoteAddress || 'unknown';
       const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
       try {
         await Conversation.findOneAndUpdate(
@@ -100,7 +132,7 @@ router.post('/', async (req, res) => {
             $push: {
               messages: [
                 { role: 'user', content: message.trim() },
-                { role: 'assistant', content: reply },
+                { role: 'assistant', content: fullReply },
               ],
             },
             $set: { updatedAt: new Date(), ip, device },
@@ -112,11 +144,14 @@ router.post('/', async (req, res) => {
         console.error('Conversation save error:', e.message);
       }
     }
-
-    res.json({ reply });
   } catch (err) {
     console.error('Chat error:', err.message);
-    res.status(500).json({ error: 'Something went wrong. Try again.' });
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Something went wrong. Try again.' });
+    } else {
+      res.write(`data: ${JSON.stringify({ error: 'Something went wrong.' })}\n\n`);
+      res.end();
+    }
   }
 });
 

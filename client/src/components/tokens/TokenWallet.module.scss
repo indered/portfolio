@@ -275,3 +275,15 @@
   color: var(--color-text-secondary);
   line-height: 1.5;
 }
+
+.exploreNote {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  opacity: 0.7;
+  line-height: 1.4;
+  margin: 0;
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-border);
+}

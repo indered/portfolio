@@ -408,10 +408,17 @@ export const TOKEN_CONFIG = {
     PLAY_MUSIC: { tokens: 1, label: 'Played music' },
     DISCOVER_STAR: { tokens: 5, label: 'Found the easter egg' },
   },
-  currentCause: {
-    month: 'April 2026',
-    title: 'Books Over Brooms',
-    description: 'Supporting education for children of household helpers, washermen, and daily wage workers. The people who take care of us deserve to see their kids in classrooms, not following the same cycle.',
-    tokenValue: 0.50,
-  },
+  causes: [
+    {
+      month: 'April 2026',
+      title: 'Books Over Brooms',
+      description: 'Supporting education for children of household helpers, washermen, and daily wage workers. The people who take care of us deserve to see their kids in classrooms, not following the same cycle.',
+    },
+    {
+      month: 'May 2026',
+      title: 'Learn Without Limits',
+      description: 'Funding education and learning tools for people with Down syndrome. Every mind deserves a chance to grow, no matter how it is wired.',
+    },
+  ],
+  tokenValue: 1,
 };

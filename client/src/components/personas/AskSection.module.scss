@@ -11,102 +11,53 @@
   overflow-x: hidden;
 }
 
-// ── Ambient gradients ─────────────────────────────────────────────────────
+// ── Breathing ambient background ─────────────────────────────────────────
 
-.ambientTop {
+.ambientBg {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60vh;
-  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(74, 158, 255, 0.03) 0%, transparent 70%);
+  inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(74, 158, 255, 0.07) 0%,
+      rgba(74, 158, 255, 0.03) 40%,
+      transparent 70%
+    );
+    animation: ambientDrift 12s ease-in-out infinite alternate;
+    border-radius: 50%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -10%;
+    width: 500px;
+    height: 400px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(74, 158, 255, 0.04) 0%,
+      transparent 65%
+    );
+    animation: ambientDrift 18s ease-in-out infinite alternate-reverse;
+    border-radius: 50%;
+  }
 }
 
-.ambientBottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 40vw;
-  height: 40vh;
-  background: radial-gradient(circle at 10% 90%, rgba(74, 158, 255, 0.02) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-// ── Orbit rings (empty state) ─────────────────────────────────────────────
-
-.orbits {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.orbit1, .orbit2, .orbit3 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  border: 1px solid rgba(74, 158, 255, 0.08);
-}
-
-.orbit1 {
-  width: 200px;
-  height: 200px;
-  margin: -100px 0 0 -100px;
-  animation: spin 30s linear infinite;
-}
-
-.orbit2 {
-  width: 320px;
-  height: 320px;
-  margin: -160px 0 0 -160px;
-  animation: spin 45s linear infinite reverse;
-}
-
-.orbit3 {
-  width: 440px;
-  height: 440px;
-  margin: -220px 0 0 -220px;
-  animation: spin 60s linear infinite;
-  border-color: rgba(74, 158, 255, 0.04);
-}
-
-.orbitDot1, .orbitDot2 {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #4a9eff;
-  box-shadow: 0 0 8px rgba(74, 158, 255, 0.6);
-  top: 50%;
-  left: 50%;
-}
-
-.orbitDot1 {
-  animation: orbitMove1 30s linear infinite;
-}
-
-.orbitDot2 {
-  animation: orbitMove2 45s linear infinite reverse;
-}
-
-@keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes orbitMove1 {
-  from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
-}
-
-@keyframes orbitMove2 {
-  from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+@keyframes ambientDrift {
+  from { transform: translateX(-50%) translateY(0); }
+  to   { transform: translateX(-50%) translateY(40px); }
 }
 
 // ── Chat section ──────────────────────────────────────────────────────────
@@ -130,6 +81,14 @@
   text-align: center;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.headerCompact {
+  margin-bottom: 0.25rem;
+
+  .title { font-size: clamp(1.2rem, 3vw, 1.5rem); margin-bottom: 0; }
+  .headerGlow { width: 80px; height: 80px; }
 }
 
 .headerGlow {
@@ -175,7 +134,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: 20px;
   overflow-y: auto;
   padding: 0 2px;
@@ -186,8 +144,11 @@
   &::-webkit-scrollbar-thumb { background: rgba(74, 158, 255, 0.15); border-radius: 4px; }
 }
 
+.spacer { flex: 1; }
+
 .emptyState {
   justify-content: center;
+  gap: 24px;
 }
 
 // ── Suggestion cards ──────────────────────────────────────────────────────
@@ -216,8 +177,9 @@
   overflow: hidden;
   text-align: left;
   opacity: 0;
-  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
+  // Conic-gradient border spin on hover
   &::before {
     content: '';
     position: absolute;
@@ -227,6 +189,22 @@
     opacity: 0;
     transition: opacity 0.3s;
     z-index: -1;
+  }
+
+  // Cursor-tracking glow
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgba(74, 158, 255, 0.1) 0%,
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
 
   &:hover {
@@ -239,6 +217,17 @@
       opacity: 1;
       animation: borderSpin 3s linear infinite;
     }
+
+    &::after { opacity: 1; }
+
+    .cardIcon {
+      opacity: 1;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -246,6 +235,7 @@
   font-size: 1.1rem;
   opacity: 0.5;
   flex-shrink: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .cardText {
@@ -264,23 +254,176 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+// ── Nebula wrap (greeting avatar) ────────────────────────────────────────
+
+.nebulaWrap {
+  position: relative;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(74, 158, 255, 0.15) 0%,
+      rgba(74, 158, 255, 0.06) 45%,
+      transparent 70%
+    );
+    animation: nebulaPulse 4s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(74, 158, 255, 0.2);
+    animation: ringExpand 3.5s ease-out infinite;
+  }
+
+  .cosmosAvatar {
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(
+      circle at 35% 35%,
+      rgba(74, 158, 255, 0.35) 0%,
+      rgba(74, 158, 255, 0.15) 50%,
+      rgba(74, 158, 255, 0.04) 100%
+    );
+    border: 1px solid rgba(74, 158, 255, 0.35);
+    box-shadow:
+      0 0 0 1px rgba(74, 158, 255, 0.1),
+      0 0 24px rgba(74, 158, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .cosmosGlyph {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 40% 30%, #8ac4ff, #4a9eff);
+    box-shadow:
+      0 0 12px rgba(74, 158, 255, 0.8),
+      0 0 32px rgba(74, 158, 255, 0.4),
+      0 0 60px rgba(74, 158, 255, 0.1);
+  }
+}
+
+@keyframes nebulaPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes ringExpand {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+// ── Cosmos avatar (in-conversation) ──────────────────────────────────────
+
+.cosmosAvatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, rgba(74, 158, 255, 0.25), rgba(74, 158, 255, 0.05));
+  border: 1px solid rgba(74, 158, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  transition: all 0.3s ease;
+}
+
+.cosmosAvatarActive {
+  border-color: rgba(74, 158, 255, 0.5);
+  box-shadow:
+    0 0 0 1px rgba(74, 158, 255, 0.15),
+    0 0 20px rgba(74, 158, 255, 0.3),
+    0 0 40px rgba(74, 158, 255, 0.1);
+  animation: avatarActive 1s ease-in-out infinite;
+
+  .cosmosGlyph {
+    animation-duration: 0.8s;
+    background: radial-gradient(circle at 40% 30%, #8ac4ff, #4a9eff);
+  }
+}
+
+@keyframes avatarActive {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(74, 158, 255, 0.15),
+      0 0 16px rgba(74, 158, 255, 0.25),
+      0 0 32px rgba(74, 158, 255, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(74, 158, 255, 0.3),
+      0 0 28px rgba(74, 158, 255, 0.45),
+      0 0 56px rgba(74, 158, 255, 0.15);
+  }
+}
+
+.cosmosGlyph {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4a9eff;
+  box-shadow: 0 0 10px rgba(74, 158, 255, 0.6), 0 0 20px rgba(74, 158, 255, 0.2);
+  animation: glyphPulse 3s ease-in-out infinite;
+}
+
+@keyframes glyphPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
 // ── Messages ──────────────────────────────────────────────────────────────
 
 .msg {
   display: flex;
-  flex-direction: column;
+  gap: 10px;
   animation: msgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.greeting {
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .user {
-  align-items: flex-end;
+  justify-content: flex-end;
 
   .bubble {
-    background: rgba(74, 158, 255, 0.12);
-    border: 1px solid rgba(74, 158, 255, 0.15);
-    border-radius: 18px 18px 4px 18px;
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.16) 0%,
+      rgba(74, 158, 255, 0.08) 100%
+    );
+    border: 1px solid rgba(74, 158, 255, 0.22);
+    border-radius: 20px 20px 4px 20px;
     color: rgba(255, 255, 255, 0.9);
     max-width: 80%;
+    position: relative;
+    transition: box-shadow 0.25s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 12px rgba(74, 158, 255, 0.08);
+
+    // Top-edge light highlight
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(74, 158, 255, 0.4), transparent);
+      border-radius: 20px 20px 0 0;
+    }
+
+    &:hover {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(74, 158, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
   }
 }
 
@@ -288,12 +431,45 @@
   align-items: flex-start;
 
   .bubble {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px 18px 18px 4px;
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.06) 0%,
+      rgba(74, 158, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    border: 1px solid rgba(74, 158, 255, 0.1);
+    border-radius: 4px 20px 20px 20px;
     color: rgba(255, 255, 255, 0.85);
     max-width: 85%;
     backdrop-filter: blur(4px);
+    position: relative;
+    transition: box-shadow 0.25s ease;
+    box-shadow:
+      0 0 0 1px rgba(74, 158, 255, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 4px 24px rgba(0, 0, 0, 0.3);
+
+    // Left-edge accent line
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(74, 158, 255, 0.6),
+        rgba(74, 158, 255, 0.4),
+        transparent
+      );
+      border-radius: 0 2px 2px 0;
+    }
+
+    &:hover {
+      box-shadow: 0 0 0 1px rgba(74, 158, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
   }
 }
 
@@ -306,6 +482,31 @@
   color: #4a9eff;
   margin-bottom: 4px;
   padding-left: 4px;
+  display: block;
+}
+
+.bubbleWrap {
+  &:hover .timestamp {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timestamp {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.25);
+  margin-top: 4px;
+  padding-left: 4px;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: block;
+}
+
+.user .timestamp {
+  text-align: right;
+  padding-right: 4px;
 }
 
 .bubble {
@@ -318,6 +519,36 @@
     line-height: 1.6;
     white-space: pre-wrap;
   }
+
+  ul, ol {
+    margin: 6px 0;
+    padding-left: 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  li {
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 0.85);
+    &::marker { color: rgba(74, 158, 255, 0.5); }
+  }
+
+  strong {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+  }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
 }
 
 @keyframes msgIn {
@@ -325,35 +556,67 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-// ── Thinking ──────────────────────────────────────────────────────────────
+// ── Streaming cursor ─────────────────────────────────────────────────────
+
+.streamCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: rgba(74, 158, 255, 0.8);
+  border-radius: 1px;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: cursorBlink 0.8s ease-in-out infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+// ── Thinking (three-dot constellation) ───────────────────────────────────
 
 .thinking {
   display: flex;
-  gap: 5px;
-  padding: 4px 0;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  min-height: 28px;
+}
 
-  span {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #4a9eff;
-    animation: dotPulse 1.4s ease-in-out infinite;
+.thinkDot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4a9eff;
+  animation: thinkWave 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.18s);
 
-    &:nth-child(2) { animation-delay: 0.2s; }
-    &:nth-child(3) { animation-delay: 0.4s; }
+  &:nth-child(2) {
+    width: 7px;
+    height: 7px;
   }
 }
 
-@keyframes dotPulse {
-  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-  40% { opacity: 0.7; transform: scale(1.3); }
+@keyframes thinkWave {
+  0%, 80%, 100% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0.4;
+    box-shadow: none;
+  }
+  40% {
+    transform: translateY(-5px) scale(1.1);
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.6);
+  }
 }
 
 // ── Input ─────────────────────────────────────────────────────────────────
 
 .inputWrap {
   flex-shrink: 0;
-  padding: 16px 0 24px;
+  padding: 16px 0 20px;
   background: linear-gradient(to top, #09090b 60%, transparent);
 }
 
@@ -375,6 +638,16 @@
   }
 }
 
+.inputBarLoading {
+  border-color: rgba(74, 158, 255, 0.25);
+  animation: inputPulse 2s ease-in-out infinite;
+}
+
+@keyframes inputPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.06); }
+}
+
 .input {
   flex: 1;
   background: none;
@@ -385,13 +658,7 @@
   color: rgba(255, 255, 255, 0.9);
   padding: 8px 0;
 
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-  }
+  &::placeholder { color: rgba(255, 255, 255, 0.3); }
 }
 
 .sendBtn {
@@ -414,11 +681,64 @@
     transform: scale(1.05);
   }
 
+  &:active:not(:disabled) {
+    transform: scale(0.94);
+    box-shadow: 0 0 0 6px rgba(74, 158, 255, 0.15);
+    transition: all 0.1s ease;
+  }
+
   &:disabled {
     background: rgba(74, 158, 255, 0.2);
     opacity: 0.5;
     cursor: default;
   }
+}
+
+.inputFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.disclaimer {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.footerActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(74, 158, 255, 0.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: rgba(74, 158, 255, 0.8);
+    background: rgba(74, 158, 255, 0.06);
+  }
+}
+
+.langHint {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  margin: 6px 0 0;
+  letter-spacing: 0.02em;
 }
 
 // ── Form section ──────────────────────────────────────────────────────────
@@ -462,14 +782,14 @@
     padding: 1rem 1rem 0;
   }
 
-  .orbit1 { width: 160px; height: 160px; margin: -80px 0 0 -80px; }
-  .orbit2 { width: 260px; height: 260px; margin: -130px 0 0 -130px; }
-  .orbit3 { width: 360px; height: 360px; margin: -180px 0 0 -180px; }
+  .header { margin-bottom: 0.25rem; }
+  .headerCompact { margin-bottom: 0; }
+  .title { font-size: 1.5rem; }
 
-  .orbitDot1 { animation-name: orbitMove1m; }
-  .orbitDot2 { animation-name: orbitMove2m; }
-
-  .title { font-size: 1.75rem; }
+  .nebulaWrap {
+    .cosmosAvatar { width: 40px; height: 40px; }
+    .cosmosGlyph { width: 10px; height: 10px; }
+  }
 
   .suggestions {
     gap: 10px;
@@ -486,6 +806,7 @@
   .bubble {
     padding: 11px 14px;
     p { font-size: 0.85rem; }
+    ul, ol { font-size: 0.85rem; }
   }
 
   .user .bubble, .assistant .bubble {
@@ -493,33 +814,39 @@
   }
 
   .inputWrap {
-    padding: 10px 0 16px;
+    padding: 10px 0 14px;
   }
 
   .inputBar {
     border-radius: 14px;
   }
 
+  .inputFooter {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
   .formSection {
     display: none;
   }
+
+  .cosmosAvatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cosmosGlyph {
+    width: 6px;
+    height: 6px;
+  }
 }
 
-@keyframes orbitMove1m {
-  from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
-}
-
-@keyframes orbitMove2m {
-  from { transform: rotate(0deg) translateX(130px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(130px) rotate(-360deg); }
-}
-
-// ── Desktop suggestions grid ──────────────────────────────────────────────
+// ── Desktop suggestions grid (2x2) ──────────────────────────────────────
 
 @media (min-width: 640px) {
   .suggestions {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     max-width: 100%;
   }
 }
