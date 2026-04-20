@@ -31,8 +31,8 @@
 }
 
 .askBtnDrift {
-  left: auto;
-  right: 24px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 @keyframes askPulse {
