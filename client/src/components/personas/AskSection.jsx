@@ -85,9 +85,8 @@ export default function AskSection() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
-
-        {/* Header */}
+      {/* Chat section - fills viewport */}
+      <div className={styles.chatSection}>
         <div className={styles.header}>
           <h2 className={styles.title}>Ask me anything</h2>
           <p className={styles.subtitle}>
@@ -95,7 +94,6 @@ export default function AskSection() {
           </p>
         </div>
 
-        {/* Conversation */}
         <div className={styles.conversation}>
           {showSuggestions && (
             <div className={styles.suggestions}>
@@ -138,7 +136,6 @@ export default function AskSection() {
           <div ref={endRef} />
         </div>
 
-        {/* Input */}
         <div className={styles.inputArea}>
           <input
             ref={inputRef}
@@ -162,7 +159,10 @@ export default function AskSection() {
             </svg>
           </button>
         </div>
+      </div>
 
+      {/* Message form - separate section below chat */}
+      <div className={styles.formSection}>
         <div ref={msgFormRef}>
           <MessageForm />
         </div>

@@ -1,37 +1,47 @@
 @use '../../styles/mixins' as *;
 
 .page {
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+  // No min-height - chat section handles its own height
 }
 
-.container {
-  width: 100%;
-  max-width: 640px;
+// ── Chat section - fills one viewport ─────────────────────────────────────
+
+.chatSection {
   display: flex;
   flex-direction: column;
-  min-height: 70vh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem) 1rem;
+}
+
+@media (max-width: 768px) {
+  .chatSection {
+    height: 100vh;
+    height: 100dvh;
+    min-height: auto;
+    overflow: hidden;
+  }
 }
 
 .header {
   text-align: center;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(1rem, 3vw, 2rem);
+  flex-shrink: 0;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.3rem, 3vw, 2rem);
   font-weight: 700;
   color: var(--color-text-primary);
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.4rem;
 }
 
 .subtitle {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--color-text-tertiary);
   margin: 0;
 }
@@ -42,13 +52,12 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 24px;
+  justify-content: flex-end;
+  gap: 16px;
   overflow-y: auto;
-  max-height: 50vh;
   padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
 
-  // Subtle scrollbar
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
@@ -62,19 +71,19 @@
 .suggestions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 1rem 0;
 }
 
 .suggestion {
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-text-secondary);
   background: rgba(139, 92, 246, 0.06);
   border: 1px solid rgba(139, 92, 246, 0.15);
   border-radius: 20px;
-  padding: 10px 18px;
+  padding: 9px 16px;
   cursor: pointer;
   transition: all 0.15s ease;
 
@@ -89,7 +98,7 @@
 
 .message {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   animation: fadeIn 0.3s ease;
 }
 
@@ -115,20 +124,20 @@
 
 .avatar {
   flex-shrink: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-top: 4px;
 }
 
 .bubble {
   max-width: 85%;
   border-radius: 16px;
-  padding: 12px 18px;
+  padding: 12px 16px;
 
   p {
     margin: 0;
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
 }
 
@@ -157,20 +166,22 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 // ── Input ─────────────────────────────────────────────────────────────────
 
 .inputArea {
+  flex-shrink: 0;
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
-  padding: 6px 6px 6px 18px;
+  padding: 5px 5px 5px 16px;
+  margin-top: 10px;
   transition: border-color 0.2s ease;
 
   &:focus-within {
@@ -184,7 +195,7 @@
   border: none;
   outline: none;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 16px; // prevents iOS zoom
   color: var(--color-text-primary);
   padding: 10px 0;
 
@@ -199,8 +210,8 @@
 
 .sendBtn {
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   border: none;
   background: rgba(139, 92, 246, 0.15);
@@ -222,103 +233,12 @@
   }
 }
 
-// ── Message form ──────────────────────────────────────────────────────────
+// ── Form section - below the chat viewport ────────────────────────────────
 
-.messageForm {
-  margin-top: clamp(2rem, 5vw, 3rem);
-  padding-top: clamp(2rem, 5vw, 3rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  text-align: center;
-}
-
-.messageTitle {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 0.4rem;
-}
-
-.messageSubtitle {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--color-text-tertiary);
-  margin: 0 0 1.5rem;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.formInput,
-.formTextarea {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--color-text-primary);
-  outline: none;
-  transition: border-color 0.2s ease;
-
-  &::placeholder {
-    color: var(--color-text-tertiary);
-  }
-
-  &:focus {
-    border-color: rgba(139, 92, 246, 0.4);
-  }
-}
-
-.formTextarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.formError {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: #ef4444;
-  margin: 0;
-}
-
-.formBtn {
-  align-self: flex-start;
-  padding: 10px 24px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 10px;
-  color: #a78bfa;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.25);
-    color: #c4b5fd;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-}
-
-.messageSent {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: #4ade80;
-  padding: 16px;
-  background: rgba(74, 222, 128, 0.06);
-  border: 1px solid rgba(74, 222, 128, 0.15);
-  border-radius: 10px;
+.formSection {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem) clamp(2rem, 4vw, 3rem);
 }
 
 // ── Back button ───────────────────────────────────────────────────────────
@@ -326,7 +246,7 @@
 .backArea {
   display: flex;
   justify-content: center;
-  padding: clamp(2rem, 4vw, 3rem) 0;
+  padding: clamp(1.5rem, 3vw, 2rem) 0;
 }
 
 .backBtn {
@@ -347,81 +267,48 @@
   }
 }
 
-// ── Mobile ────────────────────────────────────────────────────────────────
+// ── Mobile tweaks ─────────────────────────────────────────────────────────
 
 @media (max-width: 768px) {
-  .page {
-    align-items: flex-start;
-    padding: 1.5rem 1rem 0;
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
-  .container {
-    min-height: auto;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 3rem);
-    height: calc(100dvh - 3rem);
+  .chatSection {
+    padding: 1rem 1rem 0.5rem;
   }
 
   .header {
-    margin-bottom: 1rem;
-    flex-shrink: 0;
-  }
-
-  .title {
-    font-size: 1.3rem;
-  }
-
-  .subtitle {
-    font-size: 0.8rem;
-  }
-
-  .conversation {
-    flex: 1;
-    max-height: none;
-    overflow-y: auto;
-    margin-bottom: 0;
-    gap: 14px;
-    -webkit-overflow-scrolling: touch;
+    margin-bottom: 0.5rem;
   }
 
   .suggestions {
-    padding: 1rem 0;
-    gap: 8px;
+    padding: 0.5rem 0;
+    gap: 6px;
   }
 
   .suggestion {
-    font-size: 0.78rem;
-    padding: 8px 14px;
+    font-size: 0.75rem;
+    padding: 7px 12px;
   }
 
   .bubble {
-    max-width: 90%;
+    max-width: 92%;
     padding: 10px 14px;
 
-    p { font-size: 0.85rem; }
+    p { font-size: 0.84rem; }
   }
 
-  .avatar {
-    font-size: 1rem;
-  }
+  .avatar { font-size: 1rem; }
 
   .inputArea {
-    flex-shrink: 0;
-    margin: 8px 0;
+    margin-top: 6px;
+    padding: 4px 4px 4px 12px;
     border-radius: 12px;
-    padding: 4px 4px 4px 14px;
-  }
-
-  .input {
-    font-size: 16px; // prevents iOS zoom on focus
-    padding: 8px 0;
   }
 
   .sendBtn {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .formSection {
+    display: none;
   }
 }
