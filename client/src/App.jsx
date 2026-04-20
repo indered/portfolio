@@ -11,6 +11,7 @@ const StatsSection = lazy(() => import('./components/personas/StatsSection'));
 const LiveSection = lazy(() => import('./components/personas/LiveSection'));
 const CursorShowcase = lazy(() => import('./components/layout/CursorShowcase'));
 const AskSection = lazy(() => import('./components/personas/AskSection'));
+const MessagesSection = lazy(() => import('./components/personas/MessagesSection'));
 
 // Route-to-persona mapping
 const PERSONA_ROUTES = [
@@ -40,6 +41,7 @@ function App() {
           <Route path="/live" element={<Suspense fallback={null}><LiveSection /></Suspense>} />
           <Route path="/cursors/:id?" element={<Suspense fallback={null}><CursorShowcase /></Suspense>} />
           <Route path="/ask" element={<Suspense fallback={null}><AskSection /></Suspense>} />
+          <Route path="/messages" element={<Suspense fallback={null}><MessagesSection /></Suspense>} />
           <Route path="/*" element={<AppShell />} />
         </Routes>
       </TokenProvider>
