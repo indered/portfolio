@@ -41,7 +41,7 @@ function App() {
           <Route path="/live" element={<Suspense fallback={null}><LiveSection /></Suspense>} />
           <Route path="/cursors/:id?" element={<Suspense fallback={null}><CursorShowcase /></Suspense>} />
           <Route path="/ask" element={<Suspense fallback={null}><AskSection /></Suspense>} />
-          <Route path="/messages" element={<Suspense fallback={null}><MessagesSection /></Suspense>} />
+          <Route path="/inbox" element={<Suspense fallback={null}><MessagesSection /></Suspense>} />
           <Route path="/*" element={<AppShell />} />
         </Routes>
       </TokenProvider>

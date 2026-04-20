@@ -60,7 +60,7 @@ app.use('/api/strava', stravaRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chat', chatRoutes);
-app.use('/api/messages', messageRoutes);
+app.use('/api/messages', messageRoutes); // POST for sending, GET for inbox
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

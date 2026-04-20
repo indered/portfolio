@@ -13,11 +13,21 @@ const SUGGESTIONS = [
   'What is Arc Protocol?',
 ];
 
+function getChatSessionId() {
+  let id = sessionStorage.getItem('_chatSid');
+  if (!id) {
+    id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    sessionStorage.setItem('_chatSid', id);
+  }
+  return id;
+}
+
 export default function AskSection() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const chatSessionId = useRef(getChatSessionId());
   useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
@@ -49,7 +59,7 @@ export default function AskSection() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg }),
+        body: JSON.stringify({ message: msg, sessionId: chatSessionId.current }),
       });
       const data = await res.json();
       if (res.ok) {

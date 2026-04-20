@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Message from '../models/Message.js';
+import Conversation from '../models/Conversation.js';
 
 const router = Router();
 
@@ -62,6 +63,24 @@ router.patch('/:id/read', async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Could not update.' });
+  }
+});
+
+// GET /api/messages/conversations — list all AI chat conversations (protected)
+router.get('/conversations', async (req, res) => {
+  try {
+    const pin = req.headers['x-pin'] || req.query.pin;
+    if (pin !== process.env.INBOX_PIN) {
+      return res.status(401).json({ error: 'Invalid PIN.' });
+    }
+
+    const conversations = await Conversation.find()
+      .sort({ updatedAt: -1 })
+      .lean();
+    res.json(conversations);
+  } catch (err) {
+    console.error('Conversation list error:', err.message);
+    res.status(500).json({ error: 'Could not load conversations.' });
   }
 });
 

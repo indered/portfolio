@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import Groq from 'groq-sdk';
 import { maheshContext } from '../data/mahesh-context.js';
+import Conversation from '../models/Conversation.js';
 
 const router = Router();
 
@@ -51,7 +52,7 @@ setInterval(() => {
 
 router.post('/', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, sessionId } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -80,6 +81,30 @@ router.post('/', async (req, res) => {
     });
 
     const reply = completion.choices[0]?.message?.content || 'Sorry, I could not come up with a response.';
+
+    // Save conversation to DB
+    if (sessionId) {
+      const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
+      try {
+        await Conversation.findOneAndUpdate(
+          { sessionId },
+          {
+            $push: {
+              messages: [
+                { role: 'user', content: message.trim() },
+                { role: 'assistant', content: reply },
+              ],
+            },
+            $set: { updatedAt: new Date(), ip, device },
+            $setOnInsert: { geo: req.headers['cf-ipcountry'] || 'Unknown', createdAt: new Date() },
+          },
+          { upsert: true },
+        );
+      } catch (e) {
+        console.error('Conversation save error:', e.message);
+      }
+    }
+
     res.json({ reply });
   } catch (err) {
     console.error('Chat error:', err.message);
