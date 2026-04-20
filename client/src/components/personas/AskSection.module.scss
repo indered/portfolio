@@ -351,31 +351,77 @@
 
 @media (max-width: 768px) {
   .page {
-    padding-bottom: 0;
+    align-items: flex-start;
+    padding: 1.5rem 1rem 0;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .container {
-    min-height: 60vh;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 3rem);
+    height: calc(100dvh - 3rem);
+  }
+
+  .header {
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
   }
 
   .conversation {
-    max-height: 40vh;
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+    margin-bottom: 0;
+    gap: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .suggestions {
+    padding: 1rem 0;
+    gap: 8px;
   }
 
   .suggestion {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 8px 14px;
   }
 
+  .bubble {
+    max-width: 90%;
+    padding: 10px 14px;
+
+    p { font-size: 0.85rem; }
+  }
+
+  .avatar {
+    font-size: 1rem;
+  }
+
   .inputArea {
-    position: sticky;
-    bottom: 0;
-    z-index: 5;
-    background: var(--color-bg-primary, #09090b);
-    margin: 0 -1rem;
-    padding: 8px 12px;
-    border-radius: 0;
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 8px 0;
+    border-radius: 12px;
+    padding: 4px 4px 4px 14px;
+  }
+
+  .input {
+    font-size: 16px; // prevents iOS zoom on focus
+    padding: 8px 0;
+  }
+
+  .sendBtn {
+    width: 38px;
+    height: 38px;
   }
 }
