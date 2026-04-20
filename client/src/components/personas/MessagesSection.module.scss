@@ -74,6 +74,62 @@
   &:disabled { opacity: 0.5; cursor: default; }
 }
 
+.biometricBtn {
+  width: 100%;
+  padding: 14px 20px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 12px;
+  color: #a78bfa;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+  margin-bottom: 0;
+
+  &:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  &:disabled { opacity: 0.5; cursor: default; }
+}
+
+.loginDivider {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #52525b;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.biometricPrompt {
+  background: rgba(139, 92, 246, 0.06);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  p {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #d4d4d8;
+    margin: 0 0 12px;
+  }
+}
+
+.biometricPromptBtns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
 .loginError {
   font-family: var(--font-body);
   font-size: 0.8rem;

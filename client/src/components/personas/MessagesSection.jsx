@@ -1,6 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MessagesSection.module.scss';
+
+// WebAuthn helpers
+const WEBAUTHN_CREDENTIAL_KEY = '_inbox_webauthn_id';
+
+function isWebAuthnAvailable() {
+  return window.PublicKeyCredential !== undefined &&
+    typeof window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function';
+}
+
+async function hasPlatformAuth() {
+  if (!isWebAuthnAvailable()) return false;
+  return window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+}
+
+async function registerBiometric(pin) {
+  const userId = new Uint8Array(16);
+  crypto.getRandomValues(userId);
+
+  const credential = await navigator.credentials.create({
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rp: { name: 'Mahesh Inder Inbox', id: window.location.hostname },
+      user: { id: userId, name: 'mahesh-inbox', displayName: 'Inbox' },
+      pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
+      authenticatorSelection: {
+        authenticatorAttachment: 'platform',
+        userVerification: 'required',
+      },
+      timeout: 60000,
+    },
+  });
+
+  const credId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+  localStorage.setItem(WEBAUTHN_CREDENTIAL_KEY, credId);
+  // Store PIN encrypted with a simple base64 (not truly secure, but the PIN itself is simple)
+  localStorage.setItem('_inbox_auth_pin', btoa(pin));
+  return true;
+}
+
+async function authenticateBiometric() {
+  const credId = localStorage.getItem(WEBAUTHN_CREDENTIAL_KEY);
+  if (!credId) return null;
+
+  const rawId = Uint8Array.from(atob(credId), c => c.charCodeAt(0));
+
+  await navigator.credentials.get({
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [{ id: rawId, type: 'public-key', transports: ['internal'] }],
+      userVerification: 'required',
+      timeout: 60000,
+    },
+  });
+
+  // If biometric passed, return the stored PIN
+  const storedPin = localStorage.getItem('_inbox_auth_pin');
+  return storedPin ? atob(storedPin) : null;
+}
 
 export default function MessagesSection() {
   const navigate = useNavigate();
@@ -12,9 +70,16 @@ export default function MessagesSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [expandedConvo, setExpandedConvo] = useState(null);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricRegistered, setBiometricRegistered] = useState(false);
+  const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'dark');
+    hasPlatformAuth().then(available => {
+      setBiometricAvailable(available);
+      setBiometricRegistered(available && !!localStorage.getItem(WEBAUTHN_CREDENTIAL_KEY));
+    });
   }, []);
 
   const fetchData = async (p) => {
@@ -28,6 +93,16 @@ export default function MessagesSection() {
     if (convoRes.ok) setConversations(await convoRes.json());
   };
 
+  const loginSuccess = useCallback((p) => {
+    setPin(p);
+    setAuthed(true);
+    sessionStorage.setItem('_inbox_pin', p);
+    // Offer biometric setup if available and not registered
+    if (biometricAvailable && !localStorage.getItem(WEBAUTHN_CREDENTIAL_KEY)) {
+      setShowBiometricPrompt(true);
+    }
+  }, [biometricAvailable]);
+
   const login = async (e) => {
     e.preventDefault();
     if (!pin.trim()) return;
@@ -35,14 +110,43 @@ export default function MessagesSection() {
     setError('');
     try {
       await fetchData(pin);
-      setAuthed(true);
-      sessionStorage.setItem('_inbox_pin', pin);
+      loginSuccess(pin);
     } catch {
       setError('Wrong PIN.');
     }
     setLoading(false);
   };
 
+  const loginWithBiometric = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const storedPin = await authenticateBiometric();
+      if (storedPin) {
+        await fetchData(storedPin);
+        setPin(storedPin);
+        setAuthed(true);
+        sessionStorage.setItem('_inbox_pin', storedPin);
+      } else {
+        setError('Biometric failed. Use PIN instead.');
+      }
+    } catch {
+      setError('Biometric failed. Use PIN instead.');
+    }
+    setLoading(false);
+  };
+
+  const setupBiometric = async () => {
+    try {
+      await registerBiometric(pin);
+      setBiometricRegistered(true);
+      setShowBiometricPrompt(false);
+    } catch {
+      setShowBiometricPrompt(false);
+    }
+  };
+
+  // Auto-login from session or biometric
   useEffect(() => {
     const saved = sessionStorage.getItem('_inbox_pin');
     if (saved) {
@@ -68,7 +172,29 @@ export default function MessagesSection() {
       <div className={styles.page}>
         <div className={styles.loginBox}>
           <h2 className={styles.loginTitle}>Inbox</h2>
-          <p className={styles.loginSubtitle}>Enter PIN to access</p>
+          <p className={styles.loginSubtitle}>
+            {biometricRegistered ? 'Use Face ID or enter PIN' : 'Enter PIN to access'}
+          </p>
+
+          {biometricRegistered && (
+            <button
+              className={styles.biometricBtn}
+              onClick={loginWithBiometric}
+              disabled={loading}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+                <circle cx="12" cy="16" r="1" />
+              </svg>
+              {loading ? 'Verifying...' : 'Unlock with biometrics'}
+            </button>
+          )}
+
+          {biometricRegistered && (
+            <p className={styles.loginDivider}>or</p>
+          )}
+
           <form onSubmit={login} className={styles.loginForm}>
             <input
               type="password"
@@ -77,7 +203,7 @@ export default function MessagesSection() {
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               maxLength={10}
-              autoFocus
+              autoFocus={!biometricRegistered}
             />
             <button type="submit" className={styles.pinBtn} disabled={loading}>
               {loading ? '...' : 'Enter'}
@@ -104,6 +230,17 @@ export default function MessagesSection() {
             ← Solar System
           </button>
         </div>
+
+        {/* Biometric setup prompt */}
+        {showBiometricPrompt && (
+          <div className={styles.biometricPrompt}>
+            <p>Want to use Face ID or fingerprint next time?</p>
+            <div className={styles.biometricPromptBtns}>
+              <button className={styles.pinBtn} onClick={setupBiometric}>Yes, set it up</button>
+              <button className={styles.backLink} onClick={() => setShowBiometricPrompt(false)}>No thanks</button>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className={styles.tabs}>
