@@ -383,8 +383,8 @@ export default function AppShell({ directPersona = null }) {
         !use3D && view === 'hub' && <MobileHub onPlanetClick={handlePlanetClick} />
       )}
 
-      {/* Ask AI button — top-left, hub only */}
-      {view === 'hub' && (
+      {/* Ask AI button — top-left, hub only, hidden during drift */}
+      {view === 'hub' && !driftMode && (
         <button
           className={styles.askBtn}
           onClick={() => navigate('/ask')}

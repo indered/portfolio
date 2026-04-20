@@ -341,3 +341,56 @@ $text-3:    #5A564E;
   font-size: 0.75rem;
   color: $text-3;
 }
+
+// ── Ask AI + Send message block ──────────────────────────────────────────────
+.askBlock {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid $border;
+  text-align: center;
+}
+
+.askText {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: $text-3;
+  margin: 0 0 1rem;
+}
+
+.askButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.askBtn,
+.msgBtn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  color: #a78bfa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+}
+
+.msgBtn {
+  border-color: $border;
+  background: rgba(255, 255, 255, 0.04);
+  color: $text-2;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}

@@ -22,11 +22,16 @@ export default function AskSection() {
   const [msgLoading, setMsgLoading] = useState(false);
   const endRef = useRef(null);
   const inputRef = useRef(null);
+  const msgFormRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'dark');
     trackPageView('/ask');
     inputRef.current?.focus();
+    // Scroll to message form if hash is #message
+    if (window.location.hash === '#message') {
+      setTimeout(() => msgFormRef.current?.scrollIntoView({ behavior: 'smooth' }), 500);
+    }
   }, []);
 
   useEffect(() => {
@@ -150,7 +155,7 @@ export default function AskSection() {
         </div>
 
         {/* Send a message form */}
-        <div className={styles.messageForm}>
+        <div className={styles.messageForm} ref={msgFormRef} id="message">
           <h3 className={styles.messageTitle}>Or just send me a message</h3>
           <p className={styles.messageSubtitle}>I will get back to you, promise.</p>
 
