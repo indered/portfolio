@@ -48,9 +48,9 @@ const SEO_CONFIG = {
     ogType: 'article',
   },
   about: {
-    title: 'About Mahesh Inder | Personal Profile, Dubai',
+    title: 'About Mahesh Inder | Dubai, Software Engineer',
     description: 'Meet Mahesh Inder. 28, Software Engineer, Marathon Runner, based in Dubai.',
-    keywords: 'Mahesh Inder Personal, About Mahesh Inder, Software Engineer Dubai',
+    keywords: 'About Mahesh Inder, Software Engineer Dubai, Ayodhya, Marathon Runner',
     canonical: `${BASE_URL}/about`,
     ogType: 'profile',
   },

@@ -22,27 +22,28 @@ export default function DatingSection() {
         </p>
 
         <p>
-          Grew up there, did my engineering in Noida, and landed my first
-          job writing code. Life was moving along fine until Covid decided
-          to shut the world down. So I went back home and spent the next
-          couple of years freelancing from my old bedroom, building things
-          for Tokopedia and a few US fintech startups. My mom thought I was
-          unemployed the entire time.
+          I grew up there, did my engineering in Noida, and landed my
+          first job writing code. Life was moving along fine until Covid
+          decided to shut the world down. I went back home and spent the
+          next couple of years freelancing from my old bedroom, building
+          things for Tokopedia and a few US fintech startups. My mom
+          thought I was unemployed the entire time.
         </p>
 
         <p>
-          Eventually a girl broke my heart and I needed a change of
-          scenery. Preferably 2,700 km worth of it. Moved to Dubai, fell
-          in love with the city instead, and never looked back. Now I build
-          software at Emirates NBD during the day and train for a full
-          marathon at 5am because heartbreak has to go somewhere.
+          Then my love life took a creative decision to self-destruct,
+          and I figured a change of scenery would help. Preferably
+          2,700 km worth of it. I moved to Dubai, fell in love with the
+          city instead, and never looked back. Now I build software at
+          Emirates NBD during the day and train for a full marathon at
+          5am because all that emotional energy has to go somewhere.
         </p>
 
         <p>
-          On weekends you'll find me behind DJ decks playing to an empty
-          room, learning ukulele at a painfully slow pace, making coffee
-          nobody asked for, or cooking something that could go either way.
-          It's a good life.
+          On weekends you will find me behind DJ decks playing to an
+          empty room, learning ukulele at a painfully slow pace, making
+          coffee nobody asked for, or cooking something that could go
+          either way. It is a good life.
         </p>
 
         <div className={styles.actions}>

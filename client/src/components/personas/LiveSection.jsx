@@ -5,7 +5,7 @@ import styles from './LiveSection.module.scss';
 const MiniPlanet = lazy(() => import('./MiniPlanet'));
 
 const ROUTE_NAMES = {
-  '/about': 'Personal', '/work': 'Work', '/connect': 'Connect',
+  '/about': 'About', '/work': 'Work', '/connect': 'Connect',
   '/runner': 'The Long Run', '/ventures': 'Ventures', '/thoughts': 'The Thinker',
 };
 

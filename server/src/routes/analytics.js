@@ -67,6 +67,12 @@ router.get('/stats', async (req, res) => {
                 { case: { $eq: ['$planet', 'runner'] }, then: '/runner' },
                 { case: { $eq: ['$planet', 'ventures'] }, then: '/ventures' },
                 { case: { $eq: ['$planet', 'thoughts'] }, then: '/thoughts' },
+                // Legacy IDs from before the rename
+                { case: { $eq: ['$planet', 'developer'] }, then: '/work' },
+                { case: { $eq: ['$planet', 'dating'] }, then: '/about' },
+                { case: { $eq: ['$planet', 'social'] }, then: '/connect' },
+                { case: { $eq: ['$planet', 'blockchain'] }, then: '/ventures' },
+                { case: { $eq: ['$planet', 'thinker'] }, then: '/thoughts' },
               ],
               default: '$planet',
             }
@@ -119,7 +125,17 @@ router.get('/stats', async (req, res) => {
 
       AnalyticsEvent.aggregate([
         { $match: { type: 'time_per_planet', duration: { $gt: 0, $lt: 600 } } },
-        { $group: { _id: '$route', avg: { $avg: '$duration' } } },
+        { $addFields: {
+          normalizedRoute: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$route', '/architect'] }, then: '/work' },
+              ],
+              default: '$route',
+            }
+          }
+        }},
+        { $group: { _id: '$normalizedRoute', avg: { $avg: '$duration' } } },
         { $sort: { avg: -1 } },
       ]),
 

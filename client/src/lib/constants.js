@@ -47,7 +47,7 @@ export const PERSONAS = {
   },
   about: {
     id: 'about',
-    title: 'Personal',
+    title: 'About',
     icon: '💘',
     color: 'var(--color-persona-about)',
     tagline: "Schrödinger's Boyfriend: simultaneously perfect and a red flag until observed.",

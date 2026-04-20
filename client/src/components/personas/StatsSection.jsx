@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styles from './StatsSection.module.scss';
 
 const ROUTE_NAMES = {
-  '/about': 'Personal', '/work': 'Work', '/connect': 'Connect',
+  '/about': 'About', '/work': 'Work', '/connect': 'Connect',
   '/runner': 'Runner', '/ventures': 'Ventures', '/thoughts': 'Thinker',
 };
 
