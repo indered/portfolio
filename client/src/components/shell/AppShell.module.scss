@@ -34,6 +34,12 @@
   left: 50%;
   transform: translateX(-50%);
   animation: none;
+
+  @media (max-width: 768px) {
+    left: auto;
+    right: 20px;
+    transform: none;
+  }
 }
 
 @keyframes askPulse {

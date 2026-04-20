@@ -208,6 +208,14 @@ export default function AskSection() {
       {/* Breathing ambient background */}
       <div className={styles.ambientBg} />
 
+      {/* Back to home */}
+      <button className={styles.topBackBtn} onClick={() => navigate('/')} aria-label="Back to Solar System">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span>Solar System</span>
+      </button>
+
       <div className={styles.chatSection}>
         {/* Header */}
         <div className={`${styles.header} ${!isEmpty ? styles.headerCompact : ''}`}>
@@ -362,11 +370,6 @@ export default function AskSection() {
       <div className={styles.formSection}>
         <div ref={msgFormRef}>
           <MessageForm />
-        </div>
-        <div className={styles.backArea}>
-          <button className={styles.backBtn} onClick={() => navigate('/')}>
-            ← Back to Solar System
-          </button>
         </div>
       </div>
     </div>
