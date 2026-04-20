@@ -22,28 +22,53 @@ export default function DatingSection() {
         </p>
 
         <p>
-          I grew up there, did my engineering in Noida, and landed my
-          first job writing code. Life was moving along fine until Covid
-          decided to shut the world down. I went back home and spent the
-          next couple of years freelancing from my old bedroom, building
-          things for Tokopedia and a few US fintech startups. My mom
-          thought I was unemployed the entire time.
+          Ayodhya is a city of ghats and temples that once lit 2.2 million
+          oil lamps on a single night and broke a world record doing it. I
+          grew up watching that river and those lights. It's the kind of
+          place that stays with you no matter where you end up.
         </p>
 
         <p>
-          Then my love life took a creative decision to self-destruct,
-          and I figured a change of scenery would help. Preferably
-          2,700 km worth of it. I moved to Dubai, fell in love with the
-          city instead, and never looked back. Now I build software at
-          Emirates NBD during the day and train for a full marathon at
-          5am because all that emotional energy has to go somewhere.
+          I got into computers because of a school teacher who somehow made
+          C++ the best hour of the day. That one class is the reason I
+          picked computer science in college and moved to Noida for my
+          engineering degree. First job came right after, writing code.
+          Looking back, that teacher has no idea how much he changed the
+          trajectory of my life.
         </p>
 
         <p>
-          On weekends you will find me behind DJ decks playing to an
-          empty room, learning ukulele at a painfully slow pace, making
-          coffee nobody asked for, or cooking something that could go
-          either way. It is a good life.
+          Life was going fine until Covid shut the world down. I went back
+          home to Ayodhya and spent the next couple of years freelancing
+          from my old bedroom. I built things for Tokopedia, an Indonesian
+          marketplace, and a couple of US fintech startups. Decent work,
+          good clients, real projects. My mom thought I was unemployed the
+          entire time.
+        </p>
+
+        <p>
+          After freelancing I wanted to see what I could do outside of
+          India. Not to leave it behind, just to carry it somewhere new. I
+          picked Dubai because no other city in the world looks like it.
+          The infrastructure is unreal, you have the tallest building on
+          the planet just sitting there on your daily commute, and the best
+          part is half the city is Indian anyway. I get to live in a
+          different country without ever feeling too far from home. I
+          joined Emirates NBD and started building software for one of the
+          biggest banks in the region.
+        </p>
+
+        <p>
+          I spent my first year in Dubai trying every club and rooftop the
+          city had to offer. Then one morning I woke up early, went for a
+          run, and realized I liked that more than any afterparty. Now I am
+          training for a full marathon and my weekends start at 5am instead
+          of 2am.
+        </p>
+
+        <p>
+          On weekends I DJ, play ukulele, make coffee, and cook. I am not
+          great at all of them but that's never stopped me. Life is good.
         </p>
 
         <div className={styles.actions}>
