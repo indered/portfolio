@@ -15,21 +15,27 @@ He spent his first year in Dubai trying every club and rooftop the city had to o
 
 On weekends he DJs, plays ukulele, makes coffee, and cooks.
 
+## Overview
+
+7+ years of full stack development experience. Primary stack is MERN (MongoDB, Express, React, Node.js). He is a full stack developer, not just backend.
+
 ## Current Role
 
-Senior Full Stack / Backend Engineer at Emirates NBD (Mar 2024 - Present, 2 years)
+Senior Full Stack Engineer at Emirates NBD (Mar 2024 - Present, 2 years)
 - Built real-time payment tracking using event-driven architecture (Kafka, AWS Lambda)
 - Developed Statement Manager module for Business Online
 - Polyglot backend in Rust and Node.js
 - Designed AI-powered document parsing pipelines using LangChain
+- Full stack role covering both frontend (React) and backend (Node.js, Rust)
 
 ## Work History
 
-Noumena - Backend Developer (Dec 2021 - Dec 2023, 2 years)
+Noumena - Full Stack Developer (Dec 2021 - Dec 2023, 2 years)
 - Microservices with Apollo Federation, GraphQL
 - Inter-service messaging with Amazon SNS, 50ms latency
 - In-app token economy for transactions
 - Domain-Driven Design in Node.js
+- Frontend and backend development across the platform
 
 Tokopedia - Full Stack Developer (Dec 2020 - Nov 2021, 1 year)
 - Built APIs featured TWICE at Google I/O
@@ -48,11 +54,13 @@ Freelancing (Nov 2021 - Apr 2022, 6 months)
 
 ## Skills
 
+Primary Stack: MERN (MongoDB, Express, React, Node.js)
 Languages: JavaScript, TypeScript, Python, Rust, Solidity, C++
 Frontend: React, Next.js, Redux, Apollo Client, HTML5, CSS3, Sass
 Backend: Node.js, Express, Apollo Server, GraphQL, REST, Kafka, LangChain, Ethereum, ElasticSearch, RabbitMQ
 Databases: MongoDB, PostgreSQL, MySQL
 DevOps: AWS (EC2, ECS, SNS, SQS, Lambda), OpenSearch, Docker, Heroku
+Total Experience: 7+ years in full stack development
 
 ## Education
 
