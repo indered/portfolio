@@ -197,13 +197,19 @@ export default function AskSection() {
 
       <div className={styles.chatSection}>
         {/* Empty-state hero */}
-        {isEmpty && (
+        {isEmpty ? (
           <div className={styles.hero}>
             <h1 className={styles.heroTitle}>
               <span className={styles.gradientText}>Hello.</span>
               <br />
               Ask anything about Mahesh.
             </h1>
+          </div>
+        ) : (
+          <div className={styles.compactHeader}>
+            <h2 className={styles.compactBrand}>
+              <span className={styles.gradientText}>Ask</span> anything about Mahesh
+            </h2>
           </div>
         )}
 
