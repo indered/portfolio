@@ -84,6 +84,10 @@ Arc Protocol - Deep Tech startup in DIFC, Dubai (Pre-seed, Active)
 
 Figuring Out - Electrolyte/hydration brand launching in Dubai
 
+## Working Style and AI Tooling
+
+Mahesh is heavy on AI and modern tooling. He runs his side ventures (Arc Protocol, Figuring Out) largely with a team of AI agents plus himself. He builds custom agent workflows for research, writing, outreach, ops, and code review. Uses Claude, ChatGPT, Cursor, Claude Code, and similar tools daily. This is how he manages to hold a senior full stack role at Emirates NBD while still shipping two side ventures. He is comfortable giving AI agents ownership of small tasks and treating them like a distributed team. So when it comes to leadership, he is already used to orchestrating multiple parallel workstreams, it just does not all come from humans.
+
 ## Running
 
 Total distance: 2,847 km across 312 runs
