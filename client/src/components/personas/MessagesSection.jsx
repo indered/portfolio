@@ -344,6 +344,24 @@ export default function MessagesSection() {
                           <p>{m.content}</p>
                         </div>
                       ))}
+                      <button
+                        className={styles.deleteConvo}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!confirm('Delete this conversation?')) return;
+                          const p = sessionStorage.getItem('_inbox_pin');
+                          const res = await fetch(`/api/messages/conversations/${convo._id}`, {
+                            method: 'DELETE',
+                            headers: { 'x-pin': p },
+                          });
+                          if (res.ok) {
+                            setConversations(prev => prev.filter(c => c._id !== convo._id));
+                            setExpandedConvo(null);
+                          }
+                        }}
+                      >
+                        Delete conversation
+                      </button>
                     </div>
                   )}
                 </div>

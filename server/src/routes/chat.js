@@ -106,7 +106,7 @@ router.get('/:sessionId', async (req, res) => {
 
 router.post('/', chatLimiter, async (req, res) => {
   try {
-    const { message, sessionId, history } = req.body;
+    const { message, sessionId, history, trustedDevice } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -151,8 +151,8 @@ router.post('/', chatLimiter, async (req, res) => {
     res.write('data: [DONE]\n\n');
     res.end();
 
-    // Save conversation to DB after stream ends
-    if (sessionId && fullReply) {
+    // Save conversation to DB after stream ends (skip trusted devices)
+    if (sessionId && fullReply && !trustedDevice) {
       const ip = req.ip || req.connection?.remoteAddress || 'unknown';
       const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
       try {

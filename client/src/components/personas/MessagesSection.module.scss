@@ -386,6 +386,26 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.deleteConvo {
+  margin-top: 8px;
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.35);
+  }
+}
+
 .convoRole {
   font-family: var(--font-mono);
   font-size: 0.65rem;

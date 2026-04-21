@@ -84,4 +84,20 @@ router.get('/conversations', async (req, res) => {
   }
 });
 
+// DELETE /api/messages/conversations/:id — delete a specific conversation (protected)
+router.delete('/conversations/:id', async (req, res) => {
+  try {
+    const pin = req.headers['x-pin'] || req.query.pin;
+    if (pin !== process.env.INBOX_PIN) {
+      return res.status(401).json({ error: 'Invalid PIN.' });
+    }
+
+    await Conversation.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Conversation delete error:', err.message);
+    res.status(500).json({ error: 'Could not delete conversation.' });
+  }
+});
+
 export default router;

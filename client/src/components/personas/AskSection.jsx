@@ -53,9 +53,11 @@ export default function AskSection() {
   const inputRef = useRef(null);
   const msgFormRef = useRef(null);
 
+  const isTrustedDevice = typeof window !== 'undefined' && localStorage.getItem('_inbox_trusted') === '1';
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'light');
-    trackPageView('/ask');
+    if (!isTrustedDevice) trackPageView('/ask');
     inputRef.current?.focus();
     if (window.location.hash === '#message') {
       setTimeout(() => msgFormRef.current?.scrollIntoView({ behavior: 'smooth' }), 500);
@@ -108,6 +110,7 @@ export default function AskSection() {
           message: msg,
           sessionId: chatSessionId.current,
           history: messages.slice(-8),
+          trustedDevice: isTrustedDevice,
         }),
         signal: abortRef.current.signal,
       });
