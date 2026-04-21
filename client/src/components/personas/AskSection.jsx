@@ -7,13 +7,11 @@ import MessageForm from '../shared/MessageForm';
 import styles from './AskSection.module.scss';
 
 const SUGGESTIONS = [
-  { icon: '✦', text: 'What does he build at Emirates NBD?' },
-  { icon: '◎', text: 'Has he led a team or is he IC only?' },
-  { icon: '⟡', text: 'How did he go from clubs to running half marathons?' },
-  { icon: '◈', text: 'Why did he stop believing in god?' },
+  'What does he build at Emirates NBD?',
+  'Has he led a team or is he IC only?',
+  'How did he go from clubs to running half marathons?',
+  'Why did he stop believing in god?',
 ];
-
-const GREETING = "Hey. Ask me anything about Mahesh. Work, running, the startup, all of it.";
 
 function formatTime(ts) {
   if (!ts) return '';
@@ -33,21 +31,6 @@ function getChatSessionId(sharedId) {
   }
   return id;
 }
-
-function handleCardMouse(e) {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * 100;
-  const y = ((e.clientY - rect.top) / rect.height) * 100;
-  e.currentTarget.style.setProperty('--mx', `${x}%`);
-  e.currentTarget.style.setProperty('--my', `${y}%`);
-}
-
-function handleCardLeave(e) {
-  e.currentTarget.style.removeProperty('--mx');
-  e.currentTarget.style.removeProperty('--my');
-}
-
-const hasHover = typeof window !== 'undefined' && window.matchMedia?.('(hover: hover)')?.matches;
 
 export default function AskSection() {
   const navigate = useNavigate();
@@ -71,14 +54,13 @@ export default function AskSection() {
   const msgFormRef = useRef(null);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'light');
     trackPageView('/ask');
     inputRef.current?.focus();
     if (window.location.hash === '#message') {
       setTimeout(() => msgFormRef.current?.scrollIntoView({ behavior: 'smooth' }), 500);
     }
 
-    // Load shared conversation from server if ?s= param and no local data
     if (sharedSessionId && messages.length === 0) {
       fetch(`/api/chat/${sharedSessionId}`)
         .then(r => r.ok ? r.json() : null)
@@ -183,7 +165,7 @@ export default function AskSection() {
 
   const copyConversation = () => {
     const text = messages.map(m =>
-      `${m.role === 'user' ? 'You' : 'Cosmos'}: ${m.content}`
+      `${m.role === 'user' ? 'You' : 'MOORE'}: ${m.content}`
     ).join('\n\n');
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
@@ -205,9 +187,6 @@ export default function AskSection() {
 
   return (
     <div className={styles.page}>
-      {/* Breathing ambient background */}
-      <div className={styles.ambientBg} />
-
       {/* Back to home */}
       <button className={styles.topBackBtn} onClick={() => navigate('/')} aria-label="Back to Solar System">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -217,116 +196,87 @@ export default function AskSection() {
       </button>
 
       <div className={styles.chatSection}>
-        {/* Header */}
-        <div className={`${styles.header} ${!isEmpty ? styles.headerCompact : ''}`}>
-          <div className={styles.headerGlow} />
-          <h2 className={styles.title}>Ask the cosmos</h2>
-          {isEmpty && <p className={styles.subtitle}>the universe knows a thing or two about Mahesh</p>}
-        </div>
+        {/* Empty-state hero */}
+        {isEmpty && (
+          <div className={styles.hero}>
+            <h1 className={styles.heroTitle}>
+              <span className={styles.gradientText}>Hello.</span>
+              <br />
+              Ask anything about Mahesh.
+            </h1>
+          </div>
+        )}
 
         {/* Conversation */}
-        <div className={`${styles.conversation} ${isEmpty ? styles.emptyState : ''}`}>
-          {isEmpty && (
-            <>
-              {/* Nebula avatar greeting */}
-              <div className={`${styles.msg} ${styles.assistant} ${styles.greeting}`}>
-                <div className={styles.nebulaWrap}>
-                  <div className={styles.cosmosAvatar}>
-                    <span className={styles.cosmosGlyph} />
+        {!isEmpty && (
+          <div className={styles.conversation}>
+            {messages.map((msg, i) => (
+              <div key={i} className={`${styles.msg} ${styles[msg.role]}`}>
+                <div className={styles.msgBody}>
+                  {msg.role === 'assistant' && <span className={styles.aiLabel}>MOORE</span>}
+                  <div className={styles.bubbleWrap}>
+                    <div className={styles.bubble}>
+                      {msg.role === 'assistant' ? (
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      ) : (
+                        <p>{msg.content}</p>
+                      )}
+                    </div>
+                    {msg.time && <span className={styles.timestamp}>{formatTime(msg.time)}</span>}
                   </div>
                 </div>
-                <div>
-                  <span className={styles.msgLabel}>Cosmos</span>
+              </div>
+            ))}
+
+            {loading && streamingText && (
+              <div className={`${styles.msg} ${styles.assistant}`}>
+                <div className={styles.msgBody}>
+                  <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
                   <div className={styles.bubble}>
-                    <p>{GREETING}</p>
+                    <ReactMarkdown>{streamingText}</ReactMarkdown>
+                    <span className={styles.streamCursor} aria-hidden="true" />
                   </div>
                 </div>
               </div>
+            )}
 
-              <div className={styles.suggestions}>
-                {SUGGESTIONS.map((s, i) => (
-                  <button
-                    key={i}
-                    className={styles.card}
-                    onClick={() => send(s.text)}
-                    onMouseMove={hasHover ? handleCardMouse : undefined}
-                    onMouseLeave={hasHover ? handleCardLeave : undefined}
-                    style={{ animationDelay: `${0.1 + i * 0.1}s` }}
-                  >
-                    <span className={styles.cardIcon}>{s.icon}</span>
-                    <span className={styles.cardText}>{s.text}</span>
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-
-          {!isEmpty && <div className={styles.spacer} />}
-
-          {messages.map((msg, i) => (
-            <div key={i} className={`${styles.msg} ${styles[msg.role]}`}>
-              {msg.role === 'assistant' && (
-                <div className={styles.cosmosAvatar}>
-                  <span className={styles.cosmosGlyph} />
-                </div>
-              )}
-              <div>
-                {msg.role === 'assistant' && <span className={styles.msgLabel}>Cosmos</span>}
-                <div className={styles.bubbleWrap}>
+            {loading && !streamingText && (
+              <div className={`${styles.msg} ${styles.assistant}`}>
+                <div className={styles.msgBody}>
+                  <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
                   <div className={styles.bubble}>
-                    {msg.role === 'assistant' ? (
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    ) : (
-                      <p>{msg.content}</p>
-                    )}
+                    <span className={styles.thinking}>
+                      <span className={styles.thinkDot} style={{ '--i': 0 }} />
+                      <span className={styles.thinkDot} style={{ '--i': 1 }} />
+                      <span className={styles.thinkDot} style={{ '--i': 2 }} />
+                    </span>
                   </div>
-                  {msg.time && <span className={styles.timestamp}>{formatTime(msg.time)}</span>}
                 </div>
               </div>
-            </div>
-          ))}
+            )}
 
-          {/* Streaming message */}
-          {loading && streamingText && (
-            <div className={`${styles.msg} ${styles.assistant}`}>
-              <div className={`${styles.cosmosAvatar} ${styles.cosmosAvatarActive}`}>
-                <span className={styles.cosmosGlyph} />
-              </div>
-              <div>
-                <span className={styles.msgLabel}>Cosmos</span>
-                <div className={styles.bubble}>
-                  <ReactMarkdown>{streamingText}</ReactMarkdown>
-                  <span className={styles.streamCursor} aria-hidden="true" />
-                </div>
-              </div>
-            </div>
-          )}
+            <div ref={endRef} />
+          </div>
+        )}
 
-          {/* Thinking indicator */}
-          {loading && !streamingText && (
-            <div className={`${styles.msg} ${styles.assistant}`}>
-              <div className={`${styles.cosmosAvatar} ${styles.cosmosAvatarActive}`}>
-                <span className={styles.cosmosGlyph} />
-              </div>
-              <div>
-                <span className={styles.msgLabel}>Cosmos</span>
-                <div className={styles.bubble}>
-                  <span className={styles.thinking}>
-                    <span className={styles.thinkDot} style={{ '--i': 0 }} />
-                    <span className={styles.thinkDot} style={{ '--i': 1 }} />
-                    <span className={styles.thinkDot} style={{ '--i': 2 }} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={endRef} />
-        </div>
-
-        {/* Input */}
+        {/* Input area */}
         <div className={styles.inputWrap}>
-          <div className={`${styles.inputBar} ${loading ? styles.inputBarLoading : ''}`}>
+          {isEmpty && (
+            <div className={styles.suggestions}>
+              {SUGGESTIONS.map((text, i) => (
+                <button
+                  key={i}
+                  className={styles.chip}
+                  onClick={() => send(text)}
+                  style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className={`${styles.inputBar} ${isEmpty ? styles.inputBarNarrow : ''} ${loading ? styles.inputBarLoading : ''}`}>
             <input
               ref={inputRef}
               type="text"
@@ -343,18 +293,18 @@ export default function AskSection() {
               disabled={!input.trim() || loading}
               aria-label="Send"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 19V5M5 12l7-7 7 7" />
               </svg>
             </button>
           </div>
+
           <div className={styles.inputFooter}>
-            <p className={styles.disclaimer}>Answers based on Mahesh's actual resume and work history</p>
+            <p className={styles.disclaimer}>Answers based on Mahesh's resume and work history. Works in any language.</p>
             <div className={styles.footerActions}>
               {messages.length > 0 && (
                 <button className={styles.actionBtn} onClick={copyConversation}>
-                  {copied ? 'Copied!' : 'Copy chat'}
+                  {copied ? 'Copied' : 'Copy chat'}
                 </button>
               )}
               <button className={styles.actionBtn} onClick={shareConversation}>
@@ -362,11 +312,9 @@ export default function AskSection() {
               </button>
             </div>
           </div>
-          <p className={styles.langHint}>works in Hindi, Hinglish, or any language you prefer</p>
         </div>
       </div>
 
-      {/* Form section */}
       <div className={styles.formSection}>
         <div ref={msgFormRef}>
           <MessageForm />

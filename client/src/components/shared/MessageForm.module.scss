@@ -3,6 +3,10 @@
   padding-top: clamp(2rem, 5vw, 3rem);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   text-align: center;
+
+  [data-theme='light'] & {
+    border-top-color: #e8eaed;
+  }
 }
 
 .or {
@@ -10,6 +14,10 @@
   font-size: 0.85rem;
   color: var(--color-text-tertiary);
   margin: 0 0 1.5rem;
+
+  [data-theme='light'] & {
+    color: #5f6368;
+  }
 }
 
 .form {
@@ -39,6 +47,21 @@
 
   &:focus {
     border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  // Light theme (Ask page)
+  [data-theme='light'] & {
+    background: #f0f4f9;
+    border-color: #e8eaed;
+    color: #1f1f1f;
+
+    &::placeholder { color: #9aa0a6; }
+
+    &:focus {
+      border-color: #4285f4;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.12);
+    }
   }
 }
 
@@ -78,6 +101,20 @@
     opacity: 0.5;
     cursor: default;
   }
+
+  [data-theme='light'] & {
+    background: linear-gradient(135deg, #4285f4 0%, #9b72cb 100%);
+    border-color: transparent;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #4285f4 0%, #9b72cb 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(66, 133, 244, 0.3);
+      transform: translateY(-1px);
+    }
+  }
 }
 
 .sent {
@@ -90,4 +127,10 @@
   border-radius: 10px;
   max-width: 500px;
   margin: 0 auto;
+
+  [data-theme='light'] & {
+    color: #137333;
+    background: #e6f4ea;
+    border-color: #ceead6;
+  }
 }
