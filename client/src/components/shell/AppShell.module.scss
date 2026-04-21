@@ -36,9 +36,8 @@
   animation: none;
 
   @media (max-width: 768px) {
-    left: auto;
-    right: 20px;
-    transform: none;
+    left: 62%;
+    transform: translateX(-50%);
   }
 }
 

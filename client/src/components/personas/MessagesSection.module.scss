@@ -406,6 +406,83 @@
   }
 }
 
+.convoToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+}
+
+.selectAllLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+
+  input {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: #4a9eff;
+  }
+}
+
+.bulkDeleteBtn {
+  padding: 7px 14px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.22);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+}
+
+.convoTopRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.convoCheck {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #4a9eff;
+}
+
+.convoBody {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.convoSelected {
+  background: rgba(74, 158, 255, 0.06);
+  border-color: rgba(74, 158, 255, 0.3);
+}
+
 .convoRole {
   font-family: var(--font-mono);
   font-size: 0.65rem;

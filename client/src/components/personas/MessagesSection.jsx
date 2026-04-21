@@ -70,6 +70,7 @@ export default function MessagesSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [expandedConvo, setExpandedConvo] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricRegistered, setBiometricRegistered] = useState(false);
   const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
@@ -309,64 +310,133 @@ export default function MessagesSection() {
           conversations.length === 0 ? (
             <p className={styles.empty}>No conversations yet.</p>
           ) : (
-            <div className={styles.list}>
-              {conversations.map(convo => (
-                <div
-                  key={convo._id}
-                  className={styles.convoCard}
-                  onClick={() => setExpandedConvo(expandedConvo === convo._id ? null : convo._id)}
-                >
-                  <div className={styles.cardHeader}>
-                    <span className={styles.convoGeo}>
-                      {convo.geo || 'Unknown'} · {convo.device || 'desktop'}
-                    </span>
-                    <span className={styles.cardDate}>
-                      {new Date(convo.createdAt).toLocaleDateString('en-GB', {
-                        day: 'numeric', month: 'short', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit',
-                      })}
-                    </span>
-                  </div>
-                  <p className={styles.convoPreview}>
-                    {convo.messages?.[0]?.content || 'Empty conversation'}
-                  </p>
-                  <span className={styles.convoCount}>
-                    {Math.floor((convo.messages?.length || 0) / 2)} questions
+            <>
+              <div className={styles.convoToolbar}>
+                <label className={styles.selectAllLabel}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === conversations.length && conversations.length > 0}
+                    onChange={(e) => {
+                      setSelectedIds(e.target.checked ? conversations.map(c => c._id) : []);
+                    }}
+                  />
+                  <span>
+                    {selectedIds.length > 0
+                      ? `${selectedIds.length} selected`
+                      : 'Select all'}
                   </span>
+                </label>
+                {selectedIds.length > 0 && (
+                  <button
+                    className={styles.bulkDeleteBtn}
+                    onClick={async () => {
+                      if (!confirm(`Delete ${selectedIds.length} conversation(s)?`)) return;
+                      const trustedPin = localStorage.getItem('_inbox_trusted_pin');
+                      const p = trustedPin ? atob(trustedPin) : sessionStorage.getItem('_inbox_pin');
+                      if (!p) { alert('Auth expired. Please reload.'); return; }
+                      const res = await fetch('/api/messages/conversations/delete-bulk', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-pin': p },
+                        body: JSON.stringify({ ids: selectedIds }),
+                      });
+                      if (res.ok) {
+                        setConversations(prev => prev.filter(c => !selectedIds.includes(c._id)));
+                        setSelectedIds([]);
+                        setExpandedConvo(null);
+                      } else {
+                        const err = await res.json().catch(() => ({}));
+                        alert('Delete failed: ' + (err.error || res.status));
+                      }
+                    }}
+                  >
+                    Delete {selectedIds.length}
+                  </button>
+                )}
+              </div>
 
-                  {expandedConvo === convo._id && (
-                    <div className={styles.convoMessages}>
-                      {convo.messages?.map((m, i) => (
-                        <div key={i} className={`${styles.convoMsg} ${styles[m.role]}`}>
-                          <span className={styles.convoRole}>
-                            {m.role === 'user' ? 'Visitor' : '🔮 AI'}
-                          </span>
-                          <p>{m.content}</p>
-                        </div>
-                      ))}
-                      <button
-                        className={styles.deleteConvo}
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (!confirm('Delete this conversation?')) return;
-                          const p = sessionStorage.getItem('_inbox_pin');
-                          const res = await fetch(`/api/messages/conversations/${convo._id}`, {
-                            method: 'DELETE',
-                            headers: { 'x-pin': p },
-                          });
-                          if (res.ok) {
-                            setConversations(prev => prev.filter(c => c._id !== convo._id));
-                            setExpandedConvo(null);
-                          }
+              <div className={styles.list}>
+                {conversations.map(convo => (
+                  <div
+                    key={convo._id}
+                    className={`${styles.convoCard} ${selectedIds.includes(convo._id) ? styles.convoSelected : ''}`}
+                  >
+                    <div className={styles.convoTopRow}>
+                      <input
+                        type="checkbox"
+                        className={styles.convoCheck}
+                        checked={selectedIds.includes(convo._id)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          setSelectedIds(prev =>
+                            e.target.checked
+                              ? [...prev, convo._id]
+                              : prev.filter(id => id !== convo._id)
+                          );
                         }}
+                      />
+                      <div
+                        className={styles.convoBody}
+                        onClick={() => setExpandedConvo(expandedConvo === convo._id ? null : convo._id)}
                       >
-                        Delete conversation
-                      </button>
+                        <div className={styles.cardHeader}>
+                          <span className={styles.convoGeo}>
+                            {convo.geo || 'Unknown'} · {convo.device || 'desktop'}
+                          </span>
+                          <span className={styles.cardDate}>
+                            {new Date(convo.createdAt).toLocaleDateString('en-GB', {
+                              day: 'numeric', month: 'short', year: 'numeric',
+                              hour: '2-digit', minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                        <p className={styles.convoPreview}>
+                          {convo.messages?.[0]?.content || 'Empty conversation'}
+                        </p>
+                        <span className={styles.convoCount}>
+                          {Math.floor((convo.messages?.length || 0) / 2)} questions
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
+
+                    {expandedConvo === convo._id && (
+                      <div className={styles.convoMessages}>
+                        {convo.messages?.map((m, i) => (
+                          <div key={i} className={`${styles.convoMsg} ${styles[m.role]}`}>
+                            <span className={styles.convoRole}>
+                              {m.role === 'user' ? 'Visitor' : '🔮 AI'}
+                            </span>
+                            <p>{m.content}</p>
+                          </div>
+                        ))}
+                        <button
+                          className={styles.deleteConvo}
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!confirm('Delete this conversation?')) return;
+                            const trustedPin = localStorage.getItem('_inbox_trusted_pin');
+                            const p = trustedPin ? atob(trustedPin) : sessionStorage.getItem('_inbox_pin');
+                            if (!p) { alert('Auth expired. Please reload.'); return; }
+                            const res = await fetch(`/api/messages/conversations/${convo._id}`, {
+                              method: 'DELETE',
+                              headers: { 'x-pin': p },
+                            });
+                            if (res.ok) {
+                              setConversations(prev => prev.filter(c => c._id !== convo._id));
+                              setExpandedConvo(null);
+                            } else {
+                              const err = await res.json().catch(() => ({}));
+                              alert('Delete failed: ' + (err.error || res.status));
+                            }
+                          }}
+                        >
+                          Delete conversation
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
           )
         )}
       </div>

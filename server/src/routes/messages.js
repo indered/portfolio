@@ -100,4 +100,23 @@ router.delete('/conversations/:id', async (req, res) => {
   }
 });
 
+// POST /api/messages/conversations/delete-bulk — bulk delete (protected)
+router.post('/conversations/delete-bulk', async (req, res) => {
+  try {
+    const pin = req.headers['x-pin'] || req.query.pin;
+    if (pin !== process.env.INBOX_PIN) {
+      return res.status(401).json({ error: 'Invalid PIN.' });
+    }
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: 'ids array required.' });
+    }
+    const result = await Conversation.deleteMany({ _id: { $in: ids } });
+    res.json({ deleted: result.deletedCount });
+  } catch (err) {
+    console.error('Bulk delete error:', err.message);
+    res.status(500).json({ error: 'Could not delete conversations.' });
+  }
+});
+
 export default router;
