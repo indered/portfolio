@@ -52,60 +52,64 @@ export async function hasGoogleConflict(startUtc, endUtc) {
   }
 }
 
-// Find up to N suggested slots in the next 7 days, 30-min, 10am-10pm IST
+// Fixed slot hours in HOST_TIMEZONE (IST): 1pm, 3pm, 5pm.
+export const ALLOWED_HOURS = [13, 15, 17];
+
+// Find up to N suggested slots starting from TOMORROW, at fixed hours (1pm/3pm/5pm IST).
+// One Google Calendar freebusy call covers all 7 days at once + one Mongo query — fast.
 export async function findSuggestedSlots(count = 4, fromUtc = new Date()) {
   const slots = [];
   const now = DateTime.fromJSDate(fromUtc).setZone(HOST_TIMEZONE);
 
-  // Start from next half hour
-  let cursor = now.startOf('minute');
-  const m = cursor.minute;
-  if (m === 0 || m === 30) {
-    cursor = cursor.plus({ minutes: 30 });
-  } else if (m < 30) {
-    cursor = cursor.set({ minute: 30, second: 0, millisecond: 0 });
-  } else {
-    cursor = cursor.plus({ hours: 1 }).set({ minute: 0, second: 0, millisecond: 0 });
+  const rangeStart = now.plus({ days: 1 }).startOf('day');
+  const rangeEnd = now.plus({ days: 7 }).endOf('day');
+
+  // ONE Google freebusy query for the whole 7-day range
+  let busyBlocks = [];
+  try {
+    const cal = getCalendar();
+    const res = await cal.freebusy.query({
+      requestBody: {
+        timeMin: rangeStart.toUTC().toISO(),
+        timeMax: rangeEnd.toUTC().toISO(),
+        items: [{ id: 'primary' }],
+      },
+    });
+    busyBlocks = (res.data.calendars?.primary?.busy || []).map((b) => ({
+      start: new Date(b.start).getTime(),
+      end: new Date(b.end).getTime(),
+    }));
+  } catch (e) {
+    console.error('findSuggestedSlots freebusy error:', e.message);
   }
 
-  const maxAhead = DateTime.now().setZone(HOST_TIMEZONE).plus({ days: 7 });
+  // ONE Mongo query for all confirmed/pending bookings in the range
+  const mongoBookings = await Booking.find({
+    status: { $in: ['confirmed', 'pending'] },
+    startTimeUtc: { $lt: rangeEnd.toUTC().toJSDate() },
+    endTimeUtc: { $gt: rangeStart.toUTC().toJSDate() },
+  }, { startTimeUtc: 1, endTimeUtc: 1 }).lean();
+  const mongoBlocks = mongoBookings.map((b) => ({
+    start: new Date(b.startTimeUtc).getTime(),
+    end: new Date(b.endTimeUtc).getTime(),
+  }));
 
-  let tries = 0;
-  while (slots.length < count && cursor < maxAhead && tries < 400) {
-    tries++;
-    // Only keep slots within host hours
-    if (cursor.hour < HOST_HOURS_START) {
-      cursor = cursor.set({ hour: HOST_HOURS_START, minute: 0 });
-      continue;
-    }
-    if (cursor.hour > HOST_HOURS_END - 1 || (cursor.hour === HOST_HOURS_END - 1 && cursor.minute > 30)) {
-      cursor = cursor.plus({ days: 1 }).set({ hour: HOST_HOURS_START, minute: 0 });
-      continue;
-    }
-    const startUtc = cursor.toUTC().toJSDate();
-    const endUtc = new Date(startUtc.getTime() + 30 * 60 * 1000);
+  const allBusy = [...busyBlocks, ...mongoBlocks];
+  const overlaps = (start, end) =>
+    allBusy.some((b) => b.start < end && b.end > start);
 
-    // Skip if there's a Mongo booking conflict
-    const mongoConflict = await Booking.findOne({
-      status: 'confirmed',
-      startTimeUtc: { $lt: endUtc },
-      endTimeUtc: { $gt: startUtc },
-    });
-    if (mongoConflict) {
-      cursor = cursor.plus({ minutes: 30 });
-      continue;
+  let day = rangeStart;
+  while (slots.length < count && day < rangeEnd) {
+    for (const hour of ALLOWED_HOURS) {
+      if (slots.length >= count) break;
+      const slotStart = day.set({ hour, minute: 0, second: 0, millisecond: 0 });
+      const startUtc = slotStart.toUTC().toJSDate();
+      const startMs = startUtc.getTime();
+      const endMs = startMs + 30 * 60 * 1000;
+      if (overlaps(startMs, endMs)) continue;
+      slots.push(startUtc);
     }
-
-    // Skip if Google says busy
-    const calendarConflict = await hasGoogleConflict(startUtc, endUtc);
-    if (calendarConflict) {
-      cursor = cursor.plus({ minutes: 30 });
-      continue;
-    }
-
-    slots.push(startUtc);
-    // Space suggestions out a bit for variety — skip next 90 min for spread
-    cursor = cursor.plus({ hours: 2 });
+    day = day.plus({ days: 1 });
   }
 
   return slots;

@@ -425,7 +425,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   color: #1f1f1f;
+  caret-color: #4285f4;
   padding: 12px 0;
+  cursor: text;
 
   &::placeholder { color: #9aa0a6; }
 }

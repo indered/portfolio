@@ -36,6 +36,24 @@ body {
   @include mixins.theme-transition;
 }
 
+// Cursor safety net: ensure cursor is always visible across the app.
+// Specific elements override below (a, button → pointer; input → text).
+html, body, div, section, main, header, footer, canvas, svg, span, p, h1, h2, h3, h4, h5 {
+  cursor: default;
+}
+
+a, button, [role="button"], [class*="card"], [class*="chip"], [class*="link"] {
+  cursor: pointer;
+}
+
+input, textarea, [contenteditable="true"] {
+  cursor: text;
+}
+
+button:disabled, a[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 // ============================================
 // Selection Colors
 // ============================================

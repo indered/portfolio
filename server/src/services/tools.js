@@ -22,9 +22,9 @@ export const customerTools = [
         type: 'object',
         properties: {
           preferred_time_text: {
-            type: 'string',
+            type: ['string', 'null'],
             description:
-              "Optional. The user's proposed time in natural language, e.g. 'Friday 4pm' or 'tomorrow 3:30pm'.",
+              "Optional. The user's proposed time in natural language, e.g. 'Friday 4pm' or 'tomorrow 3:30pm'. Pass null or omit if no specific time.",
           },
         },
       },
@@ -181,10 +181,13 @@ function looksLikePlaceholder(value, kind) {
   const v = value.trim().toLowerCase();
   if (kind === 'email') {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return true;
-    if (v.includes('example.com') || v.includes('yourname') || v.includes('your_email') || v.includes('user@')) return true;
+    // Only block obvious placeholders, not valid emails that happen to look similar
+    if (v.endsWith('@example.com') || v === 'user@user.com' || v === 'your_email@example.com') return true;
   }
   if (kind === 'name') {
-    if (v === 'your name' || v === 'name' || v === 'user' || v === 'visitor' || v === 'name here' || v.length < 2) return true;
+    if (v.length < 2) return true;
+    const obvious = ['your name', 'name', 'user', 'visitor', 'name here', 'your_name', 'placeholder', 'firstname'];
+    if (obvious.includes(v)) return true;
   }
   return false;
 }
@@ -195,10 +198,10 @@ async function handleBookMeeting(args, bookerTz, ctx) {
     return { ok: false, error: "Need the user's actual name, email, and the confirmed slot before booking. Ask them for whichever is missing." };
   }
   if (looksLikePlaceholder(name, 'name')) {
-    return { ok: false, error: "That name looks like a placeholder. Ask the user for their real name first." };
+    return { ok: false, error: 'NEED_NAME' };
   }
   if (looksLikePlaceholder(email, 'email')) {
-    return { ok: false, error: "That email looks like a placeholder. Ask the user for their real email first." };
+    return { ok: false, error: 'NEED_EMAIL' };
   }
 
   const startUtc = new Date(start_time_utc);
@@ -208,17 +211,29 @@ async function handleBookMeeting(args, bookerTz, ctx) {
   }
   const endUtc = validation.endTimeUtc;
 
-  // Create Google Calendar event
-  let eventData;
+  // Try Google Calendar synchronously with a 3s budget.
+  // If it succeeds in time → mark confirmed immediately (best UX).
+  // If it times out or fails → save as pending; the cron will retry.
+  const eventDataPromise = createEvent({
+    startUtc,
+    endUtc,
+    booker: { name, email },
+    notes,
+  });
+
+  const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve('TIMEOUT'), 3000));
+
+  let eventData = null;
+  let synchronous = false;
   try {
-    eventData = await createEvent({
-      startUtc,
-      endUtc,
-      booker: { name, email },
-      notes,
-    });
+    const result = await Promise.race([eventDataPromise, timeoutPromise]);
+    if (result !== 'TIMEOUT' && result?.eventId) {
+      eventData = result;
+      synchronous = true;
+    }
   } catch (e) {
-    return { ok: false, error: `Could not create calendar event: ${e.message}` };
+    // Sync attempt failed — fall through to pending
+    console.error('book_meeting sync attempt failed:', e.message);
   }
 
   // Save to MongoDB
@@ -228,24 +243,39 @@ async function handleBookMeeting(args, bookerTz, ctx) {
     startTimeUtc: startUtc,
     endTimeUtc: endUtc,
     bookerTimezone: bookerTz,
-    googleEventId: eventData.eventId,
-    googleMeetLink: eventData.meetLink,
-    status: 'confirmed',
+    googleEventId: eventData?.eventId,
+    googleMeetLink: eventData?.meetLink,
+    status: synchronous ? 'confirmed' : 'pending',
     sessionId: ctx.sessionId || '',
     notes: notes || '',
+    attempts: synchronous ? 1 : 0,
   });
+
+  if (synchronous) {
+    return {
+      ok: true,
+      type: 'booking_confirmed',
+      booking: {
+        id: booking._id.toString(),
+        name,
+        email,
+        slot: formatSlotDual(startUtc, bookerTz),
+        meetLink: eventData.meetLink,
+      },
+      message: `Booked. Invite sent to ${email}.`,
+    };
+  }
 
   return {
     ok: true,
-    type: 'booking_confirmed',
+    type: 'booking_pending',
     booking: {
       id: booking._id.toString(),
       name,
       email,
       slot: formatSlotDual(startUtc, bookerTz),
-      meetLink: eventData.meetLink,
     },
-    message: `Booked. Invite sent to ${email}.`,
+    message: `Noted. The invite will land in ${email} shortly.`,
   };
 }
 

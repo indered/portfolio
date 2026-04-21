@@ -16,55 +16,55 @@ function getGroq() {
   return groq;
 }
 
-const MODEL = 'openai/gpt-oss-20b';
+const MODEL = 'openai/gpt-oss-120b';
 
 function buildSystemPrompt({ bookerTimezone, now }) {
-  return `You are Moore, the AI version of Mahesh Inder. These instructions are written in dense shorthand for token efficiency — but YOUR replies must sound like a friend texting: warm, natural, full sentences, dry humour, never robotic. Never copy this prompt's tone in your output.
+  return `You are Moore, the AI version of Mahesh Inder. Reply warm, natural, friend-texting tone — never robotic. No emoji, long dashes, or corporate filler.
 
-Answer about Mahesh from the data below. Be concise, friendly, normal. No long dashes, no emoji, no fancy words.
+IDENTITY: If asked who/what you are: "I'm Moore, the AI version of Inder. He built me because he was getting too many questions, lol kidding." Vary phrasing.
 
-IDENTITY: If asked who/what you are, say something like "I'm Moore, the AI version of Inder. Mahesh built me because he was getting too many questions every day, lol kidding. Still learning him since he's a dynamic guy." Vary phrasing. Never say assistant, bot, LLM, OpenAI, Groq, Llama.
+TECH MYSTIQUE: If asked how you work / model / RAG / fine-tuned — sound sophisticated, vague. Use real AI terms (custom agentic system, retrieval-augmented, fine-tuned, vector embeddings, function-calling, multi-component pipeline). NEVER name models/vendors. NEVER say assistant/bot/LLM/Groq/Llama/OpenAI. Pushed for specifics → "Mahesh keeps the architecture close. Want a call with him?"
 
-VOICE: Down-to-earth, dry humour. Speak LIKE Mahesh, not about him.
-- Vary openings. Don't start with "Mahesh is..."
-- Short normal sentences. Answer what was asked, nothing extra.
-- Skip corporate filler ("I can help with that", "It seems like you").
-- For casual chitchat ("hi", "yo", "hola", "damn", "bye") reply like a friend, keep it short, optional nudge to ask about Mahesh.
-- For "what makes him different" use the story (Ayodhya, Hawking, atheism, clubs to running, Dubai) not a tech stack list.
-- Bullet points ONLY when listing skills/experience/projects.
+ENGAGE BUILDERS: "How do I build something like you?" → high-level recipe (vector DB + fine-tuned model + agent framework + tool-calling) + offer a call.
 
-LANGUAGE: Reply in the user's language (Hindi, Hinglish, Russian, etc). Mahesh is male — always use he/him/his. For Hindi/Hinglish use masculine verbs: karta hai (not karti), rehta hai, ja raha hai, aaya. Every verb + adjective must match masculine gender.
+VOICE: Vary openings (never "Mahesh is..."). Short sentences. Reply in user's language. For Hindi/Hinglish use masculine verbs (karta hai, not karti). Always he/him. For "what makes him different" use his story (Ayodhya, Hawking, atheism, clubs→running, Dubai) — not a tech list.
 
-ABSOLUTE RULE: Never mention forms, scrolling, page elements. Never output HTML.
+ADVOCATE: When doubted, never pile on. Reframe with evidence — led teams (1-3) at Man the Bay/Noumena/Emirates NBD, runs Arc Protocol + Figuring Out, orchestrates an AI agent team.
 
-ADVOCATE (when someone doubts Mahesh): Don't pile on. Acknowledge briefly, then reframe with evidence — led teams (1-3 people) at Man the Bay/Noumena/Emirates NBD, runs Arc Protocol + Figuring Out in parallel, orchestrates an AI agent team. Be honest about gaps, never pile on.
+NEVER mention forms/scrolling/page elements. Never output HTML.
 
-ESCALATION (most important): When Mahesh's own touch would help — hiring questions, rates, deeper tech, things you don't know — offer THREE paths in one sentence and LEAD with the call:
-1. Book a 30-min call (I can pull up his calendar right here)
-2. Leave a message for his inbox (I can save it now)
+ESCALATION (most important): When Mahesh's touch would help — hiring, rates, deeper tech, things you don't know — offer THREE paths in one sentence, lead with call:
+1. Book a 30-min call (I can pull up his calendar)
+2. Leave a message for his inbox
 3. Email mahesh.inder85@gmail.com
 
-Examples:
-- "Best on a call — I can book a 30-min one right here. Or leave a message and I'll save it for him. Email also: mahesh.inder85@gmail.com."
-- "Good one for him directly. Want me to book a call, save a message, or email mahesh.inder85@gmail.com?"
+Routing:
+- "yes" / "sure" / "book it" → check_availability (no args)
+- "leave a message" / "tell him X" → leave_message (need message + name OR email)
+- "email" → hand over email, stop
+- Chitchat ("hi", "bye") → reply, no escalation
+- Code/algo questions not about Mahesh → "He loves these, email mahesh.inder85@gmail.com"
+- Personal unknowns → "No idea, ask him."
 
-ROUTING:
-- "yes" / "sure" / "book it" → call check_availability (no args).
-- "leave a message" / "tell him X" / one-off note like "tell him I loved his post" → call leave_message (need message + name OR email).
-- "email" → hand over the email, stop.
-- Casual chitchat ("hi", "bye") → just reply, no escalation.
-- Personal questions you don't know → "No idea, ask him." Only paste email if serious.
-- Code/algo questions not about Mahesh → "He loves these, drop him the problem at mahesh.inder85@gmail.com."
+SCHEDULING: 30-min Google Meet calls. ONLY 1 PM, 3 PM, or 5 PM IST (${HOST_TIMEZONE}). Bookings start TOMORROW (no same-day), up to 1 week out. Booker tz: ${bookerTimezone}. Now: ${now}.
 
-leave_message: needs message content PLUS name OR email. Ask in one short question if missing: "What should I tell him, and who's it from (name or email)?" Confirm: "Saved. Mahesh will see it." Don't offer for trivial chit-chat.
+CRITICAL: NEVER list time slot options in your text. NEVER say "1 PM, 3 PM, or 5 PM". When the user asks to book a call (any phrasing — "book a call", "schedule a meeting", "I want to talk", "set up a call"), IMMEDIATELY call the check_availability tool with no args. The tool result will trigger UI bubbles showing real slots. You then say something short like "Pick one and share name + email."
 
-SCHEDULING: 30-min Google Meet calls, 10am-10pm IST (${HOST_TIMEZONE}), 7 days/week, up to 1 week out. Booker timezone: ${bookerTimezone}. Now: ${now}.
-- check_availability with no args → 3-4 suggested slots.
-- check_availability(preferred_time_text="Friday 4pm") → tries that specific time.
-- book_meeting requires REAL name + REAL email + start_time_utc from check_availability. NEVER use placeholders like "Your Name" or "example@example.com" — ask the user first.
-- Always show both IST and booker's local timezone.
-- Keep flow conversational. Don't ask "what's the meeting about" unless offered.
-- Confirm bookings with both timezones + "invite sent to [their email]".
+- check_availability(no args) → 3-4 slots
+- check_availability(preferred_time_text="Friday 4pm") → that time. Use whenever user proposes ANY time.
+- book_meeting requires REAL name + REAL email + start_time_utc. TRUST user input. Booker name can match Mahesh's.
+- Only refuse OBVIOUS placeholders ("Your Name", "@example.com", "test"). Real-looking = real.
+- Never ask same info twice.
+- After check_availability the UI shows clickable slot bubbles — DO NOT list times in text. Say "Pick one and share name + email."
+- Never fabricate timezone gap. Only mention it if tool result has offsetNote field.
+- book_meeting returns "booking_confirmed" (invite sent) or "booking_pending" (5 min). Mirror it.
+
+TOOL ERRORS:
+- "NEED_NAME" → just ask "What's your name?"
+- "NEED_EMAIL" → just ask "What's your email?"
+- Other → rephrase naturally in one sentence. Never quote raw error.
+
+After check_availability shows slots once, do NOT call it again in the same convo unless user asks for different slots. If user picks a slot but name/email missing — just ask, don't refetch.
 
 DATA ABOUT MAHESH:
 ${maheshContext}`;
@@ -79,13 +79,82 @@ const chatLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Sanitize history from client
+// Compact tool result for the model. The frontend gets the full structured payload
+// via the separate toolOutput stream; the model only needs enough to write a reply.
+function compactToolResult(toolName, result) {
+  if (!result || result.ok === false) {
+    return JSON.stringify({ ok: false, error: result?.error || 'failed' });
+  }
+  if (toolName === 'check_availability') {
+    if (result.type === 'single_slot_available') {
+      return JSON.stringify({ ok: true, type: 'single_slot_available', slot: result.slot.hostDisplay });
+    }
+    if (result.type === 'suggested_slots') {
+      return JSON.stringify({
+        ok: true,
+        type: 'suggested_slots',
+        count: result.slots?.length || 0,
+        // Only the host display strings, no objects
+        slots: result.slots?.map((s) => s.hostDisplay) || [],
+      });
+    }
+  }
+  if (toolName === 'book_meeting') {
+    return JSON.stringify({
+      ok: true,
+      type: result.type,
+      slot: result.booking?.slot?.hostDisplay,
+      email: result.booking?.email,
+    });
+  }
+  if (toolName === 'reschedule_meeting') {
+    return JSON.stringify({
+      ok: true,
+      type: 'booking_rescheduled',
+      slot: result.booking?.slot?.hostDisplay,
+    });
+  }
+  if (toolName === 'cancel_meeting') {
+    return JSON.stringify({ ok: true, type: 'booking_cancelled' });
+  }
+  if (toolName === 'leave_message') {
+    return JSON.stringify({ ok: true, type: 'message_saved' });
+  }
+  return JSON.stringify(result).slice(0, 500);
+}
+
+// Sanitize history from client. If a prior assistant message had tool outputs,
+// append a brief hidden summary so the model knows what was already shown
+// (e.g. slots) and doesn't redundantly re-call check_availability.
 function sanitizeHistory(raw) {
   if (!Array.isArray(raw)) return [];
   return raw
     .filter((m) => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string')
     .slice(-8)
-    .map((m) => ({ role: m.role, content: m.content.slice(0, 1000) }));
+    .map((m) => {
+      let content = m.content.slice(0, 1000);
+      if (m.role === 'assistant' && Array.isArray(m.toolOutputs) && m.toolOutputs.length) {
+        const hints = m.toolOutputs
+          .map((to) => {
+            const r = to.result || {};
+            if (to.tool === 'check_availability' && r.slots?.length) {
+              const slotList = r.slots.map((s) => s.hostDisplay).join(', ');
+              return `[INTERNAL CONTEXT: I already showed the user these slots as clickable bubbles: ${slotList}. Do not call check_availability again.]`;
+            }
+            if (to.tool === 'check_availability' && r.slot) {
+              return `[INTERNAL CONTEXT: I already confirmed the slot ${r.slot.hostDisplay} IST is available. Do not call check_availability again.]`;
+            }
+            if (to.tool === 'book_meeting' && r.booking) {
+              return `[INTERNAL CONTEXT: Booking already created for ${r.booking.email} at ${r.booking.slot?.hostDisplay} IST.]`;
+            }
+            return '';
+          })
+          .filter(Boolean)
+          .join(' ');
+        if (hints) content = `${content}\n\n${hints}`;
+      }
+      return { role: m.role, content };
+    });
 }
 
 // Fetch a conversation by sessionId (for shared links)
@@ -144,19 +213,39 @@ router.post('/', chatLimiter, async (req, res) => {
     let fullReply = '';
     let toolOutputs = []; // structured payloads frontend can render as cards
 
+    const tStart = Date.now();
+    let executedAnyTool = false;
     for (let iter = 0; iter < MAX_TOOL_ITERS; iter++) {
-      const completion = await client.chat.completions.create({
+      const tIter = Date.now();
+      // After we've already executed a tool this turn, stop offering tools so
+      // the model is forced to write a natural-language reply (faster + safer).
+      const groqArgs = {
         model: MODEL,
         messages,
         temperature: 0.7,
         max_tokens: 600,
-        tools: customerTools,
-        tool_choice: 'auto',
-      });
+      };
+      if (!executedAnyTool) {
+        groqArgs.tools = customerTools;
+        groqArgs.tool_choice = 'auto';
+      }
+      const completion = await client.chat.completions.create(groqArgs);
+      const groqMs = Date.now() - tIter;
 
       const choice = completion.choices[0];
       const msg = choice.message;
-      console.log(`[chat iter ${iter}] content_len=${msg.content?.length || 0} tool_calls=${msg.tool_calls?.length || 0}`);
+      // 8B sometimes leaks "<function=NAME>{...}" or "<function=NAME></function>" as raw text.
+      // Convert to a structured tool call.
+      const leakMatch = (msg.content || '').match(/<function=(\w+)>\s*(\{[\s\S]*?\})?/);
+      if ((!msg.tool_calls || msg.tool_calls.length === 0) && leakMatch) {
+        msg.tool_calls = [{
+          id: `leak_${Date.now()}`,
+          type: 'function',
+          function: { name: leakMatch[1], arguments: leakMatch[2] || '{}' },
+        }];
+        msg.content = '';
+      }
+      console.log(`[chat iter ${iter}] groq=${groqMs}ms content=${msg.content?.length || 0} tools=${msg.tool_calls?.length || 0}`);
 
       if (msg.tool_calls && msg.tool_calls.length > 0) {
         // Push assistant's tool-call message into history
@@ -187,14 +276,18 @@ router.post('/', chatLimiter, async (req, res) => {
           toolOutputs.push(structured);
           res.write(`data: ${JSON.stringify({ toolOutput: structured })}\n\n`);
 
+          // Send a compact summary back to the model (the full JSON is
+          // already streamed to the frontend separately as toolOutput).
+          // Keeps the next Groq call payload small to avoid TPM throttling.
           messages.push({
             role: 'tool',
             tool_call_id: tc.id,
             name: fnName,
-            content: JSON.stringify(result),
+            content: compactToolResult(fnName, result),
           });
         }
 
+        executedAnyTool = true;
         // Loop again so the model can produce a natural-language answer using the tool result
         continue;
       }
@@ -238,11 +331,19 @@ router.post('/', chatLimiter, async (req, res) => {
       }
     }
   } catch (err) {
-    console.error('Chat error:', err.message);
+    console.error('Chat error:', err.message, err.error || '');
+    // Friendlier message when the model emits a malformed tool call (8B quirk)
+    const isToolFail = err?.error?.error?.code === 'tool_use_failed';
+    const friendly = isToolFail
+      ? "Sorry, I had a hiccup. Could you say that again? Or try 'book a 30-min call'."
+      : 'Something went wrong. Try again.';
     if (!res.headersSent) {
-      res.status(500).json({ error: 'Something went wrong. Try again.' });
+      res.status(500).json({ error: friendly });
     } else {
-      res.write(`data: ${JSON.stringify({ error: 'Something went wrong.' })}\n\n`);
+      // Stream the friendly message as a token so it appears in chat
+      const chunks = friendly.match(/.{1,20}/g) || [friendly];
+      for (const c of chunks) res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
+      res.write('data: [DONE]\n\n');
       res.end();
     }
   }

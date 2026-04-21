@@ -18,8 +18,12 @@ export default function BookingCard({ toolOutput, onSlotPick }) {
 
   // Availability: either single slot or multiple suggestions
   if (tool === 'check_availability') {
+    const firstSlot = result.slot || result.slots?.[0];
     return (
       <div className={styles.slotCard}>
+        {firstSlot?.offsetNote && (
+          <p className={styles.offsetNote}>{firstSlot.offsetNote}</p>
+        )}
         {result.preferred_rejected && (
           <p className={styles.rejectedNote}>
             <strong>{result.preferred_rejected.attempted.hostDisplay}</strong> didn't work — {result.preferred_rejected.reason.toLowerCase()}
@@ -70,6 +74,31 @@ export default function BookingCard({ toolOutput, onSlotPick }) {
         {result.type === 'suggested_slots' && (!result.slots || result.slots.length === 0) && (
           <p className={styles.emptyMsg}>No open slots in the next 7 days. Try emailing Mahesh directly.</p>
         )}
+      </div>
+    );
+  }
+
+  // Booking accepted (pending — cron will send invite shortly)
+  if (tool === 'book_meeting' && result.type === 'booking_pending') {
+    const { booking } = result;
+    return (
+      <div className={styles.confirmCard}>
+        <div className={styles.confirmHeader}>
+          <span className={styles.checkIcon}>✓</span>
+          <span className={styles.confirmTitle}>Noted</span>
+        </div>
+        <p className={styles.confirmSlot}>
+          <strong>{booking.slot.hostDisplay} IST</strong>
+          {!booking.slot.sameZone && (
+            <>
+              <br />
+              <span className={styles.confirmSub}>
+                {booking.slot.bookerDisplay} ({booking.slot.bookerTimezone})
+              </span>
+            </>
+          )}
+        </p>
+        <p className={styles.confirmMeta}>Invite will land in {booking.email} shortly.</p>
       </div>
     );
   }

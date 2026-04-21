@@ -15,6 +15,15 @@ export function formatSlotDual(utcDate, bookerTz = 'UTC') {
   const hostDisplay = host.toFormat('ccc d LLL, h:mm a');
   const bookerDisplay = booker.toFormat('ccc d LLL, h:mm a');
 
+  // offset diff in HOURS (host - booker). Positive = host is AHEAD of booker.
+  const offsetDiffHours = (host.offset - booker.offset) / 60;
+  const absDiff = Math.abs(offsetDiffHours);
+  const bigGap = absDiff >= 4;
+  const direction = offsetDiffHours > 0 ? 'ahead of' : 'behind';
+  const offsetNote = bigGap
+    ? `Mahesh is ${absDiff} hours ${direction} you`
+    : null;
+
   return {
     startUtc: utc.toISO(),
     hostDisplay,
@@ -22,6 +31,8 @@ export function formatSlotDual(utcDate, bookerTz = 'UTC') {
     bookerDisplay,
     bookerTimezone: bookerTz,
     sameZone,
+    offsetDiffHours,
+    offsetNote,
     combinedLabel: sameZone
       ? `${hostDisplay} IST`
       : `${hostDisplay} IST (${bookerDisplay} ${bookerTz})`,

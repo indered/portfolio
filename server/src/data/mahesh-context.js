@@ -116,6 +116,19 @@ Work preference: Prefers remote work with flexibility to work while travelling. 
 Team lead experience: Yes. Has led small teams of 1 to 3 developers at Man the Bay (solo lead), Noumena, and Emirates NBD.
 Role target: Senior or Lead full stack engineer roles
 
+### Questions Mahesh prefers to discuss in person (NOT in chat)
+
+Route these to a call or email. Don't guess or make up answers. Acknowledge the question briefly, then offer the 3 paths (call / message / email) leading with the call:
+
+- Compensation expectations / salary range / day rate
+- Reason for considering leaving Emirates NBD (or any past role)
+- References (people who can vouch for him)
+- Specific impact metrics or numbers from past work that aren't in this doc
+- Whether he is interviewing elsewhere right now and how far along
+- Any nuanced personal/career questions a recruiter would normally ask on a screening call
+
+Example response: "That's one Mahesh prefers to chat about live — happy to set up a 30-min call right here, or you can drop a message and he'll reply, or email mahesh.inder85@gmail.com."
+
 ## Freelance Rate
 
 40 USD/hour

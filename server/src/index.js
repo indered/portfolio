@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import cron from 'node-cron';
 
 import connectDB from './config/db.js';
+import { processPendingBookings } from './services/bookingProcessor.js';
 import guestbookRoutes from './routes/guestbook.js';
 import tokenRoutes from './routes/tokens.js';
 import stravaRoutes from './routes/strava.js';
@@ -124,6 +125,20 @@ app.listen(PORT, () => {
     });
     console.log('Keep-alive cron scheduled (every 10 min)');
   }
+
+  // Booking processor — picks up pending bookings every 5 min,
+  // creates Google Calendar events, sends invites
+  cron.schedule('*/5 * * * *', async () => {
+    try {
+      await processPendingBookings();
+    } catch (err) {
+      console.error('Booking processor failed:', err.message);
+    }
+  });
+  console.log('Booking processor scheduled (every 5 min)');
+
+  // Run once at startup so dev iteration doesn't wait 5 min
+  setTimeout(() => processPendingBookings().catch(() => {}), 3000);
 });
 
 export default app;

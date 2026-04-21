@@ -176,73 +176,30 @@ export default function TokenWallet() {
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>Inder Tokens</h3>
-            </div>
+            <h3 className={styles.cardTitle}>Inder Tokens</h3>
 
-            {/* Session Tokens */}
-            <div className={styles.sessionBlock}>
-              <span className={styles.sessionLabel}>This Session</span>
-              <span className={styles.sessionCount}>
-                <AnimatedCounter value={sessionTokens} />
-              </span>
-            </div>
-
-            {/* Total Tokens */}
-            <div className={styles.totalBlock}>
-              <span className={styles.sessionLabel}>All Time Total</span>
-              <span className={styles.totalCount}>
+            {/* Single big number — total tokens */}
+            <div className={styles.totalRow}>
+              <span className={styles.totalNumber}>
                 <AnimatedCounter value={totalTokens} />
               </span>
+              <span className={styles.totalCaption}>tokens · {formattedINR} pledged</span>
             </div>
 
-            {/* Recent Action */}
-            <AnimatePresence mode="wait">
-              {actionLabel && (
-                <motion.div
-                  key={recentAction?.timestamp}
-                  className={styles.recentAction}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <span className={styles.actionDot} />
-                  {actionLabel} +{recentAction?.amount}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Divider */}
-            <div className={styles.divider} />
-
-            {/* Equivalent Donation */}
-            <div className={styles.globalStats}>
-              <div className={styles.statRow}>
-                <span className={styles.statLabel}>Equivalent Donation</span>
-                <span className={styles.statValue}>{formattedINR}</span>
-              </div>
-              <p className={styles.conversionNote}>1 token = ₹1</p>
+            {/* Causes — minimal stacked */}
+            <div className={styles.causes}>
+              {causes.map((cause, i) => (
+                <div key={i} className={styles.causeRow}>
+                  <div className={styles.causeMeta}>
+                    <span className={styles.causeMonth}>{cause.month}</span>
+                    <span className={styles.causeTitle}>{cause.title}</span>
+                  </div>
+                  <p className={styles.causeDesc}>{cause.description}</p>
+                </div>
+              ))}
             </div>
 
-            {/* Causes */}
-            {causes.map((cause, i) => (
-              <div key={i} className={styles.causeBlock}>
-                <span className={styles.causeMonth}>{cause.month}</span>
-                <h4 className={styles.causeTitle}>{cause.title}</h4>
-                <p className={styles.causeDesc}>{cause.description}</p>
-              </div>
-            ))}
-
-            <p className={styles.exploreNote}>The more you explore this portfolio, the more Inder Tokens you collect</p>
-
-            <button
-              className={styles.closeBtn}
-              onClick={() => setExpanded(false)}
-              aria-label="Close wallet"
-            >
-              Close
-            </button>
+            <p className={styles.exploreNote}>The more you explore, the more you collect.</p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { trackPageView } from '../../hooks/useAnalytics';
 import { useSEO } from '../../hooks/useSEO';
-import MessageForm from '../shared/MessageForm';
 import BookingCard from './BookingCard';
 import styles from './AskSection.module.scss';
 
@@ -57,7 +56,6 @@ export default function AskSection() {
   useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
-  const msgFormRef = useRef(null);
 
   const isTrustedDevice = typeof window !== 'undefined' && localStorage.getItem('_inbox_trusted') === '1';
 
@@ -65,9 +63,6 @@ export default function AskSection() {
     document.documentElement.setAttribute('data-theme', 'light');
     if (!isTrustedDevice) trackPageView('/ask');
     inputRef.current?.focus();
-    if (window.location.hash === '#message') {
-      setTimeout(() => msgFormRef.current?.scrollIntoView({ behavior: 'smooth' }), 500);
-    }
 
     if (sharedSessionId && messages.length === 0) {
       fetch(`/api/chat/${sharedSessionId}`)
@@ -203,6 +198,12 @@ export default function AskSection() {
   };
 
   const isEmpty = messages.length === 0 && !loading;
+  // Index of the latest assistant message — only it shows fresh slot bubbles.
+  // Confirmation cards (booked/cancelled/message_saved) still show on their original message.
+  let lastAssistantIdx = -1;
+  for (let k = messages.length - 1; k >= 0; k--) {
+    if (messages[k].role === 'assistant') { lastAssistantIdx = k; break; }
+  }
 
   return (
     <div className={styles.page}>
@@ -247,17 +248,22 @@ export default function AskSection() {
                         <p>{msg.content}</p>
                       )}
                     </div>
-                    {msg.toolOutputs?.map((to, j) => (
-                      <BookingCard
-                        key={j}
-                        toolOutput={to}
-                        onSlotPick={(slot) => {
-                          const localTime = slot.bookerDisplay;
-                          setInput(`I'll take ${localTime}`);
-                          setTimeout(() => inputRef.current?.focus(), 50);
-                        }}
-                      />
-                    ))}
+                    {msg.toolOutputs?.map((to, j) => {
+                      // Stale slot bubbles only show on the latest assistant message
+                      const isSlotPicker = to.tool === 'check_availability';
+                      if (isSlotPicker && i !== lastAssistantIdx) return null;
+                      return (
+                        <BookingCard
+                          key={j}
+                          toolOutput={to}
+                          onSlotPick={(slot) => {
+                            const localTime = slot.bookerDisplay;
+                            setInput(`I'll take ${localTime}`);
+                            setTimeout(() => inputRef.current?.focus(), 50);
+                          }}
+                        />
+                      );
+                    })}
                     {msg.time && <span className={styles.timestamp}>{formatTime(msg.time)}</span>}
                   </div>
                 </div>
@@ -338,6 +344,13 @@ export default function AskSection() {
           <div className={styles.inputFooter}>
             <p className={styles.disclaimer}>Answers based on Mahesh's resume and work history. Works in any language.</p>
             <div className={styles.footerActions}>
+              <a
+                href="/mahesh-inder-resume.pdf"
+                download
+                className={styles.actionBtn}
+              >
+                Resume ↓
+              </a>
               {messages.length > 0 && (
                 <button className={styles.actionBtn} onClick={copyConversation}>
                   {copied ? 'Copied' : 'Copy chat'}
@@ -351,11 +364,6 @@ export default function AskSection() {
         </div>
       </div>
 
-      <div className={styles.formSection}>
-        <div ref={msgFormRef}>
-          <MessageForm />
-        </div>
-      </div>
     </div>
   );
 }
