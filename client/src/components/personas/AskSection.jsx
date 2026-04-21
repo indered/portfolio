@@ -4,13 +4,19 @@ import ReactMarkdown from 'react-markdown';
 import { trackPageView } from '../../hooks/useAnalytics';
 import { useSEO } from '../../hooks/useSEO';
 import MessageForm from '../shared/MessageForm';
+import BookingCard from './BookingCard';
 import styles from './AskSection.module.scss';
+
+const BOOKER_TIMEZONE =
+  typeof window !== 'undefined'
+    ? (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC')
+    : 'UTC';
 
 const SUGGESTIONS = [
   'What does he build at Emirates NBD?',
   'Has he led a team or is he IC only?',
   'How did he go from clubs to running half marathons?',
-  'Why did he stop believing in god?',
+  'Book a 30-min call with Mahesh',
 ];
 
 function formatTime(ts) {
@@ -101,6 +107,7 @@ export default function AskSection() {
     setMessages(prev => [...prev, { role: 'user', content: msg, time: Date.now() }]);
     setLoading(true);
     setStreamingText('');
+    const accumulatedToolOutputs = [];
 
     try {
       const res = await fetch('/api/chat', {
@@ -111,6 +118,7 @@ export default function AskSection() {
           sessionId: chatSessionId.current,
           history: messages.slice(-8),
           trustedDevice: isTrustedDevice,
+          bookerTimezone: BOOKER_TIMEZONE,
         }),
         signal: abortRef.current.signal,
       });
@@ -139,18 +147,26 @@ export default function AskSection() {
             const payload = line.slice(6);
             if (payload === '[DONE]') break;
             try {
-              const { token, error } = JSON.parse(payload);
+              const { token, error, toolOutput } = JSON.parse(payload);
               if (error) { fullReply = error; break; }
               if (token) {
                 fullReply += token;
                 setStreamingText(fullReply);
+              }
+              if (toolOutput) {
+                accumulatedToolOutputs.push(toolOutput);
               }
             } catch {}
           }
         }
       }
 
-      setMessages(prev => [...prev, { role: 'assistant', content: fullReply || 'Sorry, I could not come up with a response.', time: Date.now() }]);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: fullReply || 'Sorry, I could not come up with a response.',
+        time: Date.now(),
+        toolOutputs: accumulatedToolOutputs.length ? accumulatedToolOutputs : undefined,
+      }]);
       setStreamingText('');
     } catch (err) {
       if (err.name !== 'AbortError') {
@@ -231,6 +247,17 @@ export default function AskSection() {
                         <p>{msg.content}</p>
                       )}
                     </div>
+                    {msg.toolOutputs?.map((to, j) => (
+                      <BookingCard
+                        key={j}
+                        toolOutput={to}
+                        onSlotPick={(slot) => {
+                          const localTime = slot.bookerDisplay;
+                          setInput(`I'll take ${localTime}`);
+                          setTimeout(() => inputRef.current?.focus(), 50);
+                        }}
+                      />
+                    ))}
                     {msg.time && <span className={styles.timestamp}>{formatTime(msg.time)}</span>}
                   </div>
                 </div>
