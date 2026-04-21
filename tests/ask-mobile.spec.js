@@ -1,82 +1,159 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Ask page - Mobile', () => {
-  test.use({ viewport: { width: 393, height: 852 } });
+// iPhone 14 viewport
+const MOBILE_VIEWPORT = { width: 393, height: 852 };
+
+test.describe('Ask page - Mobile UI', () => {
+  test.use({ viewport: MOBILE_VIEWPORT });
 
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.clear());
     await page.goto('/ask');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1500);
   });
 
-  test('page loads with heading on mobile', async ({ page }) => {
-    await expect(page.locator('text=Ask me anything')).toBeVisible({ timeout: 5000 });
+  test('hero title renders with gradient Hello and follow-up', async ({ page }) => {
+    await expect(page.locator('h1')).toContainText('Hello.');
+    await expect(page.locator('h1')).toContainText('Ask anything about Mahesh');
   });
 
-  test('suggestion buttons are visible and tappable', async ({ page }) => {
-    const btn = page.locator('text=What does Mahesh do?');
-    await expect(btn).toBeVisible({ timeout: 5000 });
-    const box = await btn.boundingBox();
-    // Button should be at least 44px tall for touch
-    expect(box.height).toBeGreaterThanOrEqual(30);
+  test('back button visible top-left with Solar System label', async ({ page }) => {
+    const backBtn = page.locator('button[aria-label="Back to Solar System"]');
+    await expect(backBtn).toBeVisible();
+    await expect(backBtn).toContainText('Solar System');
+    const box = await backBtn.boundingBox();
+    expect(box.x).toBeLessThan(30);
+    expect(box.y).toBeLessThan(30);
+    // Touch-friendly size
+    expect(box.height).toBeGreaterThanOrEqual(36);
+    expect(box.width).toBeGreaterThanOrEqual(100);
+  });
+
+  test('all 4 suggestion chips are visible and tappable', async ({ page }) => {
+    const suggestions = [
+      'What does he build at Emirates NBD?',
+      'Has he led a team or is he IC only?',
+      'How did he go from clubs to running half marathons?',
+      'Why did he stop believing in god?',
+    ];
+    for (const text of suggestions) {
+      const chip = page.locator(`button:has-text("${text}")`);
+      await expect(chip).toBeVisible();
+      const box = await chip.boundingBox();
+      expect(box.height).toBeGreaterThanOrEqual(32);
+    }
   });
 
   test('input field is visible on mobile', async ({ page }) => {
-    const input = page.locator('input[placeholder="Type your question..."]');
-    await input.scrollIntoViewIfNeeded();
-    await expect(input).toBeVisible({ timeout: 5000 });
+    const inputBar = page.locator('input[placeholder*="Ask anything about"]').locator('..');
+    await expect(inputBar).toBeVisible();
+    const box = await inputBar.boundingBox();
+    expect(box.width).toBeGreaterThan(200);
   });
 
-  test('input stays visible when focused (keyboard simulation)', async ({ page }) => {
-    const input = page.locator('input[placeholder="Type your question..."]');
-    await input.scrollIntoViewIfNeeded();
+  test('send button is visible and disabled when empty', async ({ page }) => {
+    const sendBtn = page.locator('button[aria-label="Send"]');
+    await expect(sendBtn).toBeVisible();
+    await expect(sendBtn).toBeDisabled();
+  });
+
+  test('send button enables when user types', async ({ page }) => {
+    const input = page.locator('input[placeholder*="Ask anything about"]');
+    const sendBtn = page.locator('button[aria-label="Send"]');
+    await input.fill('hi');
+    await expect(sendBtn).toBeEnabled();
+  });
+
+  test('disclaimer text is readable (not too small)', async ({ page }) => {
+    const disclaimer = page.locator('p:has-text("Answers based on")');
+    await expect(disclaimer).toBeVisible();
+    const fontSize = await disclaimer.evaluate(el =>
+      parseFloat(getComputedStyle(el).fontSize)
+    );
+    expect(fontSize).toBeGreaterThanOrEqual(10);
+  });
+
+  test('share link button is visible in empty state', async ({ page }) => {
+    const shareBtn = page.locator('button:has-text("Share link")');
+    await expect(shareBtn).toBeVisible();
+  });
+
+  test('MessageForm is hidden on mobile', async ({ page }) => {
+    const form = page.locator('input[placeholder="Your name"]');
+    await expect(form).toBeHidden();
+  });
+
+  test('keyboard open simulation does not hide input', async ({ page }) => {
+    const input = page.locator('input[placeholder*="Ask anything about"]');
     await input.click();
-    await page.waitForTimeout(500);
-
-    // Simulate keyboard appearing by resizing viewport
-    await page.setViewportSize({ width: 393, height: 400 });
-    await page.waitForTimeout(500);
-
-    // Input should still be visible
-    await expect(input).toBeVisible({ timeout: 3000 });
+    await page.waitForTimeout(300);
+    // Simulate iOS keyboard pushing viewport up
+    await page.setViewportSize({ width: 393, height: 500 });
+    await page.waitForTimeout(300);
+    await expect(input).toBeVisible();
+    const box = await input.boundingBox();
+    expect(box.y).toBeLessThan(500);
   });
 
-  test('message form is visible below chat', async ({ page }) => {
-    const form = page.locator('text=Or leave a message here');
-    await form.scrollIntoViewIfNeeded();
-    await expect(form).toBeVisible({ timeout: 5000 });
+  test('hero title does not overflow viewport width', async ({ page }) => {
+    const hero = page.locator('h1').first();
+    const box = await hero.boundingBox();
+    expect(box.x + box.width).toBeLessThanOrEqual(MOBILE_VIEWPORT.width);
   });
 
-  test('send message form has all fields', async ({ page }) => {
+  test('suggestion chips do not overflow horizontally', async ({ page }) => {
+    const chips = page.locator('[class*="chip"]');
+    const count = await chips.count();
+    for (let i = 0; i < count; i++) {
+      const box = await chips.nth(i).boundingBox();
+      if (box) {
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(MOBILE_VIEWPORT.width + 1);
+      }
+    }
+  });
+
+  test('page has no horizontal scroll', async ({ page }) => {
+    const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(MOBILE_VIEWPORT.width + 1);
+  });
+
+  test('typing and clicking send triggers user message in DOM', async ({ page }) => {
+    // Mock /api/chat to avoid real API call
+    await page.route('**/api/chat', async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'content-type': 'text/event-stream' },
+        body: `data: ${JSON.stringify({ token: 'Hi there!' })}\n\ndata: [DONE]\n\n`,
+      });
+    });
+    const input = page.locator('input[placeholder*="Ask anything about"]');
+    await input.fill('Who is Mahesh?');
+    await page.locator('button[aria-label="Send"]').click();
+    await page.waitForTimeout(1000);
+    // User's own message should be visible
+    await expect(page.locator('text=Who is Mahesh?')).toBeVisible();
+  });
+});
+
+test.describe('Ask page - Desktop', () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.clear());
+    await page.goto('/ask');
+    await page.waitForTimeout(1500);
+  });
+
+  test('MessageForm is visible on desktop', async ({ page }) => {
     await page.locator('input[placeholder="Your name"]').scrollIntoViewIfNeeded();
     await expect(page.locator('input[placeholder="Your name"]')).toBeVisible();
     await expect(page.locator('input[placeholder="Your email"]')).toBeVisible();
     await expect(page.locator('textarea[placeholder="Your message"]')).toBeVisible();
-    await expect(page.locator('button', { hasText: 'Send message' })).toBeVisible();
   });
 
-  test('back to solar system button is visible', async ({ page }) => {
-    const btn = page.locator('text=Back to Solar System');
-    await btn.scrollIntoViewIfNeeded();
-    await expect(btn).toBeVisible({ timeout: 5000 });
-  });
-});
-
-test.describe('Connect page - Mobile', () => {
-  test.use({ viewport: { width: 393, height: 852 } });
-
-  test('message form is visible on connect page', async ({ page }) => {
-    await page.goto('/connect');
-    await page.waitForTimeout(2000);
-    const form = page.locator('text=Or leave a message here');
-    await form.scrollIntoViewIfNeeded();
-    await expect(form).toBeVisible({ timeout: 5000 });
-  });
-
-  test('message form label says "Or leave a message here"', async ({ page }) => {
-    await page.goto('/connect');
-    await page.waitForTimeout(2000);
-    const label = page.locator('text=Or leave a message here');
-    await label.scrollIntoViewIfNeeded();
-    await expect(label).toBeVisible();
+  test('back button shows Solar System text on desktop', async ({ page }) => {
+    const backBtn = page.locator('button[aria-label="Back to Solar System"]');
+    await expect(backBtn).toContainText('Solar System');
   });
 });

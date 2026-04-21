@@ -50,9 +50,11 @@ To The New - Full Stack Developer (Jan 2019 - Nov 2020, 2 years)
 - RabbitMQ async processing, 2,000+ concurrent users
 - Built Bharti Axa PWA
 
-Freelancing (Nov 2021 - Apr 2022, 6 months)
-- Built manthebay.org for Urban-Ed Academy (Bay Area, US)
-- Full MERN stack solo developer
+Freelancing (2+ years total, still active)
+- Started during Covid when he moved back to Ayodhya, continues to pick freelance projects on the side
+- Built manthebay.org for Urban-Ed Academy (Bay Area, US) — full MERN stack solo
+- Also freelanced for Tokopedia (Indonesia) and a couple of US fintech startups during Covid
+- Still takes on freelance projects alongside his full-time role
 
 ## Skills
 
