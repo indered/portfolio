@@ -5,7 +5,7 @@ import { useTokens } from '../../context/TokenContext';
 import { TOKEN_CONFIG } from '../../lib/constants';
 import styles from './TokenWallet.module.scss';
 
-const HIDDEN_ROUTES = ['/ask', '/inbox'];
+const HIDDEN_ROUTES = ['/ask', '/inbox', '/me'];
 
 function AnimatedCounter({ value }) {
   const [displayed, setDisplayed] = useState(0);
