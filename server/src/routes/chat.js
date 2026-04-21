@@ -16,7 +16,33 @@ function getGroq() {
   return groq;
 }
 
-const MODEL = 'openai/gpt-oss-120b';
+// Ordered fallback chain. We try the first; if it hits a quota/rate-limit
+// error (413/429), we try the next. Each has its own per-model daily cap on
+// Groq free tier — spreading across models buys us a much bigger effective
+// quota without paying.
+const MODEL_FALLBACKS = [
+  'openai/gpt-oss-20b',       // fastest, 200K/day
+  'openai/gpt-oss-120b',      // bigger, 200K/day, slower
+  'llama-3.1-8b-instant',     // 500K/day but flaky tool calls
+  'llama-3.3-70b-versatile',  // 100K/day, best tool calls
+];
+
+async function callGroqWithFallback(client, groqArgs) {
+  let lastErr = null;
+  for (const model of MODEL_FALLBACKS) {
+    try {
+      return await client.chat.completions.create({ ...groqArgs, model });
+    } catch (err) {
+      const status = err?.status;
+      const code = err?.error?.error?.code;
+      const isQuota = status === 429 || status === 413 || code === 'rate_limit_exceeded';
+      if (!isQuota) throw err;
+      console.warn(`[groq] ${model} hit quota, trying next...`);
+      lastErr = err;
+    }
+  }
+  throw lastErr;
+}
 
 function buildSystemPrompt({ bookerTimezone, now }) {
   return `You are Moore, the AI version of Mahesh Inder. Reply warm, natural, friend-texting tone — never robotic. No emoji, long dashes, or corporate filler.
@@ -220,7 +246,6 @@ router.post('/', chatLimiter, async (req, res) => {
       // After we've already executed a tool this turn, stop offering tools so
       // the model is forced to write a natural-language reply (faster + safer).
       const groqArgs = {
-        model: MODEL,
         messages,
         temperature: 0.7,
         max_tokens: 600,
@@ -229,7 +254,7 @@ router.post('/', chatLimiter, async (req, res) => {
         groqArgs.tools = customerTools;
         groqArgs.tool_choice = 'auto';
       }
-      const completion = await client.chat.completions.create(groqArgs);
+      const completion = await callGroqWithFallback(client, groqArgs);
       const groqMs = Date.now() - tIter;
 
       const choice = completion.choices[0];
