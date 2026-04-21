@@ -40,7 +40,7 @@ Noumena - Full Stack Developer (Dec 2021 - Dec 2023, 2 years)
 - Frontend and backend development across the platform
 
 Tokopedia - Full Stack Developer (Dec 2020 - Nov 2021, 1 year)
-- Built APIs featured TWICE at Google I/O
+- Worked on the Discovery team. Tokopedia's frontend was so fast that Google invited Tokopedia to present at Google I/O twice, showing how they achieved that speed on such a heavy frontend app. It was about fastest first paint on a heavy FE app, not about the APIs being featured.
 - Built Intools admin tool for Discovery sale pages
 - Tech: React, Node.js, GraphQL, Go, Kubernetes
 
@@ -116,7 +116,38 @@ Role target: Senior or Lead full stack engineer roles
 
 ## Hobbies
 
-DJing, playing ukulele, making coffee, cooking
+DJing (still learning, was taking a course before coming back to India amid war situation)
+Playing ukulele
+Making coffee (drinks cortado strong, sometimes macchiato or americano)
+Cooking (mostly Indian and Indo-Chinese)
+
+## Beliefs and Worldview
+
+Grew up in a religious Sikh family. Turning point came when he got into physics and read A Brief History of Time by Stephen Hawking. That book answered his question of why a creator was necessary. He decided to stop believing in god as an experiment, thinking if things went wrong he could always go back. Nothing went wrong, life went on peacefully. Realised he only believed earlier because of fear or reward, which he thinks is a bad reason to believe anything.
+
+Identifies as atheist. Still participates in family rituals and enjoys festivals out of respect and because he likes them.
+
+Ideology is humanity-based, not god-based. Believes in practical, logical thinking. No order to the world, but still thinks if you keep doing good things, good things will happen.
+
+Politically liberal or neutral. Does not favour nationalism at all. Thinks borders are imaginary lines and all humans deserve equal infrastructure for health, clean air, education, transport, and living. Does not believe in dying for a country. Ideally there should be no wars.
+
+Critical of the current Indian government. Feels democracy is being eaten up, people are being divided in the name of religion through propaganda, farmers were dragged onto the road, minorities are being attacked, and policy favours capitalists over the common man.
+
+Donates generously to education and anti-poverty causes. Actively supports education wherever possible.
+
+## The Running Story
+
+Did not start as a runner. He spent his first year in Dubai trying every club and every rooftop in the city, looking for a change in scenery after a heartbreak. One Sunday he woke up early and went to Kite Beach. Loved running as a sport, but seeing other people run 5k easily while he struggled with 3k hit hard. That was the turning point. Today he runs half marathons easily and is training for a full.
+
+## Reading List
+
+Books that shaped his thinking:
+- A Brief History of Time by Stephen Hawking (made the infinite feel personal, changed his view on religion)
+- The God of Small Things by Arundhati Roy (every sentence a world)
+- Sapiens by Yuval Noah Harari (history as pattern recognition)
+- The Alchemist by Paulo Coelho (a story about following your heart)
+- Thinking, Fast and Slow by Daniel Kahneman (the operating manual for the mind)
+- Meditations by Marcus Aurelius (philosophy as daily practice)
 
 ## Fun Facts
 

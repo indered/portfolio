@@ -7,10 +7,10 @@ import MessageForm from '../shared/MessageForm';
 import styles from './AskSection.module.scss';
 
 const SUGGESTIONS = [
-  { icon: '✦', text: 'How did his code end up at Google I/O?' },
+  { icon: '✦', text: 'What does he build at Emirates NBD?' },
   { icon: '◎', text: 'Has he led a team or is he IC only?' },
-  { icon: '⟡', text: 'What does he build at Emirates NBD?' },
-  { icon: '◈', text: 'What is Arc Protocol?' },
+  { icon: '⟡', text: 'How did he go from clubs to running half marathons?' },
+  { icon: '◈', text: 'Why did he stop believing in god?' },
 ];
 
 const GREETING = "Hey. Ask me anything about Mahesh. Work, running, the startup, all of it.";
