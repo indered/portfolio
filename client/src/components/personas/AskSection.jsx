@@ -11,11 +11,12 @@ const BOOKER_TIMEZONE =
     ? (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC')
     : 'UTC';
 
+const BOOKING_CHIP = 'Book a 30-min call with Mahesh';
 const SUGGESTIONS = [
   'What does he build at Emirates NBD?',
   'Has he led a team or is he IC only?',
   'How did he go from clubs to running half marathons?',
-  'Book a 30-min call with Mahesh',
+  BOOKING_CHIP,
 ];
 
 function formatTime(ts) {
@@ -90,6 +91,35 @@ export default function AskSection() {
       endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [streamingText]);
+
+  // Fast path for the "Book a 30-min call" chip. Hits a direct REST endpoint
+  // that skips the LLM entirely, then injects the result into the chat as if
+  // Moore had answered. Feels native, costs zero tokens, <500ms perceived.
+  const bookDirect = useCallback(async () => {
+    if (loading) return;
+    setMessages(prev => [...prev, { role: 'user', content: BOOKING_CHIP, time: Date.now() }]);
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/booking/slots?tz=${encodeURIComponent(BOOKER_TIMEZONE)}`);
+      const data = await res.json();
+      if (!data?.ok) throw new Error(data?.error || 'failed');
+      const toolOutput = { tool: 'check_availability', result: data };
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Pick one and share name + email.',
+        time: Date.now(),
+        toolOutputs: [toolOutput],
+      }]);
+    } catch {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Couldn't load slots just now. Try again in a moment.",
+        time: Date.now(),
+      }]);
+    }
+    setLoading(false);
+    inputRef.current?.focus();
+  }, [loading]);
 
   const send = useCallback(async (text) => {
     const msg = (text || input).trim();
@@ -309,7 +339,7 @@ export default function AskSection() {
                 <button
                   key={i}
                   className={styles.chip}
-                  onClick={() => send(text)}
+                  onClick={() => (text === BOOKING_CHIP ? bookDirect() : send(text))}
                   style={{ animationDelay: `${0.1 + i * 0.08}s` }}
                 >
                   {text}

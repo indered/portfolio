@@ -17,6 +17,7 @@ import analyticsRoutes from './routes/analytics.js';
 import chatRoutes from './routes/chat.js';
 import messageRoutes from './routes/messages.js';
 import assistantRoutes from './routes/assistant.js';
+import bookingRoutes from './routes/booking.js';
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/messages', messageRoutes); // POST for sending, GET for inbox
 app.use('/api/assistant', assistantRoutes); // Personal-side assistant (PIN-gated)
+app.use('/api/booking', bookingRoutes); // Direct slots endpoint (no LLM)
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

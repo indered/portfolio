@@ -5,6 +5,8 @@
 import { Router } from 'express';
 import Groq from 'groq-sdk';
 import { personalTools, executePersonalTool } from '../services/assistantTools.js';
+import Booking from '../models/Booking.js';
+import { deleteEvent } from '../services/googleCalendar.js';
 
 const router = Router();
 
@@ -47,6 +49,87 @@ function requireAuth(req, res, next) {
   }
   next();
 }
+
+// Bulk cancel — delete a batch of bookings in one request. Used by the
+// "Delete all" button in the /me UI.
+router.post('/bookings/delete-bulk', requireAuth, async (req, res) => {
+  try {
+    const { ids } = req.body || {};
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: 'ids array required' });
+    }
+    const bookings = await Booking.find({ _id: { $in: ids } });
+    const results = await Promise.all(bookings.map(async (b) => {
+      if (b.googleEventId) {
+        try { await deleteEvent(b.googleEventId); }
+        catch (e) { console.warn('Calendar delete failed (continuing):', e.message); }
+      }
+      b.status = 'cancelled';
+      b.updatedAt = new Date();
+      await b.save();
+      return b._id.toString();
+    }));
+    res.json({ ok: true, cancelled: results });
+  } catch (err) {
+    console.error('Bulk cancel error:', err.message);
+    res.status(500).json({ error: 'Could not cancel bookings.' });
+  }
+});
+
+// Direct booking deletion — bypasses the LLM so the UI can cancel a booking
+// with one click, no agent confusion over which id to use.
+router.delete('/bookings/:id', requireAuth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    if (booking.googleEventId) {
+      try {
+        await deleteEvent(booking.googleEventId);
+      } catch (e) {
+        console.warn('Calendar delete failed (continuing):', e.message);
+      }
+    }
+    booking.status = 'cancelled';
+    booking.updatedAt = new Date();
+    await booking.save();
+    res.json({ ok: true, id: booking._id.toString() });
+  } catch (err) {
+    console.error('Delete booking error:', err.message);
+    res.status(500).json({ error: 'Could not cancel booking.' });
+  }
+});
+
+// List bookings directly (used by /me UI to refresh list after delete).
+router.get('/bookings', requireAuth, async (req, res) => {
+  try {
+    const { when = 'upcoming' } = req.query;
+    const now = new Date();
+    let from = now, to = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+    if (when === 'all') { from = new Date(0); to = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000); }
+
+    const bookings = await Booking.find({
+      status: { $in: ['confirmed', 'pending'] },
+      startTimeUtc: { $gte: from, $lte: to },
+    }).sort({ startTimeUtc: 1 }).limit(50).lean();
+
+    res.json({
+      ok: true,
+      count: bookings.length,
+      bookings: bookings.map((b) => ({
+        id: b._id.toString(),
+        name: b.name,
+        email: b.email,
+        startTimeUtc: b.startTimeUtc,
+        status: b.status,
+        meetLink: b.googleMeetLink,
+      })),
+    });
+  } catch (err) {
+    console.error('List bookings error:', err.message);
+    res.status(500).json({ error: 'Could not load bookings.' });
+  }
+});
 
 function buildSystemPrompt({ now }) {
   return `You are Mahesh's personal assistant. He is the one talking to you — you work for him, not for a visitor. You have tools to read his bookings, messages, conversations, and to draft emails or reschedule/cancel meetings.

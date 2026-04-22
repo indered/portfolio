@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
+import Conversation from '../models/Conversation.js';
 
 const router = Router();
 
@@ -8,6 +9,16 @@ const EXCLUDE_IPS = [
   '2405:201:601b:e86d:d935:805b:f264:6b8a',
   ...(process.env.EXCLUDE_IPS || '').split(',').map(s => s.trim()).filter(Boolean),
 ];
+
+// /architect is an alias for /work — treat them as one so stats don't split.
+function normalizeRoute(route) {
+  if (route === '/architect') return '/work';
+  return route;
+}
+function normalizePlanet(planet) {
+  if (planet === 'architect' || planet === '/architect') return '/work';
+  return planet;
+}
 
 // POST /api/analytics/event
 router.post('/event', (req, res) => {
@@ -21,8 +32,8 @@ router.post('/event', (req, res) => {
 
   AnalyticsEvent.create({
     type,
-    route: route || '/',
-    planet: planet || null,
+    route: normalizeRoute(route || '/'),
+    planet: normalizePlanet(planet) || null,
     duration: duration || null,
     sessionId,
     device: device || 'desktop',
@@ -49,6 +60,7 @@ router.get('/stats', async (req, res) => {
       totalStars, totalPageViews, resumeDownloads,
       speedRunRecord, planetTime, peakHours,
       returnRate, linkedInClicks,
+      askStats,
     ] = await Promise.all([
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: d30 } }).then(r => r.length),
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: today } }).then(r => r.length),
@@ -68,6 +80,9 @@ router.get('/stats', async (req, res) => {
                 { case: { $eq: ['$planet', 'ventures'] }, then: '/ventures' },
                 { case: { $eq: ['$planet', 'thoughts'] }, then: '/thoughts' },
                 { case: { $eq: ['$planet', 'ask'] }, then: '/ask' },
+                // /architect is an alias route for /work — same persona
+                { case: { $eq: ['$planet', 'architect'] }, then: '/work' },
+                { case: { $eq: ['$planet', '/architect'] }, then: '/work' },
                 // Legacy IDs from before the rename
                 { case: { $eq: ['$planet', 'developer'] }, then: '/work' },
                 { case: { $eq: ['$planet', 'dating'] }, then: '/about' },
@@ -153,7 +168,31 @@ router.get('/stats', async (req, res) => {
       })(),
 
       AnalyticsEvent.countDocuments({ type: 'link_click', 'meta.label': 'LinkedIn' }),
+
+      // /ask chat activity: total conversations + total user questions exchanged
+      Conversation.aggregate([
+        { $project: {
+          total: { $size: '$messages' },
+          userCount: {
+            $size: {
+              $filter: { input: '$messages', as: 'm', cond: { $eq: ['$$m.role', 'user'] } },
+            },
+          },
+          today: { $cond: [{ $gte: ['$createdAt', today] }, 1, 0] },
+          week:  { $cond: [{ $gte: ['$createdAt', d7] }, 1, 0] },
+        }},
+        { $group: {
+          _id: null,
+          conversations: { $sum: 1 },
+          messages: { $sum: '$total' },
+          questions: { $sum: '$userCount' },
+          conversationsToday: { $sum: '$today' },
+          conversationsWeek:  { $sum: '$week' },
+        }},
+      ]),
     ]);
+
+    const ask = askStats[0] || {};
 
     const nightOwls = peakHours.filter(h => h._id >= 22 || h._id < 6).reduce((s, h) => s + h.count, 0);
     const earlyBirds = peakHours.filter(h => h._id >= 6 && h._id < 12).reduce((s, h) => s + h.count, 0);
@@ -172,6 +211,11 @@ router.get('/stats', async (req, res) => {
       nightOwls, earlyBirds, afternoon, evening,
       returnVisitorRate: returnRate,
       linkedInClicks, scrollDistanceKm,
+      askConversations: ask.conversations || 0,
+      askQuestions: ask.questions || 0,
+      askMessages: ask.messages || 0,
+      askConversationsToday: ask.conversationsToday || 0,
+      askConversationsWeek: ask.conversationsWeek || 0,
     });
   } catch (err) {
     res.status(500).json({ error: 'Stats unavailable' });

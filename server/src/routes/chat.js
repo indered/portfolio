@@ -241,6 +241,42 @@ router.post('/', chatLimiter, async (req, res) => {
     let fullReply = '';
     let toolOutputs = []; // structured payloads frontend can render as cards
 
+    // Tool result types where the frontend UI card already tells the full story.
+    // When every tool in this turn returns one of these, we skip the follow-up
+    // LLM call and emit a canned one-liner — saves 500ms-5s per booking flow.
+    const SELF_SUFFICIENT_TYPES = new Set([
+      'suggested_slots',
+      'single_slot_available',
+      'booking_confirmed',
+      'booking_pending',
+      'booking_rescheduled',
+      'booking_cancelled',
+      'message_saved',
+    ]);
+    const cannedReplyFor = (results) => {
+      const r = results[0];
+      if (!r || !r.ok) return null;
+      switch (r.type) {
+        case 'suggested_slots':
+          if (r.preferred_rejected) return "That time doesn't work. Pick one of these and share name + email.";
+          return 'Pick one and share name + email.';
+        case 'single_slot_available':
+          return 'That works. What name and email should I use?';
+        case 'booking_confirmed':
+          return `Booked. Invite is on the way to ${r.booking?.email || 'you'}.`;
+        case 'booking_pending':
+          return `Got it. The invite will land in ${r.booking?.email || 'your inbox'} shortly.`;
+        case 'booking_rescheduled':
+          return 'Rescheduled. Updated invite sent.';
+        case 'booking_cancelled':
+          return 'Cancelled.';
+        case 'message_saved':
+          return 'Saved. Mahesh will see it when he checks his inbox.';
+        default:
+          return null;
+      }
+    };
+
     const tStart = Date.now();
     let executedAnyTool = false;
     for (let iter = 0; iter < MAX_TOOL_ITERS; iter++) {
@@ -315,6 +351,29 @@ router.post('/', chatLimiter, async (req, res) => {
         }
 
         executedAnyTool = true;
+
+        // Short-circuit: if every tool this iter returned a self-sufficient UI
+        // card, skip the follow-up Groq call entirely. The card IS the answer;
+        // calling the LLM again just adds latency and risks a hallucinated
+        // recap. Emit a canned one-liner and close the stream.
+        const executedResults = toolOutputs.slice(-msg.tool_calls.length).map((t) => t.result);
+        const allSelfSufficient =
+          executedResults.length > 0 &&
+          executedResults.every((r) => r?.ok && SELF_SUFFICIENT_TYPES.has(r.type));
+
+        if (allSelfSufficient) {
+          const canned = cannedReplyFor(executedResults) || '';
+          fullReply = canned;
+          if (canned) {
+            const chunks = canned.match(/.{1,20}/gs) || [canned];
+            for (const c of chunks) {
+              res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
+            }
+          }
+          console.log(`[chat iter ${iter}] short-circuit: self-sufficient tool output, canned reply`);
+          break;
+        }
+
         // Loop again so the model can produce a natural-language answer using the tool result
         continue;
       }

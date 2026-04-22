@@ -79,6 +79,18 @@ export default function StatsSection() {
         </div>
       </section>
 
+      {/* Ask (Moore) conversations */}
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Ask — Chats with Moore</h3>
+        <div className={styles.statGrid}>
+          <Stat label="Total conversations" value={data.askConversations || 0} />
+          <Stat label="Questions asked" value={data.askQuestions || 0} sub="User messages across all chats" />
+          <Stat label="Messages exchanged" value={data.askMessages || 0} sub="User + Moore combined" />
+          <Stat label="Today" value={data.askConversationsToday || 0} />
+          <Stat label="This week" value={data.askConversationsWeek || 0} />
+        </div>
+      </section>
+
       {/* Planet popularity */}
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>Planet Clicks</h3>
