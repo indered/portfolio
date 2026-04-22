@@ -218,7 +218,7 @@ export default function Planet({ persona, config, onClick, onRegister, driftMode
       ctx.fill();
     }
 
-    if (['connect', 'fashion', 'ventures'].includes(persona.id)) {
+    if (['connect', 'ventures'].includes(persona.id)) {
       for (let band = 0; band < 8; band++) {
         const y = (band / 8) * size + Math.random() * 20;
         const bandColor = band % 2 === 0 ? lightColor : darkColor;

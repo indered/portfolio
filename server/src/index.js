@@ -12,7 +12,6 @@ import { processPendingBookings } from './services/bookingProcessor.js';
 import guestbookRoutes from './routes/guestbook.js';
 import tokenRoutes from './routes/tokens.js';
 import stravaRoutes from './routes/strava.js';
-import musicRoutes from './routes/music.js';
 import analyticsRoutes from './routes/analytics.js';
 import chatRoutes from './routes/chat.js';
 import messageRoutes from './routes/messages.js';
@@ -60,7 +59,6 @@ app.get('/api/health', (req, res) => {
 app.use('/api/guestbook', guestbookRoutes);
 app.use('/api/tokens', tokenRoutes);
 app.use('/api/strava', stravaRoutes);
-app.use('/api/music', musicRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/messages', messageRoutes); // POST for sending, GET for inbox

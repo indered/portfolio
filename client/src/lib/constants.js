@@ -313,58 +313,6 @@ export const RUNNING_STATS = {
   ],
 };
 
-// --- Startup Info (Blockchain & AI Persona) ---
-export const STARTUP_INFO = {
-  name: 'Arc Protocol',
-  tagline: 'Neural infrastructure meets decentralised energy. The Hinton x Tesla thesis.',
-  description: "Arc Protocol is building the infrastructure layer where neural computation meets on-chain energy markets. If Hinton gave AI its architecture and Tesla gave us distributed energy, Arc Protocol is the protocol that lets them trade with each other.",
-  status: 'Pre-seed · Building in DIFC, Dubai',
-  focus: ['Decentralised AI Compute', 'On-chain Energy Trading', 'Neural Inference Markets'],
-  vision: "The next wave of AI won't run in a data centre. It'll run on Arc.",
-  ventures: [
-    {
-      name: 'Arc Protocol',
-      type: 'Deep Tech · DIFC',
-      status: 'Active',
-      description: 'Decentralised AI compute meets on-chain energy markets.',
-      year: '2024',
-    },
-    {
-      name: 'Noumena Platform',
-      type: 'SaaS · Freelance Economy',
-      status: 'Exited',
-      description: 'Global social platform for freelancers. Apollo Federation, AWS SNS, token economy.',
-      year: '2022',
-    },
-  ],
-};
-
-// --- Music Playlist (Music Persona) ---
-export const MUSIC_PLAYLIST = {
-  name: "Mahesh's Quantum Playlist",
-  subtitle: 'Frequencies that fuel the multiverse',
-  tracks: [
-    { title: 'Starboy', artist: 'The Weeknd', album: 'Starboy', duration: '3:50' },
-    { title: 'Blinding Lights', artist: 'The Weeknd', album: 'After Hours', duration: '3:20' },
-    { title: 'Levitating', artist: 'Dua Lipa', album: 'Future Nostalgia', duration: '3:23' },
-    { title: 'Heat Waves', artist: 'Glass Animals', album: 'Dreamland', duration: '3:59' },
-    { title: 'Save Your Tears', artist: 'The Weeknd', album: 'After Hours', duration: '3:35' },
-    { title: 'Peaches', artist: 'Justin Bieber', album: 'Justice', duration: '3:18' },
-    { title: 'Stay', artist: 'The Kid LAROI & Justin Bieber', album: 'F*CK LOVE 3', duration: '2:21' },
-    { title: 'As It Was', artist: 'Harry Styles', album: "Harry's House", duration: '2:47' },
-  ],
-};
-
-// --- Fashion Items (Fashion Persona) ---
-export const FASHION_ITEMS = [
-  { id: 1, title: 'Street Cosmos', category: 'Streetwear', image: '/images/fashion/placeholder-1.jpg', description: 'Urban meets universe' },
-  { id: 2, title: 'Formal Nebula', category: 'Formal', image: '/images/fashion/placeholder-2.jpg', description: 'Suited for the multiverse' },
-  { id: 3, title: 'Athletic Quasar', category: 'Athletic', image: '/images/fashion/placeholder-3.jpg', description: 'Performance at light speed' },
-  { id: 4, title: 'Casual Entropy', category: 'Casual', image: '/images/fashion/placeholder-4.jpg', description: 'Relaxed state of matter' },
-  { id: 5, title: 'Winter Solstice', category: 'Winter', image: '/images/fashion/placeholder-5.jpg', description: 'Cold never looked so hot' },
-  { id: 6, title: 'Summer Singularity', category: 'Summer', image: '/images/fashion/placeholder-6.jpg', description: 'Where heat meets style' },
-];
-
 // --- About / Hero ---
 export const ABOUT = {
   name: 'Mahesh Inder',
@@ -388,7 +336,6 @@ export const TOKEN_CONFIG = {
     LEAVE_SIGNATURE: { tokens: 5, label: 'Left a signature' },
     CLICK_PLANET: { tokens: 1, label: 'Clicked a planet' },
     VIEW_PROJECT: { tokens: 1, label: 'Viewed a project' },
-    PLAY_MUSIC: { tokens: 1, label: 'Played music' },
     DISCOVER_STAR: { tokens: 5, label: 'Found the easter egg' },
   },
   causes: [
