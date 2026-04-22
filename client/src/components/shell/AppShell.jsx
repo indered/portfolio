@@ -356,7 +356,23 @@ export default function AppShell({ directPersona = null }) {
 
       {/* Black hole intro */}
       {view === 'intro' && (
-        <PaperBurnIntro onComplete={handleIntroComplete} />
+        <>
+          <PaperBurnIntro onComplete={handleIntroComplete} />
+          <motion.button
+            className={styles.skipIntro}
+            onClick={handleIntroComplete}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            aria-label="Skip to solar system"
+          >
+            Skip to solar system
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="5 4 15 12 5 20 5 4" />
+              <line x1="19" y1="5" x2="19" y2="19" />
+            </svg>
+          </motion.button>
+        </>
       )}
 
       {/* 3D Solar System — not mounted during intro (prevents WebGL flash);

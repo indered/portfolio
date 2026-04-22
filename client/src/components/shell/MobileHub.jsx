@@ -2,7 +2,6 @@ import { motion } from 'motion/react';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS } from '../../lib/constants';
 import styles from './MobileHub.module.scss';
 
-// Use the curated persona list (excludes hidden personas like music)
 const personaList = PERSONA_IDS.map(id => PERSONAS[id]);
 
 // Same sphere gradient helper as PlanetDock — consistent 3-D planet look

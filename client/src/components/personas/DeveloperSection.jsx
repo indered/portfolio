@@ -103,6 +103,15 @@ export default function DeveloperSection() {
         <p>Worked in finance, e-commerce, social platforms and AI.</p>
       </div>
 
+      {/* ── AVAILABILITY BADGES ── */}
+      <div className={styles.availability}>
+        <span className={styles.availBadge}>
+          <span className={styles.availDot} aria-hidden="true" />
+          Available · 1 week notice
+        </span>
+        <span className={styles.availBadge}>Dubai, UAE</span>
+      </div>
+
       {/* ── DOWNLOADS ── */}
       <div className={styles.downloads}>
         <a href="/mahesh-inder-resume.pdf" download="Mahesh_Inder_Resume.pdf" className={styles.dlBtn} onClick={trackResumeDownload}>

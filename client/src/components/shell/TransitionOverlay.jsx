@@ -20,7 +20,6 @@ const FLAVOR_TEXTS = {
   runner: 'Km 32. Mind takes over.',
   ventures: 'Replenishing the cosmos...',
   thoughts: 'Entering the silence of deep space...',
-  music: 'Dropping the beat...',
 };
 
 export default function TransitionOverlay({ active, planetId }) {

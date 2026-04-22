@@ -12,6 +12,29 @@ const BOOKER_TIMEZONE =
     : 'UTC';
 
 const BOOKING_CHIP = 'Book a 30-min call with Mahesh';
+
+// Render free tier spins down after 15 min idle. Cold boots take 8-15s.
+// One silent retry on 5xx covers ~all transient failures without bothering the user.
+async function fetchWithRetry(url, opts = {}, { retries = 1, backoffMs = 500 } = {}) {
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, opts);
+      if (res.ok || res.status < 500) return res;
+      // 5xx — retry once after backoff
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, backoffMs));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      lastErr = err;
+      if (err.name === 'AbortError' || attempt === retries) throw err;
+      await new Promise((r) => setTimeout(r, backoffMs));
+    }
+  }
+  throw lastErr;
+}
 const SUGGESTIONS = [
   'What does he build at Emirates NBD?',
   'Has he led a team or is he IC only?',
@@ -51,9 +74,11 @@ export default function AskSection() {
   });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [wakingUp, setWakingUp] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [copied, setCopied] = useState(false);
   const abortRef = useRef(null);
+  const wakeTimerRef = useRef(null);
   useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
@@ -99,8 +124,9 @@ export default function AskSection() {
     if (loading) return;
     setMessages(prev => [...prev, { role: 'user', content: BOOKING_CHIP, time: Date.now() }]);
     setLoading(true);
+    wakeTimerRef.current = setTimeout(() => setWakingUp(true), 2500);
     try {
-      const res = await fetch(`/api/booking/slots?tz=${encodeURIComponent(BOOKER_TIMEZONE)}`);
+      const res = await fetchWithRetry(`/api/booking/slots?tz=${encodeURIComponent(BOOKER_TIMEZONE)}`);
       const data = await res.json();
       if (!data?.ok) throw new Error(data?.error || 'failed');
       const toolOutput = { tool: 'check_availability', result: data };
@@ -117,6 +143,8 @@ export default function AskSection() {
         time: Date.now(),
       }]);
     }
+    if (wakeTimerRef.current) { clearTimeout(wakeTimerRef.current); wakeTimerRef.current = null; }
+    setWakingUp(false);
     setLoading(false);
     inputRef.current?.focus();
   }, [loading]);
@@ -132,10 +160,11 @@ export default function AskSection() {
     setMessages(prev => [...prev, { role: 'user', content: msg, time: Date.now() }]);
     setLoading(true);
     setStreamingText('');
+    wakeTimerRef.current = setTimeout(() => setWakingUp(true), 2500);
     const accumulatedToolOutputs = [];
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetchWithRetry('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,6 +180,8 @@ export default function AskSection() {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setMessages(prev => [...prev, { role: 'assistant', content: data.error || 'Something went wrong.', time: Date.now() }]);
+        if (wakeTimerRef.current) { clearTimeout(wakeTimerRef.current); wakeTimerRef.current = null; }
+        setWakingUp(false);
         setLoading(false);
         inputRef.current?.focus();
         return;
@@ -175,6 +206,8 @@ export default function AskSection() {
               const { token, error, toolOutput } = JSON.parse(payload);
               if (error) { fullReply = error; break; }
               if (token) {
+                if (wakeTimerRef.current) { clearTimeout(wakeTimerRef.current); wakeTimerRef.current = null; }
+                if (wakingUp) setWakingUp(false);
                 fullReply += token;
                 setStreamingText(fullReply);
               }
@@ -199,6 +232,8 @@ export default function AskSection() {
       }
       setStreamingText('');
     }
+    if (wakeTimerRef.current) { clearTimeout(wakeTimerRef.current); wakeTimerRef.current = null; }
+    setWakingUp(false);
     setLoading(false);
     inputRef.current?.focus();
   }, [input, loading, messages]);
@@ -322,6 +357,9 @@ export default function AskSection() {
                       <span className={styles.thinkDot} style={{ '--i': 1 }} />
                       <span className={styles.thinkDot} style={{ '--i': 2 }} />
                     </span>
+                    {wakingUp && (
+                      <span className={styles.wakingUp}>Waking up. One sec.</span>
+                    )}
                   </div>
                 </div>
               </div>

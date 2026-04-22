@@ -10,14 +10,15 @@ $accent: var(--persona-color);
   background: $bg;
   color: $black;
   min-height: 100%;
+  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 2rem);
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 2.5rem);
 }
 
 .letter {
-  max-width: 560px;
+  max-width: 680px;
   width: 100%;
 
   p {

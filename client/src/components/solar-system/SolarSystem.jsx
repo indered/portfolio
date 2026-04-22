@@ -15,7 +15,6 @@ import CosmicBottle from './CosmicBottle';
 import { PERSONAS, PLANET_CONFIG, PERSONA_IDS, DRIFT_POSITIONS } from '../../lib/constants';
 import styles from './SolarSystem.module.scss';
 
-// Use curated persona list (excludes hidden personas like music)
 const personaList = PERSONA_IDS.map(id => PERSONAS[id]);
 
 // ── Star note overlay — transparent glass, neon text, rendered OUTSIDE Canvas ──

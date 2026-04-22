@@ -6,7 +6,6 @@ import InboxButton from './components/layout/InboxButton';
 import AppShell from './components/shell/AppShell';
 
 const TokenWallet = lazy(() => import('./components/tokens/TokenWallet'));
-const BrandSection = lazy(() => import('./components/personas/BrandSection'));
 const StatsSection = lazy(() => import('./components/personas/StatsSection'));
 const LiveSection = lazy(() => import('./components/personas/LiveSection'));
 const CursorShowcase = lazy(() => import('./components/layout/CursorShowcase'));
@@ -37,7 +36,6 @@ function App() {
           {PERSONA_ROUTES.map(({ path, persona }) => (
             <Route key={path} path={path} element={<AppShell directPersona={persona} />} />
           ))}
-          <Route path="/brand" element={<Suspense fallback={null}><BrandSection /></Suspense>} />
           <Route path="/stats" element={<Suspense fallback={null}><StatsSection /></Suspense>} />
           <Route path="/live" element={<Suspense fallback={null}><LiveSection /></Suspense>} />
           <Route path="/cursors/:id?" element={<Suspense fallback={null}><CursorShowcase /></Suspense>} />

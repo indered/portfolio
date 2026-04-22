@@ -253,22 +253,6 @@ export default function Planet({ persona, config, onClick, onRegister, driftMode
       }
     }
 
-    if (persona.id === 'music') {
-      for (let i = 0; i < 20; i++) {
-        const y = Math.random() * size;
-        ctx.strokeStyle = `rgba(255, 220, 150, ${0.1 + Math.random() * 0.15})`;
-        ctx.lineWidth = 3 + Math.random() * 5;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.bezierCurveTo(
-          size * 0.3, y + (Math.random() - 0.5) * 30,
-          size * 0.7, y + (Math.random() - 0.5) * 30,
-          size, y + (Math.random() - 0.5) * 20
-        );
-        ctx.stroke();
-      }
-    }
-
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { trackResumeDownload } from '../../hooks/useAnalytics';
 import styles from './HubMasthead.module.scss';
 
 // Module-level flag — accurate regardless of React render batching timing
@@ -151,7 +152,10 @@ export default function HubMasthead({ visible }) {
                 alt="Mahesh Inder"
                 className={styles.logoImg}
               />
-              <span className={styles.logoSub}>Full Stack · Dubai</span>
+              <span className={styles.logoSub}>
+                <span className={styles.logoSubDot} aria-hidden="true" />
+                Full Stack AI Engineer · Dubai
+              </span>
             </div>
 
             {/* Paperwork button */}
@@ -191,7 +195,7 @@ export default function HubMasthead({ visible }) {
                     href="/mahesh-inder-resume.pdf"
                     download="Mahesh_Inder_Resume.pdf"
                     className={styles.menuItem}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => { trackResumeDownload(); setMenuOpen(false); }}
                   >
                     <IconDownload />
                     Resume
@@ -211,6 +215,7 @@ export default function HubMasthead({ visible }) {
           </motion.div>
         )}
       </AnimatePresence>
+
     </>
   );
 }
