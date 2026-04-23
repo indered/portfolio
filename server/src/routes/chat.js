@@ -419,7 +419,12 @@ router.post('/', chatLimiter, async (req, res) => {
 
     // Persist conversation (skip trusted devices)
     if (sessionId && fullReply && !trustedDevice) {
-      const ip = req.ip || req.connection?.remoteAddress || 'unknown';
+      // Behind Cloudflare → Render, x-forwarded-for carries the real client IP.
+      // req.ip alone returns the proxy hop.
+      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+        || req.ip
+        || req.connection?.remoteAddress
+        || 'unknown';
       const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
       try {
         await Conversation.findOneAndUpdate(
