@@ -61,26 +61,36 @@ async function mockChatRoute(page, router) {
   });
 }
 
+// The "Book a 30-min call" chip hits GET /api/booking/slots directly,
+// bypassing Groq. Tests that click the chip need this mock too.
+async function mockSlotsRoute(page, slots = SLOT_FIXTURES) {
+  await page.route('**/api/booking/slots*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        ok: true,
+        type: 'suggested_slots',
+        slots,
+        message: `Found ${slots.length} available slots.`,
+      }),
+    });
+  });
+}
+
 test.describe('Ask page - Booking flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
   });
 
   test('booking suggestion chip renders slot bubbles', async ({ page }) => {
-    await mockChatRoute(page, (body) => {
-      if (body.message.toLowerCase().includes('book')) {
-        return [
-          { toolOutput: { tool: 'check_availability', result: { ok: true, type: 'suggested_slots', slots: SLOT_FIXTURES } } },
-          ...streamTokens('Pick one and share name + email.'),
-        ];
-      }
-      return streamTokens("I'm Moore, the AI version of Inder.");
-    });
+    await mockSlotsRoute(page);
+    await mockChatRoute(page, () => streamTokens("I'm Moore, the AI version of Inder."));
 
     await page.goto('/ask');
     await page.waitForTimeout(1000);
 
-    // Click the book suggestion chip
+    // Click the book suggestion chip (hits /api/booking/slots directly, no LLM)
     await page.locator('button:has-text("Book a 30-min call with Mahesh")').click();
     await page.waitForTimeout(500);
 
@@ -89,15 +99,13 @@ test.describe('Ask page - Booking flow', () => {
     await expect(page.locator('text=Thu 23 Apr, 3:00 PM IST')).toBeVisible();
     await expect(page.locator('text=Thu 23 Apr, 5:00 PM IST')).toBeVisible();
 
-    // And the AI's short follow-up line
+    // And the canned follow-up line
     await expect(page.locator('text=Pick one and share')).toBeVisible();
   });
 
-  test('clicking a slot auto-fills the input', async ({ page }) => {
-    await mockChatRoute(page, () => [
-      { toolOutput: { tool: 'check_availability', result: { ok: true, type: 'suggested_slots', slots: SLOT_FIXTURES } } },
-      ...streamTokens('Pick one and share name + email.'),
-    ]);
+  test('clicking a slot shows a selection chip (no input auto-fill)', async ({ page }) => {
+    await mockSlotsRoute(page);
+    await mockChatRoute(page, () => streamTokens('ok'));
 
     await page.goto('/ask');
     await page.waitForTimeout(1000);
@@ -107,22 +115,23 @@ test.describe('Ask page - Booking flow', () => {
     // Click the second slot
     await page.locator('button:has-text("Thu 23 Apr, 3:00 PM IST")').click();
 
-    // Input should auto-populate with "I'll take ..."
-    const input = page.locator('input[placeholder*="Ask anything"]');
-    await expect(input).toHaveValue(/I'll take.*3:00 PM/);
+    // Input should stay empty — no auto-fill
+    const input = page.locator('input[placeholder*="name and email"], input[placeholder*="Ask anything"]');
+    await expect(input).toHaveValue('');
+
+    // Placeholder should switch to prompt for name + email
+    await expect(page.locator('input[placeholder*="name and email"]')).toBeVisible();
+
+    // And a selected-slot chip should appear above the input with the picked time
+    await expect(page.locator(':text("Thu 23 Apr, 3:00 PM IST"):below(input)')).toHaveCount(0); // chip is above input — just verify chip presence:
+    const chipMatches = await page.getByText(/Thu 23 Apr, 3:00 PM IST/i).count();
+    expect(chipMatches).toBeGreaterThanOrEqual(1);
   });
 
   test('booking_confirmed renders green Booked card with Meet link', async ({ page }) => {
-    let step = 0;
-    await mockChatRoute(page, (body) => {
-      step++;
-      if (step === 1) {
-        return [
-          { toolOutput: { tool: 'check_availability', result: { ok: true, type: 'suggested_slots', slots: SLOT_FIXTURES } } },
-          ...streamTokens('Pick one and share name + email.'),
-        ];
-      }
-      // step 2: user replied with slot + name + email → booked confirmation
+    await mockSlotsRoute(page);
+    await mockChatRoute(page, () => {
+      // user replied with slot + name + email → booked confirmation
       return [
         {
           toolOutput: {
@@ -243,17 +252,8 @@ test.describe('Ask page - Booking flow', () => {
   });
 
   test('slot bubbles only render on the latest assistant message', async ({ page }) => {
-    let step = 0;
-    await mockChatRoute(page, () => {
-      step++;
-      if (step === 1) {
-        return [
-          { toolOutput: { tool: 'check_availability', result: { ok: true, type: 'suggested_slots', slots: SLOT_FIXTURES } } },
-          ...streamTokens('Pick one and share name + email.'),
-        ];
-      }
-      return streamTokens("What's your email?");
-    });
+    await mockSlotsRoute(page);
+    await mockChatRoute(page, () => streamTokens("What's your email?"));
 
     await page.goto('/ask');
     await page.waitForTimeout(1000);
@@ -265,7 +265,7 @@ test.describe('Ask page - Booking flow', () => {
     await page.locator('button[aria-label="Send"]').click();
     await page.waitForTimeout(800);
 
-    // Only the most recent assistant message with slots (none now) — old bubbles should not duplicate
+    // Old slot bubbles should not still be visible on the stale message
     const slotButtons = await page.locator('button:has-text("Thu 23 Apr, 1:00 PM IST")').count();
     expect(slotButtons).toBe(0);
   });

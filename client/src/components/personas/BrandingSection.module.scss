@@ -1,0 +1,378 @@
+.page {
+  min-height: 100vh;
+  background: #fafaf8;
+  color: #111;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 5vw, 2.5rem) 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.backBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 999px;
+  color: #5f6368;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    background: #f8f9fa;
+    border-color: #dadce0;
+    color: #111;
+  }
+}
+
+.titleBlock { display: flex; flex-direction: column; gap: 4px; }
+
+.title {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.sub {
+  font-size: 1rem;
+  color: #5f6368;
+  margin: 0;
+}
+
+// ── Logo grid ─────────────────────────────────────────────────────────────
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+}
+
+.preview {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  img {
+    max-width: 60%;
+    max-height: 70%;
+    object-fit: contain;
+  }
+}
+
+.meta {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTitle {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.cardSub {
+  font-size: 0.82rem;
+  color: #5f6368;
+  margin: 0 0 12px;
+}
+
+.fileRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fileBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px;
+  background: #f0f4f9;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  color: #1a73e8;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+
+  svg { opacity: 0.75; }
+
+  &:hover {
+    background: #e8f0fe;
+    border-color: #d2e3fc;
+    color: #1558d6;
+
+    svg { opacity: 1; }
+  }
+}
+
+// ── Email signature ────────────────────────────────────────────────────────
+
+.signatureSection {
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.sectionSub {
+  color: #5f6368;
+  font-size: 0.9rem;
+  margin: -0.5rem 0 1.25rem;
+}
+
+.signatureCard {
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.signaturePreview {
+  background: #f8f9fa;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-bottom: 1px solid #e8eaed;
+}
+
+.mailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: #5f6368;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #dadce0;
+  margin-bottom: 14px;
+}
+
+.mailBody {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 18px;
+
+  p {
+    margin: 0 0 10px;
+    color: #202124;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+.renderedSignature {
+  margin-top: 14px;
+
+  // Protect the rendered email HTML from leaking module styles
+  table { border-collapse: collapse; }
+}
+
+.signatureActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.primaryCopy {
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #4285f4 0%, #9b72cb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.18);
+
+  &:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(66, 133, 244, 0.28);
+  }
+  &:active { transform: translateY(0); }
+}
+
+.secondaryCopy {
+  padding: 9px 16px;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+  color: #3c4043;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    background: #f1f3f4;
+    border-color: #dadce0;
+    color: #1f1f1f;
+  }
+}
+
+.howTo {
+  padding: 12px 18px 16px;
+  font-size: 0.85rem;
+  color: #3c4043;
+
+  summary {
+    cursor: pointer;
+    color: #1a73e8;
+    font-weight: 500;
+    padding: 4px 0;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+      content: '▸';
+      display: inline-block;
+      margin-right: 6px;
+      transition: transform 0.18s ease;
+      color: #9aa0a6;
+    }
+  }
+
+  &[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  ol {
+    margin: 10px 0 0;
+    padding-left: 22px;
+    color: #5f6368;
+    line-height: 1.6;
+
+    li { margin-bottom: 4px; }
+  }
+}
+
+// ── Colors ────────────────────────────────────────────────────────────────
+
+.colorsSection {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 14px;
+}
+
+.swatchChip {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.swatchMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.swatchName {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.swatchHex {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: #1a73e8;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  width: fit-content;
+
+  &:hover { text-decoration: underline; }
+}
+
+.swatchUsage {
+  font-size: 0.75rem;
+  color: #5f6368;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────
+
+.footer {
+  padding-top: 1.5rem;
+  border-top: 1px solid #e8eaed;
+  text-align: center;
+  color: #5f6368;
+  font-size: 0.85rem;
+
+  a {
+    color: #1a73e8;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  p { margin: 0; }
+}

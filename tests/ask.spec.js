@@ -2,41 +2,51 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Ask (/ask) Page', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.clear());
     await page.goto('/ask');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1500);
   });
 
-  test('page loads with heading and subtitle', async ({ page }) => {
-    await expect(page.locator('text=Ask me anything')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('text=AI that actually knows me')).toBeVisible();
+  test('hero title renders with gradient Hello and follow-up', async ({ page }) => {
+    const h1 = page.locator('h1').first();
+    await expect(h1).toContainText('Hello.');
+    await expect(h1).toContainText('Ask anything about Mahesh');
   });
 
-  test('persona app is mounted with data-persona ask', async ({ page }) => {
-    const personaApp = page.locator('[data-persona="ask"]');
-    await expect(personaApp).toBeVisible({ timeout: 5000 });
+  test('suggestion chips are visible', async ({ page }) => {
+    const suggestions = [
+      'What does he build at Emirates NBD?',
+      'Has he led a team or is he IC only?',
+      'How did he go from clubs to running half marathons?',
+      'Book a 30-min call with Mahesh',
+    ];
+    for (const text of suggestions) {
+      await expect(page.locator(`button:has-text("${text}")`)).toBeVisible({ timeout: 4000 });
+    }
   });
 
-  test('suggestion buttons are visible', async ({ page }) => {
-    await expect(page.locator('text=What does Mahesh do?')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('text=Tell me about his projects')).toBeVisible();
-    await expect(page.locator('text=What tech stack does he use?')).toBeVisible();
-  });
-
-  test('chat input is visible and focusable', async ({ page }) => {
-    const input = page.locator('input[placeholder="Type your question..."]');
-    await input.scrollIntoViewIfNeeded();
-    await expect(input).toBeVisible({ timeout: 10000 });
+  test('chat input is visible, focusable and accepts text', async ({ page }) => {
+    const input = page.locator('input[placeholder*="Ask anything about"]');
+    await expect(input).toBeVisible({ timeout: 6000 });
     await input.fill('Hello');
     await expect(input).toHaveValue('Hello');
   });
 
-  test('send button is present', async ({ page }) => {
-    const sendBtn = page.locator('button svg');
-    await expect(sendBtn.last()).toBeVisible({ timeout: 5000 });
+  test('send button is present and disabled on empty input', async ({ page }) => {
+    const sendBtn = page.locator('button[aria-label="Send"]');
+    await expect(sendBtn).toBeVisible({ timeout: 6000 });
+    await expect(sendBtn).toBeDisabled();
   });
 
-  test('back button is present', async ({ page }) => {
-    const backBtn = page.locator('button').filter({ hasText: /Solar System/ });
-    await expect(backBtn).toBeVisible({ timeout: 5000 });
+  test('back button returns to Solar System', async ({ page }) => {
+    const backBtn = page.locator('button[aria-label="Back to Solar System"]');
+    await expect(backBtn).toBeVisible();
+    await expect(backBtn).toContainText('Solar System');
+  });
+
+  test('resume download link exists in footer', async ({ page }) => {
+    const resumeLink = page.locator('a:has-text("Resume")');
+    await expect(resumeLink).toBeVisible();
+    await expect(resumeLink).toHaveAttribute('href', /resume\.pdf$/);
   });
 });

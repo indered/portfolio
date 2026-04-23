@@ -48,7 +48,8 @@ test.describe('SEO Meta Tags', () => {
   });
 
   test('favicon link exists', async ({ page }) => {
-    const favicon = page.locator('link[rel="icon"]');
+    // Multiple favicons (svg + png) so grab the first
+    const favicon = page.locator('link[rel="icon"]').first();
     await expect(favicon).toHaveAttribute('href', /favicon/);
   });
 

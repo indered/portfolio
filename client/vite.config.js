@@ -8,6 +8,8 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
+        // Backend PORT comes from server/.env (default 5001).
+        // macOS ControlCenter owns :5000, so we run on 5001 locally.
         target: 'http://localhost:5001',
         changeOrigin: true,
       },

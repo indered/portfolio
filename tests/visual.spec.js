@@ -31,11 +31,19 @@ test.describe('Visual Regression', () => {
   });
 
   test('work mobile', async ({ page }) => {
+    test.setTimeout(60000);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 393, height: 852 });
     await page.goto('/work');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
+    await page.addStyleTag({
+      content: `*, *::before, *::after { animation: none !important; transition: none !important; }`,
+    });
     await expect(page).toHaveScreenshot('work-mobile.png', {
       maxDiffPixelRatio: 0.1,
+      timeout: 20000,
+      animations: 'disabled',
+      mask: [page.locator('[class*="availDot"]')],
     });
   });
 });

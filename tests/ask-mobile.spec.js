@@ -34,7 +34,7 @@ test.describe('Ask page - Mobile UI', () => {
       'What does he build at Emirates NBD?',
       'Has he led a team or is he IC only?',
       'How did he go from clubs to running half marathons?',
-      'Why did he stop believing in god?',
+      'Book a 30-min call with Mahesh',
     ];
     for (const text of suggestions) {
       const chip = page.locator(`button:has-text("${text}")`);
@@ -145,11 +145,10 @@ test.describe('Ask page - Desktop', () => {
     await page.waitForTimeout(1500);
   });
 
-  test('MessageForm is visible on desktop', async ({ page }) => {
-    await page.locator('input[placeholder="Your name"]').scrollIntoViewIfNeeded();
-    await expect(page.locator('input[placeholder="Your name"]')).toBeVisible();
-    await expect(page.locator('input[placeholder="Your email"]')).toBeVisible();
-    await expect(page.locator('textarea[placeholder="Your message"]')).toBeVisible();
+  test('MessageForm is no longer on /ask (Moore handles messaging via leave_message tool)', async ({ page }) => {
+    await expect(page.locator('input[placeholder="Your name"]')).toHaveCount(0);
+    await expect(page.locator('input[placeholder="Your email"]')).toHaveCount(0);
+    await expect(page.locator('textarea[placeholder="Your message"]')).toHaveCount(0);
   });
 
   test('back button shows Solar System text on desktop', async ({ page }) => {

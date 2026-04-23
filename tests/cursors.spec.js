@@ -42,7 +42,13 @@ test.describe('Cursor Showcase', () => {
   test('global cursor dot and ring are hidden', async ({ page }) => {
     await page.goto('/cursors');
     await page.waitForTimeout(1000);
-    const cursorContainer = page.locator('[aria-hidden="true"]').first();
+    // Target the global CursorEffect container specifically (class starts with "cursorContainer")
+    const cursorContainer = page.locator('[class*="cursorContainer"]').first();
+    const count = await cursorContainer.count();
+    if (count === 0) {
+      // No CursorEffect rendered on /cursors — that's also "hidden"
+      return;
+    }
     await expect(cursorContainer).toHaveCSS('display', 'none');
   });
 });

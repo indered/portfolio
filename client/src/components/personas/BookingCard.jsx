@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import styles from './BookingCard.module.scss';
 
-export default function BookingCard({ toolOutput, onSlotPick }) {
-  const [picked, setPicked] = useState(null);
+export default function BookingCard({ toolOutput, onSlotPick, selectedStartUtc }) {
+  const [internalPicked, setInternalPicked] = useState(null);
+  // External selection (from parent state) wins so slot stays highlighted even
+  // across BookingCard re-renders. Falls back to internal state.
+  const picked = selectedStartUtc || internalPicked;
   const { tool, result } = toolOutput || {};
 
   if (!result) return null;
@@ -35,8 +38,7 @@ export default function BookingCard({ toolOutput, onSlotPick }) {
             <p className={styles.cardHeader}>That time works.</p>
             <button
               className={`${styles.slot} ${picked === result.slot.startUtc ? styles.slotPicked : ''}`}
-              onClick={() => { setPicked(result.slot.startUtc); onSlotPick?.(result.slot); }}
-              disabled={!!picked}
+              onClick={() => { setInternalPicked(result.slot.startUtc); onSlotPick?.(result.slot); }}
             >
               <span className={styles.slotPrimary}>{result.slot.hostDisplay} IST</span>
               {!result.slot.sameZone && (
@@ -56,8 +58,7 @@ export default function BookingCard({ toolOutput, onSlotPick }) {
                 <button
                   key={i}
                   className={`${styles.slot} ${picked === slot.startUtc ? styles.slotPicked : ''}`}
-                  onClick={() => { setPicked(slot.startUtc); onSlotPick?.(slot); }}
-                  disabled={!!picked}
+                  onClick={() => { setInternalPicked(slot.startUtc); onSlotPick?.(slot); }}
                 >
                   <span className={styles.slotPrimary}>{slot.hostDisplay} IST</span>
                   {!slot.sameZone && (

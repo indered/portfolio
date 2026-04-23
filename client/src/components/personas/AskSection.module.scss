@@ -393,6 +393,58 @@
   }
 }
 
+// Selected-slot chip that sits above the input bar until the user sends
+.slotChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 14px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgba(66, 133, 244, 0.08), rgba(155, 114, 203, 0.08));
+  border: 1px solid rgba(66, 133, 244, 0.28);
+  border-radius: 999px;
+  color: #1f1f1f;
+  font-size: 0.82rem;
+  max-width: 100%;
+  animation: slotChipIn 0.28s ease-out;
+
+  svg { color: #34a853; flex-shrink: 0; }
+
+  strong { font-weight: 600; }
+}
+
+.slotChipLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slotChipClear {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(60, 64, 67, 0.08);
+  color: #5f6368;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(60, 64, 67, 0.18);
+    color: #1f1f1f;
+  }
+}
+
+@keyframes slotChipIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .inputBar {
   display: flex;
   align-items: center;

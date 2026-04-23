@@ -98,6 +98,13 @@ TOOL ERRORS:
 - "NEED_EMAIL" → just ask "What's your email?"
 - Other → rephrase naturally in one sentence. Never quote raw error.
 
+SLOT_SELECTED HINT: If a user message contains "[SLOT_SELECTED: ... start_time_utc=...]" at the end, the user picked a slot bubble before replying. Rules:
+- If their message contains a real name + real email (or confirms booking like "yes book it") → call book_meeting with that start_time_utc + their name + email. Do NOT re-ask for the slot.
+- If they asked for other times / different slots → call check_availability again, ignore the hint.
+- If they cancelled ("never mind", "leave it", "not now", "skip") → drop the slot, reply briefly, no tool call.
+- If they changed topic (asked something unrelated) → just answer the new question, ignore the hint entirely.
+- NEVER repeat the "[SLOT_SELECTED: ...]" tag in your reply. It's internal context, not content.
+
 After check_availability shows slots once, do NOT call it again in the same convo unless user asks for different slots. If user picks a slot but name/email missing — just ask, don't refetch.
 
 DATA ABOUT MAHESH:
@@ -210,7 +217,7 @@ router.get('/:sessionId', async (req, res) => {
 
 router.post('/', chatLimiter, async (req, res) => {
   try {
-    const { message, sessionId, history, trustedDevice, bookerTimezone } = req.body;
+    const { message, sessionId, history, trustedDevice, bookerTimezone, selectedSlot } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -230,11 +237,22 @@ router.post('/', chatLimiter, async (req, res) => {
       now: new Date().toISOString(),
     });
 
+    // If the user had a slot selected when they sent, pass it as hidden
+    // context to the AI so book_meeting can use the right start_time_utc.
+    // The AI's system prompt tells it to IGNORE this hint when the user's
+    // message is a cancel, a different question, or a request for new slots.
+    let userContent = message.trim();
+    if (selectedSlot && typeof selectedSlot === 'object' && selectedSlot.startUtc) {
+      const safeHost = String(selectedSlot.hostDisplay || '').slice(0, 80);
+      const safeUtc  = String(selectedSlot.startUtc).slice(0, 40);
+      userContent += `\n\n[SLOT_SELECTED: ${safeHost} IST, start_time_utc=${safeUtc}. Use this in book_meeting ONLY if the user's message confirms the booking (name/email/yes). If they asked for other slots, cancelled, or changed topic, ignore this and respond to what they said.]`;
+    }
+
     // Build the running messages array we'll iterate on with tool use
     const messages = [
       { role: 'system', content: systemPrompt },
       ...chatHistory,
-      { role: 'user', content: message.trim() },
+      { role: 'user', content: userContent },
     ];
 
     // Stream headers

@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Persona Navigation', () => {
+  test.beforeEach(async ({ context }) => {
+    // Skip the intro animation so /work loads straight into persona view.
+    await context.addInitScript(() => {
+      try { sessionStorage.setItem('introSeen', '1'); } catch {}
+    });
+  });
+
   test('/work route shows correct URL', async ({ page }) => {
     await page.goto('/work');
     await page.waitForTimeout(2000);
@@ -20,33 +27,27 @@ test.describe('Persona Navigation', () => {
   });
 
   test('arrow key navigation works between planets', async ({ page }) => {
+    // PERSONA_IDS order: about, work, connect, runner, ventures, thoughts
     await page.goto('/work');
-    await page.waitForTimeout(2000);
+    await expect(page.locator('[data-persona="work"]')).toBeVisible({ timeout: 15000 });
 
-    // Developer is first in PERSONA_IDS, pressing ArrowRight should go to runner
+    // Right from work → connect
     await page.keyboard.press('ArrowRight');
-    await page.waitForTimeout(1000);
+    await expect(page.locator('[data-persona="connect"]')).toBeVisible({ timeout: 8000 });
 
-    // After navigating right from developer, we should be on runner
-    const runnerSection = page.locator('[data-persona="runner"]');
-    await expect(runnerSection).toBeVisible({ timeout: 5000 });
-
-    // Press ArrowLeft to go back to developer
+    // Left from connect → work
     await page.keyboard.press('ArrowLeft');
-    await page.waitForTimeout(1000);
-
-    const developerSection = page.locator('[data-persona="work"]');
-    await expect(developerSection).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('[data-persona="work"]')).toBeVisible({ timeout: 8000 });
   });
 
   test('escape key triggers back navigation', async ({ page }) => {
     await page.goto('/work');
-    await page.waitForTimeout(2000);
+    await expect(page.locator('[data-persona="work"]')).toBeVisible({ timeout: 15000 });
 
     await page.keyboard.press('Escape');
-    await page.waitForTimeout(1500);
 
-    // Should navigate to hub — URL goes to /
+    // Wait for URL to drop the /work segment (handleBack calls navigate('/'))
+    await page.waitForFunction(() => !window.location.pathname.startsWith('/work'), null, { timeout: 10000 });
     expect(page.url()).toMatch(/\/$/);
   });
 

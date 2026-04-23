@@ -77,6 +77,8 @@ export default function AskSection() {
   const [wakingUp, setWakingUp] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [copied, setCopied] = useState(false);
+  // User-selected slot (from clicking a slot bubble). Persists until send or dismiss.
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const abortRef = useRef(null);
   const wakeTimerRef = useRef(null);
   useSEO('ask');
@@ -153,10 +155,17 @@ export default function AskSection() {
     const msg = (text || input).trim();
     if (!msg || loading) return;
 
+    // Capture the slot at send time; clear the chip either way so the UI
+    // doesn't carry stale selection if Moore interprets the message as a
+    // cancel / different question / "give me other times".
+    const slotAtSend = selectedSlot;
+
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
 
     setInput('');
+    setSelectedSlot(null);
+    // Visible chat message stays clean — just what the user typed.
     setMessages(prev => [...prev, { role: 'user', content: msg, time: Date.now() }]);
     setLoading(true);
     setStreamingText('');
@@ -173,6 +182,12 @@ export default function AskSection() {
           history: messages.slice(-8),
           trustedDevice: isTrustedDevice,
           bookerTimezone: BOOKER_TIMEZONE,
+          // Slot the user clicked before sending. Server uses it as a hint
+          // for book_meeting; if the user's message is a cancel / different
+          // question / "any other time?", the AI can ignore it.
+          selectedSlot: slotAtSend
+            ? { startUtc: slotAtSend.startUtc, hostDisplay: slotAtSend.hostDisplay }
+            : null,
         }),
         signal: abortRef.current.signal,
       });
@@ -236,7 +251,7 @@ export default function AskSection() {
     setWakingUp(false);
     setLoading(false);
     inputRef.current?.focus();
-  }, [input, loading, messages]);
+  }, [input, loading, messages, selectedSlot]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
@@ -321,9 +336,11 @@ export default function AskSection() {
                         <BookingCard
                           key={j}
                           toolOutput={to}
+                          selectedStartUtc={selectedSlot?.startUtc}
                           onSlotPick={(slot) => {
-                            const localTime = slot.bookerDisplay;
-                            setInput(`I'll take ${localTime}`);
+                            // Don't auto-fill the input — just note the slot.
+                            // User types their name + email; send composes both.
+                            setSelectedSlot(slot);
                             setTimeout(() => inputRef.current?.focus(), 50);
                           }}
                         />
@@ -386,12 +403,32 @@ export default function AskSection() {
             </div>
           )}
 
+          {selectedSlot && (
+            <div className={styles.slotChip}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span className={styles.slotChipLabel}>
+                <strong>{selectedSlot.hostDisplay} IST</strong>
+                {!selectedSlot.sameZone && ` · ${selectedSlot.bookerDisplay} (${selectedSlot.bookerTimezone})`}
+              </span>
+              <button
+                type="button"
+                className={styles.slotChipClear}
+                onClick={() => setSelectedSlot(null)}
+                aria-label="Unselect slot"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
           <div className={`${styles.inputBar} ${isEmpty ? styles.inputBarNarrow : ''} ${loading ? styles.inputBarLoading : ''}`}>
             <input
               ref={inputRef}
               type="text"
               className={styles.input}
-              placeholder="Ask anything about Mahesh..."
+              placeholder={selectedSlot ? 'Share your name and email...' : 'Ask anything about Mahesh...'}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
