@@ -380,7 +380,11 @@ export default function MessagesSection() {
                       >
                         <div className={styles.cardHeader}>
                           <span className={styles.convoGeo}>
-                            {convo.geo || 'Unknown'} · {convo.device || 'desktop'}
+                            {convo.enrichment?.company
+                              ? `${convo.enrichment.company}`
+                              : (convo.geo || 'Unknown')}
+                            {convo.enrichment?.region && ` · ${convo.enrichment.region}`}
+                            {` · ${convo.device || 'desktop'}`}
                           </span>
                           <span className={styles.cardDate}>
                             {new Date(convo.createdAt).toLocaleDateString('en-GB', {
@@ -392,14 +396,51 @@ export default function MessagesSection() {
                         <p className={styles.convoPreview}>
                           {convo.messages?.[0]?.content || 'Empty conversation'}
                         </p>
-                        <span className={styles.convoCount}>
-                          {Math.floor((convo.messages?.length || 0) / 2)} questions
-                        </span>
+                        <div className={styles.convoMeta}>
+                          <span className={styles.convoCount}>
+                            {Math.floor((convo.messages?.length || 0) / 2)} questions
+                          </span>
+                          {convo.enrichment?.utmSource && (
+                            <span className={`${styles.convoBadge} ${styles.convoBadgeSource}`}>
+                              {convo.enrichment.utmSource}
+                            </span>
+                          )}
+                          {convo.enrichment?.asn && (
+                            <span className={styles.convoBadge}>{convo.enrichment.asn}</span>
+                          )}
+                          {convo.enrichment?.fingerprint && (
+                            <span className={styles.convoBadge} title="Device fingerprint">
+                              fp:{convo.enrichment.fingerprint.slice(0, 6)}
+                            </span>
+                          )}
+                          {convo.enrichment?.funnelEvents?.some((e) => e.type === 'ask_booking_confirmed') && (
+                            <span className={`${styles.convoBadge} ${styles.convoBadgeBooked}`}>booked</span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
                     {expandedConvo === convo._id && (
                       <div className={styles.convoMessages}>
+                        {convo.enrichment?.funnelEvents?.length > 0 && (
+                          <div className={styles.funnelTimeline}>
+                            <span className={styles.funnelTitle}>Funnel</span>
+                            {convo.enrichment.funnelEvents.map((ev, i) => (
+                              <div key={i} className={styles.funnelRow}>
+                                <span className={styles.funnelDot} />
+                                <span className={styles.funnelType}>
+                                  {ev.type.replace('ask_', '').replace(/_/g, ' ')}
+                                </span>
+                                {ev.meta?.chip && <span className={styles.funnelMeta}>{ev.meta.chip}</span>}
+                                {ev.meta?.slot && <span className={styles.funnelMeta}>{ev.meta.slot}</span>}
+                                {ev.meta?.count != null && <span className={styles.funnelMeta}>{ev.meta.count} slots</span>}
+                                <span className={styles.funnelTime}>
+                                  {new Date(ev.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                         {convo.messages?.map((m, i) => (
                           <div key={i} className={`${styles.convoMsg} ${styles[m.role]}`}>
                             <span className={styles.convoRole}>

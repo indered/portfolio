@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { trackPageView } from '../../hooks/useAnalytics';
+import { trackPageView, trackAskEvent } from '../../hooks/useAnalytics';
 import { useSEO } from '../../hooks/useSEO';
 import BookingCard from './BookingCard';
 import styles from './AskSection.module.scss';
@@ -124,6 +124,7 @@ export default function AskSection() {
   // Moore had answered. Feels native, costs zero tokens, <500ms perceived.
   const bookDirect = useCallback(async () => {
     if (loading) return;
+    if (!isTrustedDevice) trackAskEvent('booking_chip_clicked', { source: 'suggestion_chip' });
     setMessages(prev => [...prev, { role: 'user', content: BOOKING_CHIP, time: Date.now() }]);
     setLoading(true);
     wakeTimerRef.current = setTimeout(() => setWakingUp(true), 2500);
@@ -132,6 +133,7 @@ export default function AskSection() {
       const data = await res.json();
       if (!data?.ok) throw new Error(data?.error || 'failed');
       const toolOutput = { tool: 'check_availability', result: data };
+      if (!isTrustedDevice) trackAskEvent('slots_shown', { count: data.slots?.length || 0, via: 'direct' });
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: 'Pick one and share name + email.',
@@ -155,10 +157,18 @@ export default function AskSection() {
     const msg = (text || input).trim();
     if (!msg || loading) return;
 
+    // First message in this session counts as chat_started — fire once.
+    if (!isTrustedDevice && messages.length === 0) {
+      trackAskEvent('chat_started', { firstMessageLen: msg.length });
+    }
+
     // Capture the slot at send time; clear the chip either way so the UI
     // doesn't carry stale selection if Moore interprets the message as a
     // cancel / different question / "give me other times".
     const slotAtSend = selectedSlot;
+    if (slotAtSend && !isTrustedDevice) {
+      trackAskEvent('slot_picked_sent', { slot: slotAtSend.hostDisplay });
+    }
 
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
@@ -228,6 +238,23 @@ export default function AskSection() {
               }
               if (toolOutput) {
                 accumulatedToolOutputs.push(toolOutput);
+                if (!isTrustedDevice) {
+                  const t = toolOutput.tool;
+                  const r = toolOutput.result || {};
+                  if (t === 'check_availability' && r.ok) {
+                    trackAskEvent('slots_shown', { count: r.slots?.length || (r.slot ? 1 : 0), via: 'chat' });
+                  } else if (t === 'book_meeting' && r.type === 'booking_confirmed') {
+                    trackAskEvent('booking_confirmed', { slot: r.booking?.slot?.hostDisplay });
+                  } else if (t === 'book_meeting' && r.type === 'booking_pending') {
+                    trackAskEvent('booking_pending', { slot: r.booking?.slot?.hostDisplay });
+                  } else if (t === 'leave_message' && r.ok) {
+                    trackAskEvent('message_saved', {});
+                  } else if (t === 'cancel_meeting' && r.ok) {
+                    trackAskEvent('booking_cancelled', {});
+                  } else if (t === 'reschedule_meeting' && r.ok) {
+                    trackAskEvent('booking_rescheduled', {});
+                  }
+                }
               }
             } catch {}
           }
@@ -394,7 +421,11 @@ export default function AskSection() {
                 <button
                   key={i}
                   className={styles.chip}
-                  onClick={() => (text === BOOKING_CHIP ? bookDirect() : send(text))}
+                  onClick={() => {
+                    if (!isTrustedDevice) trackAskEvent('chip_clicked', { chip: text, index: i });
+                    if (text === BOOKING_CHIP) bookDirect();
+                    else send(text);
+                  }}
                   style={{ animationDelay: `${0.1 + i * 0.08}s` }}
                 >
                   {text}

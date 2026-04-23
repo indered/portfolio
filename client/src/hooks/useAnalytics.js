@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { getFingerprint } from '../lib/fingerprint';
 
 const API = '/api/analytics/event';
 
@@ -35,11 +36,39 @@ function isReturnVisitor() {
   return false;
 }
 
+// Capture UTM params from the landing URL once, attach to every event in the session.
+// Persists in sessionStorage so events fired after navigation still carry the source.
+function captureUtm() {
+  try {
+    const cached = sessionStorage.getItem('_utm');
+    if (cached) return JSON.parse(cached);
+    const params = new URLSearchParams(window.location.search);
+    const utm = {
+      source: params.get('utm_source') || null,
+      medium: params.get('utm_medium') || null,
+      campaign: params.get('utm_campaign') || null,
+    };
+    sessionStorage.setItem('_utm', JSON.stringify(utm));
+    return utm;
+  } catch {
+    return { source: null, medium: null, campaign: null };
+  }
+}
+
 function send(data) {
+  const utm = captureUtm();
+  const meta = { ...(data.meta || {}) };
+  // Merge UTM into meta so existing server schema works unchanged.
+  if (utm.source)   meta.utm_source   = utm.source;
+  if (utm.medium)   meta.utm_medium   = utm.medium;
+  if (utm.campaign) meta.utm_campaign = utm.campaign;
+
   const payload = JSON.stringify({
     ...data,
+    meta: Object.keys(meta).length ? meta : undefined,
     sessionId: getSessionId(),
     device: getDevice(),
+    fingerprint: getFingerprint(),
     referrer: data.referrer !== undefined ? data.referrer : getReferrer(),
     returnVisitor: isReturnVisitor(),
   });
@@ -71,6 +100,12 @@ export function trackLinkClick(label, url) {
 
 export function trackStarClick() {
   send({ type: 'star_click' });
+}
+
+// Ask-page funnel events. Keep type namespaced so server aggregations
+// can group and filter cleanly. Meta carries the specific context.
+export function trackAskEvent(name, meta = {}) {
+  send({ type: `ask_${name}`, route: '/ask', meta });
 }
 
 // ── Main hook ────────────────────────────────

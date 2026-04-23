@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import Conversation from '../models/Conversation.js';
+import { lookupIp } from '../services/ipLookup.js';
 
 const router = Router();
 
@@ -21,14 +22,18 @@ function normalizePlanet(planet) {
 }
 
 // POST /api/analytics/event
-router.post('/event', (req, res) => {
+router.post('/event', async (req, res) => {
   res.status(202).json({ ok: true });
 
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
   if (EXCLUDE_IPS.length && EXCLUDE_IPS.includes(clientIp)) return;
 
-  const { type, route, planet, duration, sessionId, device, referrer, returnVisitor, meta } = req.body;
+  const { type, route, planet, duration, sessionId, device, referrer, returnVisitor, meta, fingerprint } = req.body;
   if (!type || !sessionId) return;
+
+  // Fire and forget — don't block on the IP lookup; write the event either way
+  let enrich = null;
+  try { enrich = await lookupIp(clientIp); } catch {}
 
   AnalyticsEvent.create({
     type,
@@ -37,8 +42,15 @@ router.post('/event', (req, res) => {
     duration: duration || null,
     sessionId,
     device: device || 'desktop',
-    country: req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || null,
-    city: req.headers['cf-ipcity'] || req.headers['x-vercel-ip-city'] || null,
+    // Prefer CDN-provided geo (Cloudflare/Vercel) when present, fall back to ipinfo
+    country: req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || enrich?.country || null,
+    city: req.headers['cf-ipcity'] || req.headers['x-vercel-ip-city'] || enrich?.city || null,
+    region: enrich?.region || null,
+    postal: enrich?.postal || null,
+    company: enrich?.company || null,
+    asn: enrich?.asn || null,
+    fingerprint: typeof fingerprint === 'string' ? fingerprint.slice(0, 40) : null,
+    ip: clientIp || null,
     referrer: referrer || null,
     returnVisitor: returnVisitor || false,
     meta: meta || null,

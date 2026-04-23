@@ -354,6 +354,99 @@
   color: #71717a;
 }
 
+.convoMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.convoBadge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #a1a1aa;
+  text-transform: lowercase;
+}
+
+.convoBadgeSource {
+  background: rgba(74, 158, 255, 0.12);
+  border-color: rgba(74, 158, 255, 0.3);
+  color: #7bb8ff;
+}
+
+.convoBadgeBooked {
+  background: rgba(74, 222, 128, 0.14);
+  border-color: rgba(74, 222, 128, 0.35);
+  color: #86efac;
+  font-weight: 600;
+}
+
+// ── Funnel timeline (expanded conversation) ─────────────────────────────
+.funnelTimeline {
+  background: rgba(74, 158, 255, 0.04);
+  border: 1px solid rgba(74, 158, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px 12px;
+  margin-bottom: 14px;
+}
+
+.funnelTitle {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: rgba(74, 158, 255, 0.75);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.funnelRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #d4d4d8;
+
+  & + & {
+    border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  }
+}
+
+.funnelDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4a9eff;
+}
+
+.funnelType {
+  color: #e4e4e7;
+  font-weight: 500;
+}
+
+.funnelMeta {
+  color: #a1a1aa;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+}
+
+.funnelTime {
+  margin-left: auto;
+  color: #71717a;
+  font-size: 0.66rem;
+}
+
 .convoMessages {
   margin-top: 16px;
   padding-top: 16px;
