@@ -3,6 +3,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Ask (/ask) Page', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
+    // Disable the Multiverse auto-intro so the empty-state hero + chips remain
+    // for these baseline assertions. The intro itself is covered separately.
+    await page.route('**/api/chat/intro', (route) => route.abort());
     await page.goto('/ask');
     await page.waitForTimeout(1500);
   });

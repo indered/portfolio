@@ -10,6 +10,8 @@ const conversationSchema = new mongoose.Schema({
   geo: { type: String, default: 'Unknown' },
   ip: { type: String },
   device: { type: String },
+  personality: { type: String, default: null },
+  interjectionFired: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

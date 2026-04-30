@@ -8,6 +8,9 @@ test.describe('Ask page - Mobile UI', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
+    // Multiverse intro auto-fires on /ask; abort it so the empty-state hero
+    // and suggestion chips remain for these baseline UI assertions.
+    await page.route('**/api/chat/intro', (route) => route.abort());
     await page.goto('/ask');
     await page.waitForTimeout(1500);
   });
@@ -141,6 +144,7 @@ test.describe('Ask page - Desktop', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
+    await page.route('**/api/chat/intro', (route) => route.abort());
     await page.goto('/ask');
     await page.waitForTimeout(1500);
   });

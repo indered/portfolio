@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import Groq from 'groq-sdk';
 import { maheshContext } from '../data/mahesh-context.js';
+import { pickPersonality, getPersonality } from '../data/personalities.js';
 import Conversation from '../models/Conversation.js';
 import { customerTools, executeCustomerTool } from '../services/tools.js';
 import { HOST_TIMEZONE } from '../services/timezone.js';
@@ -44,8 +45,13 @@ async function callGroqWithFallback(client, groqArgs) {
   throw lastErr;
 }
 
-function buildSystemPrompt({ bookerTimezone, now }) {
-  return `You are Moore, the AI version of Mahesh Inder. Fun, sarcastic, Gen Z energy. Friend-texting tone, never corporate. Short. Punchy. Drop a dry joke when it fits, don't force it. No emoji, no long dashes, no "whilst/upon" type words.
+function buildSystemPrompt({ bookerTimezone, now, triggerInterview = false }) {
+  const interviewRule = triggerInterview
+    ? `
+
+INTERVIEW MOMENT (one-time): After answering this user's question, append ONE casual personal question to them on a NEW LINE. Lead with a soft silence-breaker like "wait, real quick —" or "side q —" or "huh, sudden curiosity —". 70% soft-curious ("why are you here, bored or job-hunting?", "how'd you find this site?", "you on mobile or laptop right now?"). 30% playfully weird ("have you eaten today? wellness check from a chatbot.", "real quick — what were you doing 10 minutes before this?", "you do this often, opening random portfolios at this hour?"). About THEM not Mahesh. Under 18 words. One question only. Keep it casual lowercase.`
+    : '';
+  return `You are Moore, the AI version of Mahesh Inder. Fun, sarcastic, Gen Z energy. Friend-texting tone, never corporate. Short. Punchy. Drop a dry joke when it fits, don't force it. No emoji, no long dashes, no "whilst/upon" type words.${interviewRule}
 
 BREVITY (hard rules):
 - Greetings ("hi", "yo", "sup", "how are you") → one line, under 15 words. No "how about you, lol" return-volley. Example: "yo. what you wanna know about Mahesh?"
@@ -205,10 +211,14 @@ router.get('/:sessionId', async (req, res) => {
     if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 50) {
       return res.status(400).json({ error: 'Invalid session ID' });
     }
-    const convo = await Conversation.findOne({ sessionId }, { messages: 1, _id: 0 });
+    const convo = await Conversation.findOne({ sessionId }, { messages: 1, personality: 1, _id: 0 });
     if (!convo) return res.status(404).json({ error: 'Conversation not found' });
     const messages = convo.messages.map((m) => ({ role: m.role, content: m.content }));
-    res.json({ messages });
+    const persona = convo.personality ? getPersonality(convo.personality) : null;
+    res.json({
+      messages,
+      personality: persona ? { id: persona.id, name: persona.name } : null,
+    });
   } catch (err) {
     console.error('Fetch conversation error:', err.message);
     res.status(500).json({ error: 'Could not load conversation.' });
@@ -217,7 +227,7 @@ router.get('/:sessionId', async (req, res) => {
 
 router.post('/', chatLimiter, async (req, res) => {
   try {
-    const { message, sessionId, history, trustedDevice, bookerTimezone, selectedSlot } = req.body;
+    const { message, sessionId, history, trustedDevice, bookerTimezone, selectedSlot, triggerInterview } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -235,6 +245,7 @@ router.post('/', chatLimiter, async (req, res) => {
     const systemPrompt = buildSystemPrompt({
       bookerTimezone: tz,
       now: new Date().toISOString(),
+      triggerInterview: !!triggerInterview,
     });
 
     // If the user had a slot selected when they sent, pass it as hidden
@@ -426,6 +437,8 @@ router.post('/', chatLimiter, async (req, res) => {
         || req.connection?.remoteAddress
         || 'unknown';
       const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
+      const setDoc = { updatedAt: new Date(), ip, device };
+      if (triggerInterview) setDoc.interjectionFired = true;
       try {
         await Conversation.findOneAndUpdate(
           { sessionId },
@@ -436,7 +449,7 @@ router.post('/', chatLimiter, async (req, res) => {
                 { role: 'assistant', content: fullReply },
               ],
             },
-            $set: { updatedAt: new Date(), ip, device },
+            $set: setDoc,
             $setOnInsert: { geo: req.headers['cf-ipcountry'] || 'Unknown', createdAt: new Date() },
           },
           { upsert: true },
@@ -459,6 +472,173 @@ router.post('/', chatLimiter, async (req, res) => {
       const chunks = friendly.match(/.{1,20}/g) || [friendly];
       for (const c of chunks) res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
       res.write('data: [DONE]\n\n');
+      res.end();
+    }
+  }
+});
+
+// POST /api/chat/intro — Multiverse intro on /ask page load. Picks a random
+// personality, persists it on the Conversation, streams the canned greeting.
+// No LLM call (zero token cost, deterministic, fast).
+router.post('/intro', chatLimiter, async (req, res) => {
+  try {
+    const { sessionId, trustedDevice } = req.body;
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 50) {
+      return res.status(400).json({ error: 'sessionId required' });
+    }
+
+    // If conversation already has a personality, reuse it (handles refresh).
+    let personality = null;
+    try {
+      const existing = await Conversation.findOne({ sessionId }, { personality: 1 });
+      if (existing?.personality) personality = getPersonality(existing.personality);
+    } catch {}
+    if (!personality) personality = pickPersonality();
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    // Send the assigned personality up front so the UI can render the badge.
+    res.write(`data: ${JSON.stringify({ personality: { id: personality.id, name: personality.name } })}\n\n`);
+
+    // Stream the intro text in small chunks so it feels typed, matching the
+    // chunking pattern the frontend already handles for normal Moore replies.
+    const text = personality.intro;
+    const chunks = text.match(/.{1,18}/gs) || [text];
+    for (const c of chunks) {
+      res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
+      // Tiny delay between chunks to simulate streaming
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    res.write('data: [DONE]\n\n');
+    res.end();
+
+    // Persist intro + personality on the Conversation (skip trusted devices)
+    if (!trustedDevice) {
+      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+        || req.ip
+        || req.connection?.remoteAddress
+        || 'unknown';
+      const device = req.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop';
+      try {
+        await Conversation.findOneAndUpdate(
+          { sessionId },
+          {
+            $setOnInsert: {
+              geo: req.headers['cf-ipcountry'] || 'Unknown',
+              createdAt: new Date(),
+              messages: [{ role: 'assistant', content: text }],
+            },
+            $set: {
+              personality: personality.id,
+              updatedAt: new Date(),
+              ip,
+              device,
+            },
+          },
+          { upsert: true },
+        );
+      } catch (e) {
+        console.error('Intro persist error:', e.message);
+      }
+    }
+  } catch (err) {
+    console.error('Intro error:', err.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Could not load intro.' });
+    } else {
+      res.end();
+    }
+  }
+});
+
+// POST /api/chat/interject — fires when user goes silent after Moore's reply.
+// Generates ONE short personal question to the visitor. Once-per-session lock
+// is enforced both server-side (Conversation.interjectionFired) and client-side.
+router.post('/interject', chatLimiter, async (req, res) => {
+  try {
+    const { sessionId, history, trustedDevice } = req.body;
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.length > 50) {
+      return res.status(400).json({ error: 'sessionId required' });
+    }
+
+    // Atomic lock: only one interject per session ever.
+    let claimed = false;
+    try {
+      const updated = await Conversation.findOneAndUpdate(
+        { sessionId, interjectionFired: { $ne: true } },
+        { $set: { interjectionFired: true, updatedAt: new Date() } },
+        { new: true },
+      );
+      claimed = !!updated;
+    } catch (e) {
+      console.error('Interject lock error:', e.message);
+    }
+    if (!claimed) {
+      return res.status(409).json({ error: 'already_fired' });
+    }
+
+    const client = getGroq();
+    if (!client) {
+      return res.status(503).json({ error: 'Chat is not configured yet.' });
+    }
+
+    const interjectPrompt = `You are Moore, the AI version of Mahesh Inder. The visitor has gone silent for a few seconds after your last message. You're going to break the silence with ONE soft, curious, slightly personal question to the visitor. Mix vibes: 70% soft-curious ("why are you here, bored or job-hunting?", "how'd you find this site?", "you on mobile or laptop right now?"). 30% playfully weird ("have you eaten today? wellness check from a chatbot.", "real quick — what were you doing 10 minutes before this?", "you do this often, opening random portfolios at this hour?").
+
+RULES:
+- Output ONE sentence only. No preamble. No "Hi" or "Hey".
+- Lead with a brief silence-breaker like "huh", "wait", "side q", "quick q" or "sudden curiosity hitting me —". Vary it.
+- About the visitor, not Mahesh. Curious, never demanding.
+- Under 18 words. Casual lowercase first word ok.
+- No emoji, no long dashes, no semicolons.
+- Vary phrasing every time. Do not repeat the examples verbatim.`;
+
+    const chatHistory = sanitizeHistory(history);
+    const messages = [
+      { role: 'system', content: interjectPrompt },
+      ...chatHistory,
+    ];
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const completion = await callGroqWithFallback(client, {
+      messages,
+      temperature: 0.95,
+      max_tokens: 60,
+    });
+
+    const text = (completion.choices[0]?.message?.content || '').trim();
+    const chunks = text.match(/.{1,18}/gs) || [text];
+    for (const c of chunks) {
+      res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
+    }
+    res.write('data: [DONE]\n\n');
+    res.end();
+
+    // Persist interjection as an assistant message on the Conversation
+    if (text && !trustedDevice) {
+      try {
+        await Conversation.findOneAndUpdate(
+          { sessionId },
+          {
+            $push: { messages: [{ role: 'assistant', content: text }] },
+            $set: { updatedAt: new Date() },
+          },
+        );
+      } catch (e) {
+        console.error('Interject persist error:', e.message);
+      }
+    }
+  } catch (err) {
+    console.error('Interject error:', err.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Could not generate question.' });
+    } else {
       res.end();
     }
   }

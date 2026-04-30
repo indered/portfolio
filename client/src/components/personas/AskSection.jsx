@@ -61,6 +61,19 @@ function getChatSessionId(sharedId) {
   return id;
 }
 
+// Adaptive idle delay for Path B reverse interview. Short Moore replies
+// trigger a question sooner; long ones give the user time to read first.
+function computeIdleDelay(text) {
+  const t = String(text || '').trim();
+  if (!t) return 3000;
+  const words = t.split(/\s+/).length;
+  const lines = t.split('\n').length;
+  if (words <= 3) return 2000;
+  if (lines >= 3 || words > 30) return 5000;
+  if (words > 10) return 4000;
+  return 3000;
+}
+
 export default function AskSection() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -79,13 +92,92 @@ export default function AskSection() {
   const [copied, setCopied] = useState(false);
   // User-selected slot (from clicking a slot bubble). Persists until send or dismiss.
   const [selectedSlot, setSelectedSlot] = useState(null);
+  // Multiverse personality assigned on first /ask visit. Colors only the intro;
+  // the rest of the conversation is normal Moore.
+  const [personality, setPersonality] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem(`_pers_${chatSessionId.current}`);
+      return cached ? JSON.parse(cached) : null;
+    } catch { return null; }
+  });
   const abortRef = useRef(null);
   const wakeTimerRef = useRef(null);
+  const idleTimerRef = useRef(null);
+  // Once-per-session lock for the reverse interview (Path A or Path B).
+  const interjectionFiredRef = useRef(
+    typeof window !== 'undefined' &&
+    sessionStorage.getItem(`_interject_${chatSessionId.current}`) === '1'
+  );
+  const introFiredRef = useRef(false);
   useSEO('ask');
   const endRef = useRef(null);
   const inputRef = useRef(null);
 
   const isTrustedDevice = typeof window !== 'undefined' && localStorage.getItem('_inbox_trusted') === '1';
+
+  const streamIntro = useCallback(async () => {
+    setLoading(true);
+    setStreamingText('');
+    try {
+      const res = await fetch('/api/chat/intro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: chatSessionId.current,
+          trustedDevice: isTrustedDevice,
+        }),
+      });
+      if (!res.ok) {
+        setLoading(false);
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullReply = '';
+      let assignedPersonality = null;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const text = decoder.decode(value, { stream: true });
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const payload = line.slice(6);
+            if (payload === '[DONE]') break;
+            try {
+              const obj = JSON.parse(payload);
+              if (obj.personality) {
+                assignedPersonality = obj.personality;
+                setPersonality(assignedPersonality);
+                try {
+                  sessionStorage.setItem(
+                    `_pers_${chatSessionId.current}`,
+                    JSON.stringify(assignedPersonality),
+                  );
+                } catch {}
+                if (!isTrustedDevice) {
+                  trackAskEvent('multiverse_loaded', { personality: assignedPersonality.id });
+                }
+              }
+              if (obj.token) {
+                fullReply += obj.token;
+                setStreamingText(fullReply);
+              }
+            } catch {}
+          }
+        }
+      }
+      if (fullReply) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: fullReply,
+          time: Date.now(),
+        }]);
+      }
+      setStreamingText('');
+    } catch {}
+    setLoading(false);
+  }, [isTrustedDevice]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'light');
@@ -100,8 +192,18 @@ export default function AskSection() {
             const loaded = data.messages.map(m => ({ role: m.role, content: m.content, time: null }));
             setMessages(loaded);
           }
+          if (data?.personality) {
+            setPersonality(data.personality);
+          }
         })
         .catch(() => {});
+      return;
+    }
+
+    // Fire the Multiverse intro on first visit (no shared session, no prior messages).
+    if (!sharedSessionId && messages.length === 0 && !introFiredRef.current) {
+      introFiredRef.current = true;
+      streamIntro();
     }
   }, []);
 
@@ -118,6 +220,90 @@ export default function AskSection() {
       endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [streamingText]);
+
+  // Idle timer for Path B reverse interview. After Moore replies, start a
+  // length-aware countdown. If the user types, clicks a chip/slot, or sends
+  // anything, the effect re-runs and clears the timer. If the timer expires,
+  // Moore breaks the silence with one curious question to the visitor.
+  useEffect(() => {
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+    if (interjectionFiredRef.current) return;
+    if (loading) return;
+    if (messages.length === 0) return;
+    const last = messages[messages.length - 1];
+    if (last.role !== 'assistant') return;
+    // Path B requires at least one real user→Moore exchange first
+    // (so the intro alone doesn't trigger it).
+    const userCount = messages.filter((m) => m.role === 'user').length;
+    if (userCount < 1) return;
+
+    const delay = computeIdleDelay(last.content);
+    idleTimerRef.current = setTimeout(async () => {
+      if (interjectionFiredRef.current) return;
+      interjectionFiredRef.current = true;
+      try { sessionStorage.setItem(`_interject_${chatSessionId.current}`, '1'); } catch {}
+      if (!isTrustedDevice) trackAskEvent('reverse_interview_fired', { trigger: 'idle' });
+
+      setLoading(true);
+      setStreamingText('');
+      try {
+        const res = await fetch('/api/chat/interject', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: chatSessionId.current,
+            history: messages.slice(-8),
+            trustedDevice: isTrustedDevice,
+          }),
+        });
+        if (!res.ok) {
+          setLoading(false);
+          return;
+        }
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullReply = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value, { stream: true });
+          const lines = text.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const payload = line.slice(6);
+              if (payload === '[DONE]') break;
+              try {
+                const { token } = JSON.parse(payload);
+                if (token) {
+                  fullReply += token;
+                  setStreamingText(fullReply);
+                }
+              } catch {}
+            }
+          }
+        }
+        if (fullReply) {
+          setMessages((prev) => [...prev, {
+            role: 'assistant',
+            content: fullReply,
+            time: Date.now(),
+          }]);
+        }
+        setStreamingText('');
+      } catch {}
+      setLoading(false);
+    }, delay);
+
+    return () => {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = null;
+      }
+    };
+  }, [messages, loading, isTrustedDevice]);
 
   // Fast path for the "Book a 30-min call" chip. Hits a direct REST endpoint
   // that skips the LLM entirely, then injects the result into the chat as if
@@ -157,9 +343,21 @@ export default function AskSection() {
     const msg = (text || input).trim();
     if (!msg || loading) return;
 
-    // First message in this session counts as chat_started — fire once.
-    if (!isTrustedDevice && messages.length === 0) {
+    // First user message in this session counts as chat_started — fire once.
+    // (The intro is also a message, so we look for ROLE=user not length===0.)
+    const userMsgCountBefore = messages.filter((m) => m.role === 'user').length;
+    if (!isTrustedDevice && userMsgCountBefore === 0) {
       trackAskEvent('chat_started', { firstMessageLen: msg.length });
+    }
+
+    // Path A reverse interview: on the user's 2nd message, ask the server to
+    // append one personal question to Moore's reply. Once-per-session lock.
+    const shouldTriggerInterview =
+      !interjectionFiredRef.current && userMsgCountBefore === 1;
+    if (shouldTriggerInterview) {
+      interjectionFiredRef.current = true;
+      try { sessionStorage.setItem(`_interject_${chatSessionId.current}`, '1'); } catch {}
+      if (!isTrustedDevice) trackAskEvent('reverse_interview_fired', { trigger: 'message' });
     }
 
     // Capture the slot at send time; clear the chip either way so the UI
@@ -198,6 +396,7 @@ export default function AskSection() {
           selectedSlot: slotAtSend
             ? { startUtc: slotAtSend.startUtc, hostDisplay: slotAtSend.hostDisplay }
             : null,
+          triggerInterview: shouldTriggerInterview,
         }),
         signal: abortRef.current.signal,
       });
@@ -305,6 +504,9 @@ export default function AskSection() {
   };
 
   const isEmpty = messages.length === 0 && !loading;
+  // Suggestions stay visible across the intro phase so the booking chip + first
+  // prompts remain reachable. They hide as soon as the visitor sends anything.
+  const noUserMessagesYet = !messages.some((m) => m.role === 'user');
   // Index of the latest assistant message — only it shows fresh slot bubbles.
   // Confirmation cards (booked/cancelled/message_saved) still show on their original message.
   let lastAssistantIdx = -1;
@@ -346,7 +548,14 @@ export default function AskSection() {
             {messages.map((msg, i) => (
               <div key={i} className={`${styles.msg} ${styles[msg.role]}`}>
                 <div className={styles.msgBody}>
-                  {msg.role === 'assistant' && <span className={styles.aiLabel}>MOORE</span>}
+                  {msg.role === 'assistant' && (
+                    <div className={styles.aiLabelRow}>
+                      <span className={styles.aiLabel}>MOORE</span>
+                      {personality && (
+                        <span className={styles.multiverseBadge}>Multiverse · {personality.name}</span>
+                      )}
+                    </div>
+                  )}
                   <div className={styles.bubbleWrap}>
                     <div className={styles.bubble}>
                       {msg.role === 'assistant' ? (
@@ -368,6 +577,11 @@ export default function AskSection() {
                             // Don't auto-fill the input — just note the slot.
                             // User types their name + email; send composes both.
                             setSelectedSlot(slot);
+                            // Slot pick = engagement; kill any pending Path B timer.
+                            if (idleTimerRef.current) {
+                              clearTimeout(idleTimerRef.current);
+                              idleTimerRef.current = null;
+                            }
                             setTimeout(() => inputRef.current?.focus(), 50);
                           }}
                         />
@@ -382,7 +596,12 @@ export default function AskSection() {
             {loading && streamingText && (
               <div className={`${styles.msg} ${styles.assistant}`}>
                 <div className={styles.msgBody}>
-                  <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
+                  <div className={styles.aiLabelRow}>
+                    <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
+                    {personality && (
+                      <span className={styles.multiverseBadge}>Multiverse · {personality.name}</span>
+                    )}
+                  </div>
                   <div className={styles.bubble}>
                     <ReactMarkdown>{streamingText}</ReactMarkdown>
                     <span className={styles.streamCursor} aria-hidden="true" />
@@ -394,7 +613,12 @@ export default function AskSection() {
             {loading && !streamingText && (
               <div className={`${styles.msg} ${styles.assistant}`}>
                 <div className={styles.msgBody}>
-                  <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
+                  <div className={styles.aiLabelRow}>
+                    <span className={`${styles.aiLabel} ${styles.aiLabelActive}`}>MOORE</span>
+                    {personality && (
+                      <span className={styles.multiverseBadge}>Multiverse · {personality.name}</span>
+                    )}
+                  </div>
                   <div className={styles.bubble}>
                     <span className={styles.thinking}>
                       <span className={styles.thinkDot} style={{ '--i': 0 }} />
@@ -415,7 +639,7 @@ export default function AskSection() {
 
         {/* Input area */}
         <div className={styles.inputWrap}>
-          {isEmpty && (
+          {noUserMessagesYet && !loading && (
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((text, i) => (
                 <button
@@ -423,6 +647,10 @@ export default function AskSection() {
                   className={styles.chip}
                   onClick={() => {
                     if (!isTrustedDevice) trackAskEvent('chip_clicked', { chip: text, index: i });
+                    if (idleTimerRef.current) {
+                      clearTimeout(idleTimerRef.current);
+                      idleTimerRef.current = null;
+                    }
                     if (text === BOOKING_CHIP) bookDirect();
                     else send(text);
                   }}
@@ -461,7 +689,15 @@ export default function AskSection() {
               className={styles.input}
               placeholder={selectedSlot ? 'Share your name and email...' : 'Ask anything about Mahesh...'}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                // Any keystroke means the visitor is engaged — cancel any
+                // pending Path B reverse-interview timer so Moore stays quiet.
+                if (idleTimerRef.current) {
+                  clearTimeout(idleTimerRef.current);
+                  idleTimerRef.current = null;
+                }
+              }}
               onKeyDown={handleKeyDown}
               maxLength={500}
             />

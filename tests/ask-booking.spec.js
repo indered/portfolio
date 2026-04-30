@@ -81,6 +81,9 @@ async function mockSlotsRoute(page, slots = SLOT_FIXTURES) {
 test.describe('Ask page - Booking flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
+    // Multiverse intro auto-fires on /ask; abort it so the empty state +
+    // suggestion chips remain available for these booking-flow assertions.
+    await page.route('**/api/chat/intro', (route) => route.abort());
   });
 
   test('booking suggestion chip renders slot bubbles', async ({ page }) => {
