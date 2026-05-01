@@ -28,9 +28,19 @@ const MODEL_FALLBACKS = [
   'llama-3.3-70b-versatile',  // 100K/day, best tool calls
 ];
 
-async function callGroqWithFallback(client, groqArgs) {
+// Interject doesn't need tool-calling and doesn't need reasoning. The
+// reasoning models (gpt-oss-*) burn budget on hidden chain-of-thought and
+// frequently return empty content for tiny one-line tasks. Llama models
+// give predictable, instant short replies — exactly what interject needs.
+const INTERJECT_FALLBACKS = [
+  'llama-3.1-8b-instant',
+  'llama-3.3-70b-versatile',
+  'openai/gpt-oss-20b',
+];
+
+async function callGroqWithFallback(client, groqArgs, modelChain = MODEL_FALLBACKS) {
   let lastErr = null;
-  for (const model of MODEL_FALLBACKS) {
+  for (const model of modelChain) {
     try {
       return await client.chat.completions.create({ ...groqArgs, model });
     } catch (err) {
@@ -565,19 +575,25 @@ router.post('/interject', chatLimiter, async (req, res) => {
     }
 
     // Atomic lock: only one interject per session ever.
-    let claimed = false;
-    try {
-      const updated = await Conversation.findOneAndUpdate(
-        { sessionId, interjectionFired: { $ne: true } },
-        { $set: { interjectionFired: true, updatedAt: new Date() } },
-        { new: true },
-      );
-      claimed = !!updated;
-    } catch (e) {
-      console.error('Interject lock error:', e.message);
-    }
-    if (!claimed) {
-      return res.status(409).json({ error: 'already_fired' });
+    // Trusted devices (Mahesh on his own machine) skip persistence entirely
+    // upstream, so the Conversation document never exists for them — the lock
+    // would always 409. Skip server-side lock for trusted; client-side ref
+    // still prevents double-firing in the same tab.
+    if (!trustedDevice) {
+      let claimed = false;
+      try {
+        const updated = await Conversation.findOneAndUpdate(
+          { sessionId, interjectionFired: { $ne: true } },
+          { $set: { interjectionFired: true, updatedAt: new Date() } },
+          { new: true },
+        );
+        claimed = !!updated;
+      } catch (e) {
+        console.error('Interject lock error:', e.message);
+      }
+      if (!claimed) {
+        return res.status(409).json({ error: 'already_fired' });
+      }
     }
 
     const client = getGroq();
@@ -596,9 +612,13 @@ RULES:
 - Vary phrasing every time. Do not repeat the examples verbatim.`;
 
     const chatHistory = sanitizeHistory(history);
+    // The convo history ends with Moore's last reply. Without a user turn
+    // after it, the model has no clear "your turn" cue and often returns
+    // empty content. A synthetic system nudge tells it to speak now.
     const messages = [
       { role: 'system', content: interjectPrompt },
       ...chatHistory,
+      { role: 'user', content: '(the visitor has gone quiet. break the silence now with your one curious question.)' },
     ];
 
     res.setHeader('Content-Type', 'text/event-stream');
@@ -606,13 +626,29 @@ RULES:
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no');
 
-    const completion = await callGroqWithFallback(client, {
-      messages,
-      temperature: 0.95,
-      max_tokens: 60,
-    });
+    // gpt-oss-* models in the fallback chain are reasoning models — they
+    // burn hidden chain-of-thought tokens before the visible reply. 60 tokens
+    // was too tight, leaving content empty (finish_reason="length"). Bump to
+    // 300 so reasoning + a one-line question both fit comfortably.
+    const completion = await callGroqWithFallback(
+      client,
+      { messages, temperature: 0.95, max_tokens: 80 },
+      INTERJECT_FALLBACKS,
+    );
 
-    const text = (completion.choices[0]?.message?.content || '').trim();
+    // Sanitize: model occasionally emits em/en dashes despite the system
+    // rule. Strip them so the question stays in Mahesh's voice. Then cap
+    // at one sentence + ~22 words to enforce the brevity rule.
+    let text = (completion.choices[0]?.message?.content || '')
+      .replace(/[—–]/g, ',')
+      .replace(/\s+,/g, ',')
+      .replace(/,,+/g, ',')
+      .replace(/,([^\s])/g, ', $1')
+      .trim();
+    const sentenceMatch = text.match(/^[^.!?]*[.!?]/);
+    if (sentenceMatch) text = sentenceMatch[0];
+    const words = text.split(/\s+/);
+    if (words.length > 22) text = words.slice(0, 22).join(' ').replace(/[,;:]$/, '') + '?';
     const chunks = text.match(/.{1,18}/gs) || [text];
     for (const c of chunks) {
       res.write(`data: ${JSON.stringify({ token: c })}\n\n`);
