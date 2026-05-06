@@ -114,50 +114,50 @@ export default function ThinkerSection() {
 
         <p className={styles.dropCap}>
           I grew up in a Sikh family. We went to gurudwara every day before school. I wear a kada.
-          I folded my hands and closed my eyes when everyone else did. I believed because
-          everyone around me believed. That was enough for a long time.
+          I folded my hands and closed my eyes when everyone else did. I believed because everyone
+          around me believed. And that was enough for a long time.
         </p>
 
         <p>
-          Then I started reading. Not what people told me about Guru Nanak — but what he
-          actually said. And the first thing that hit me was this:
+          Then I started reading. Not what people told me about Guru Nanak. What he actually said.
+          And the first thing that hit me was this.
         </p>
 
-        <PullQuote attribution="— Guru Nanak, his first words after enlightenment">
+        <PullQuote attribution="Guru Nanak, his first words after enlightenment">
           There is no Hindu. There is no Muslim.
         </PullQuote>
 
         <p>
-          He was not picking a side. He was saying — stop picking sides. Think for yourself.
-          Ask your own questions. Do not just believe because someone told you to. That was
-          500 years ago. And here I was, doing exactly what he told people not to do — believing
+          He wasn&apos;t picking a side. He was saying, stop picking sides. Think for yourself.
+          Ask your own questions. Don&apos;t just believe because someone told you to. That was
+          500 years ago. And here I was, doing exactly what he told people not to do. Believing
           without asking.
         </p>
 
         <SectionDivider />
 
         <p>
-          Then I found Stephen Hawking. I picked up <em>A Brief History of Time</em> because
-          the cover looked cool. I stayed because the words made my head spin in the best way.
+          Then I found Stephen Hawking. I picked up <em>A Brief History of Time</em> because the
+          cover looked cool. I stayed because the words made my head spin in the best way.
         </p>
 
-        <PullQuote attribution="— Stephen Hawking, A Brief History of Time">
+        <PullQuote attribution="Stephen Hawking, A Brief History of Time">
           The universe doesn&apos;t need a creator. It can and will create itself from nothing.
         </PullQuote>
 
         <p>
           That line changed something in me. Not overnight. Slowly. Like a tap dripping until
           the glass is full. I started looking at the sky differently. Not as something someone
-          made — but as something that just is. And that felt more beautiful to me than any story
-          I was told as a kid.
+          made. Just as something that is. And honestly, that felt more beautiful to me than any
+          story I was told as a kid.
         </p>
 
         <SectionDivider />
 
         <p>
-          I am not angry at religion. I am grateful. Sikhism taught me good things. Be kind, work
-          hard, share your food, treat everyone equal, and sewa. Guru Nanak was a rebel. He questioned the
-          Brahmins. He questioned the Mullahs. He sat with the poor when kings invited him to dinner.
+          I&apos;m not angry at religion. I&apos;m grateful. Sikhism taught me good things. Be kind, work
+          hard, share your food, treat everyone equal, do sewa. Guru Nanak was a rebel. He questioned
+          the Brahmins. He questioned the Mullahs. He sat with the poor when kings invited him to dinner.
         </p>
 
         <p>
@@ -171,10 +171,10 @@ export default function ThinkerSection() {
         <p>
           Today I call myself an atheist. But not the angry kind. The grateful kind. I don&apos;t think
           there&apos;s a god watching me. But I think Guru Nanak would be okay with that. Because he never
-          asked anyone to follow him. He asked everyone to think.
+          asked anyone to follow him. He just asked everyone to think.
         </p>
 
-        <p className={styles.closingLine}>And I did.</p>
+        <p className={styles.closingLine}>And so I did.</p>
 
       </article>
 
