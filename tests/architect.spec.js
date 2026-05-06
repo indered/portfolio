@@ -32,14 +32,10 @@ test.describe('Work (/work) Page', () => {
     await expect(page.getByText(/dubai, uae/i).first()).toBeVisible();
   });
 
-  test('download buttons have correct hrefs', async ({ page }) => {
+  test('resume download button has correct href', async ({ page }) => {
     const resumeLink = page.locator('a[href="/mahesh-inder-resume.pdf"]').first();
-    const coverLink = page.locator('a[href="/mahesh-inder-cover-letter.pdf"]').first();
-
     await expect(resumeLink).toBeVisible({ timeout: 6000 });
-    await expect(coverLink).toBeVisible({ timeout: 6000 });
     await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Resume.pdf');
-    await expect(coverLink).toHaveAttribute('download', 'Mahesh_Inder_Cover_Letter.pdf');
   });
 
   test('skills section renders 6 skill cards', async ({ page }) => {

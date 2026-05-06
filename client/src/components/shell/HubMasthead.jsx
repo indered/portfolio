@@ -162,7 +162,7 @@ export default function HubMasthead({ visible }) {
             <button
               className={styles.paperworkBtn}
               onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Download resume and cover letter"
+              aria-label="Download resume"
               aria-expanded={menuOpen}
             >
               <IconBriefcase />
@@ -199,15 +199,6 @@ export default function HubMasthead({ visible }) {
                   >
                     <IconDownload />
                     Resume
-                  </a>
-                  <a
-                    href="/mahesh-inder-cover-letter.pdf"
-                    download="Mahesh_Inder_Cover_Letter.pdf"
-                    className={styles.menuItem}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <IconDownload />
-                    Cover Letter
                   </a>
                 </motion.div>
               )}
