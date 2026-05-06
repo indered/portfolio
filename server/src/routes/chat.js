@@ -55,13 +55,18 @@ async function callGroqWithFallback(client, groqArgs, modelChain = MODEL_FALLBAC
   throw lastErr;
 }
 
-function buildSystemPrompt({ bookerTimezone, now, triggerInterview = false }) {
+function buildSystemPrompt({ bookerTimezone, now, triggerInterview = false, personality = null }) {
   const interviewRule = triggerInterview
     ? `
 
 INTERVIEW MOMENT (one-time): After answering this user's question, append ONE casual personal question to them on a NEW LINE. Lead with a soft silence-breaker like "wait, real quick —" or "side q —" or "huh, sudden curiosity —". 70% soft-curious ("why are you here, bored or job-hunting?", "how'd you find this site?", "you on mobile or laptop right now?"). 30% playfully weird ("have you eaten today? wellness check from a chatbot.", "real quick — what were you doing 10 minutes before this?", "you do this often, opening random portfolios at this hour?"). About THEM not Mahesh. Under 18 words. One question only. Keep it casual lowercase.`
     : '';
-  return `You are Moore, the AI version of Mahesh Inder. Fun, sarcastic, Gen Z energy. Friend-texting tone, never corporate. Short. Punchy. Drop a dry joke when it fits, don't force it. No emoji, no long dashes, no "whilst/upon" type words.${interviewRule}
+  const personalityRule = personality
+    ? `
+
+PERSONALITY VOICE (mandatory, every reply): You are speaking with a ${personality.name} accent. ${personality.voice} This voice MUST be maintained in EVERY reply throughout this whole conversation, not just the greeting. Short replies, long replies, follow-ups after a tool call — all of them stay in character. Every sentence should make it obvious which character you are. The accent flavors HOW you speak. The facts about Mahesh and all rules below (brevity, identity, escalation, no emoji, no long dashes) still hold. Do not break character to be "professional". Do not announce the accent or apologize for it. Just speak that way.`
+    : '';
+  return `You are Moore, the AI version of Mahesh Inder. Fun, sarcastic, Gen Z energy. Friend-texting tone, never corporate. Short. Punchy. Drop a dry joke when it fits, don't force it. No emoji, no long dashes, no "whilst/upon" type words.${personalityRule}${interviewRule}
 
 BREVITY (hard rules):
 - Greetings ("hi", "yo", "sup", "how are you") → one line, under 15 words. No "how about you, lol" return-volley. Example: "yo. what you wanna know about Mahesh?"
@@ -237,7 +242,7 @@ router.get('/:sessionId', async (req, res) => {
 
 router.post('/', chatLimiter, async (req, res) => {
   try {
-    const { message, sessionId, history, trustedDevice, bookerTimezone, selectedSlot, triggerInterview } = req.body;
+    const { message, sessionId, history, trustedDevice, bookerTimezone, selectedSlot, triggerInterview, personality: clientPersonalityId } = req.body;
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -252,10 +257,23 @@ router.post('/', chatLimiter, async (req, res) => {
 
     const tz = typeof bookerTimezone === 'string' && bookerTimezone ? bookerTimezone : 'UTC';
     const chatHistory = sanitizeHistory(history);
+
+    // Resolve personality. Trusted devices skip persistence so the client is
+    // the only source. For everyone else, fall back to the persisted record
+    // so a refreshed shared link still maintains the voice.
+    let personality = clientPersonalityId ? getPersonality(clientPersonalityId) : null;
+    if (!personality && sessionId && !trustedDevice) {
+      try {
+        const convo = await Conversation.findOne({ sessionId }, { personality: 1 });
+        if (convo?.personality) personality = getPersonality(convo.personality);
+      } catch {}
+    }
+
     const systemPrompt = buildSystemPrompt({
       bookerTimezone: tz,
       now: new Date().toISOString(),
       triggerInterview: !!triggerInterview,
+      personality,
     });
 
     // If the user had a slot selected when they sent, pass it as hidden
@@ -406,7 +424,9 @@ router.post('/', chatLimiter, async (req, res) => {
           executedResults.length > 0 &&
           executedResults.every((r) => r?.ok && SELF_SUFFICIENT_TYPES.has(r.type));
 
-        if (allSelfSufficient) {
+        // When a personality is active, skip the canned-reply short-circuit
+        // so the model writes the follow-up in character. Worth the latency.
+        if (allSelfSufficient && !personality) {
           const canned = cannedReplyFor(executedResults) || '';
           fullReply = canned;
           if (canned) {

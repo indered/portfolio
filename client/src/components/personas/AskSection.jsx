@@ -397,6 +397,7 @@ export default function AskSection() {
             ? { startUtc: slotAtSend.startUtc, hostDisplay: slotAtSend.hostDisplay }
             : null,
           triggerInterview: shouldTriggerInterview,
+          personality: personality?.id || null,
         }),
         signal: abortRef.current.signal,
       });
