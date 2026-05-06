@@ -11,11 +11,10 @@ const messageSchema = new mongoose.Schema({
 });
 
 // Require at least one of name or email
-messageSchema.pre('validate', function (next) {
+messageSchema.pre('validate', function () {
   if (!this.name && !this.email) {
-    return next(new Error('Either name or email is required.'));
+    throw new Error('Either name or email is required.');
   }
-  next();
 });
 
 export default mongoose.model('Message', messageSchema);
