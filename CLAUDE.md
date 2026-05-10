@@ -15,3 +15,22 @@ This is a new portfolio project. Documentation will be updated as the project de
 - No fancy English. No "which", "whom", "whilst", "upon" type words.
 - Don't sound like a writer, a poet, or a LinkedIn post.
 - Read it out loud. If it sounds weird saying it to a friend, rewrite it.
+
+## Things that have broken before
+
+Append one line per bug fix as they happen. Format: `- [symptom] → [root cause] → [the rule that prevents recurrence]`. This log is the highest-value section over time — no LLM training data replicates it.
+
+- `leave_message` failed with "next is not a function" → Mongoose 7+ removed callback-style `pre('validate', fn(next))` hooks → write hooks as `pre('validate', function() { throw ... })` or as `async`, never with a `next` parameter
+
+## Skills to actively use here
+
+Skills at `~/.claude/skills/` are auto-loaded. Most relevant for this project:
+- `self-review` — before claiming any non-trivial task done
+- `visual-test` — for any UI feature work
+- `design-review` — after generating new screens
+- `marketing-voice` — for user-facing copy
+- `persona-panel` — before naming, copy, pricing, or feature priority decisions
+- `prod-cost-floor` — at deploy review
+- `stack-pick` — if reconsidering the stack
+
+Add or remove from this list as the project's needs become clearer.
