@@ -14,6 +14,12 @@ const AskSection = lazy(() => import('./components/personas/AskSection'));
 const MessagesSection = lazy(() => import('./components/personas/MessagesSection'));
 const AssistantSection = lazy(() => import('./components/personas/AssistantSection'));
 
+// Case study pages (crawl-friendly, standalone routes)
+const TokopediaDiscovery = lazy(() => import('./components/case-studies/TokopediaDiscovery'));
+const EmiratesNbdPaymentTracker = lazy(() => import('./components/case-studies/EmiratesNbdPaymentTracker'));
+const WithloveAiAgent = lazy(() => import('./components/case-studies/WithloveAiAgent'));
+const Kokaihop3 = lazy(() => import('./components/case-studies/Kokaihop3'));
+
 // Route-to-persona mapping
 const PERSONA_ROUTES = [
   { path: '/about', persona: 'about' },
@@ -45,6 +51,10 @@ function App() {
           <Route path="/ask" element={<Suspense fallback={null}><AskSection /></Suspense>} />
           <Route path="/inbox" element={<Suspense fallback={null}><MessagesSection /></Suspense>} />
           <Route path="/me" element={<Suspense fallback={null}><AssistantSection /></Suspense>} />
+          <Route path="/work/tokopedia-discovery" element={<Suspense fallback={null}><TokopediaDiscovery /></Suspense>} />
+          <Route path="/work/emirates-nbd-payment-tracker" element={<Suspense fallback={null}><EmiratesNbdPaymentTracker /></Suspense>} />
+          <Route path="/work/withlove-ai-agent" element={<Suspense fallback={null}><WithloveAiAgent /></Suspense>} />
+          <Route path="/work/kokaihop-3" element={<Suspense fallback={null}><Kokaihop3 /></Suspense>} />
           <Route path="/*" element={<AppShell />} />
         </Routes>
       </TokenProvider>

@@ -23,6 +23,10 @@ const PORT = 4567;
 const ROUTES = [
   { path: '/', file: 'index.html' },
   { path: '/work', file: 'work/index.html' },
+  { path: '/work/tokopedia-discovery', file: 'work/tokopedia-discovery/index.html' },
+  { path: '/work/emirates-nbd-payment-tracker', file: 'work/emirates-nbd-payment-tracker/index.html' },
+  { path: '/work/withlove-ai-agent', file: 'work/withlove-ai-agent/index.html' },
+  { path: '/work/kokaihop-3', file: 'work/kokaihop-3/index.html' },
   { path: '/runner', file: 'runner/index.html' },
   { path: '/ventures', file: 'ventures/index.html' },
   { path: '/connect', file: 'connect/index.html' },

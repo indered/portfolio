@@ -125,6 +125,9 @@ export default function DeveloperSection() {
   return (
     <div className={styles.page} role="main">
 
+      {/* ── H1 — visually hidden, crawler friendly ── */}
+      <h1 className={styles.srOnly}>Mahesh Inder, Full Stack and AI Engineer in Dubai</h1>
+
       {/* ── INTRO LINE ── */}
       <div className={styles.intro}>
         <p>7+ years of full stack development across India, Indonesia and UAE.</p>

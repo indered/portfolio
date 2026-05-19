@@ -6,18 +6,46 @@ const DEFAULT_IMAGE = `${BASE_URL}/og-image.jpg`;
 
 const SEO_CONFIG = {
   default: {
-    title: 'Mahesh Inder | Full Stack Developer Dubai, React, Node.js, Software Engineer UAE',
-    description: 'Mahesh Inder is a Full Stack Developer based in Dubai, UAE. Specializing in React, Node.js, GraphQL, and cloud architecture. Featured twice at Google I/O. 7+ years building scalable systems.',
-    keywords: 'Mahesh Inder, Full Stack Developer Dubai, Software Engineer UAE, React Developer, Node.js Developer',
+    title: 'Mahesh Inder | Full Stack & AI Engineer in Dubai',
+    description: 'Mahesh Inder is a Full Stack Engineer and AI Engineer in Dubai. Building AI agents, real time payment systems, and scalable web platforms. Featured twice at Google I/O.',
+    keywords: 'Mahesh Inder, Full Stack Engineer Dubai, AI Engineer Dubai, Full Stack Developer Dubai, Software Engineer Dubai, AI Engineer, Full Stack Engineer, Engineer Dubai',
     canonical: BASE_URL,
     ogType: 'website',
   },
   work: {
-    title: 'Mahesh Inder | Developer Portfolio, Full Stack Engineer Dubai',
-    description: 'Senior Full Stack Developer at Emirates NBD with 7+ years experience. Expert in React, Node.js, GraphQL, Rust, and AWS. APIs featured twice at Google I/O.',
-    keywords: 'Mahesh Inder Developer, Full Stack Portfolio, React Developer Dubai, Node.js Engineer UAE, GraphQL Expert',
+    title: 'Mahesh Inder | Full Stack & AI Engineer, Work',
+    description: 'Senior Full Stack and AI Engineer in Dubai. 7+ years across Emirates NBD, Tokopedia, Noumena, and withlove.so. APIs featured twice at Google I/O.',
+    keywords: 'Mahesh Inder Work, Full Stack Engineer Dubai, AI Engineer Dubai, React Engineer, Node.js Engineer UAE, Rust Engineer',
     canonical: `${BASE_URL}/work`,
     ogType: 'profile',
+  },
+  'work/tokopedia-discovery': {
+    title: 'Tokopedia Discovery Engine | Mahesh Inder',
+    description: 'How I helped build product discovery APIs at Tokopedia that got featured at Google I/O twice. 87ms TTFB, React, Node, GraphQL, Go.',
+    keywords: 'Tokopedia Discovery, Mahesh Inder Tokopedia, Google I/O Tokopedia, Discovery APIs, Full Stack Engineer',
+    canonical: `${BASE_URL}/work/tokopedia-discovery`,
+    ogType: 'article',
+  },
+  'work/emirates-nbd-payment-tracker': {
+    title: 'Emirates NBD Payment Tracker | Mahesh Inder',
+    description: 'Real time payment tracking for the UAE on Rust, Kafka, and AWS Lambda. Sub millisecond paths, every dirham accounted for.',
+    keywords: 'Emirates NBD, Payment Tracker, Rust Kafka, AWS Lambda, Mahesh Inder, AI Engineer Dubai',
+    canonical: `${BASE_URL}/work/emirates-nbd-payment-tracker`,
+    ogType: 'article',
+  },
+  'work/withlove-ai-agent': {
+    title: 'withlove.so AI Agent | Mahesh Inder',
+    description: 'A personal AI agent that lives on your link, books your calendar, takes payment in the chat, and sounds like you. Solo build by Mahesh Inder.',
+    keywords: 'withlove.so, AI Agent, AI Engineer Dubai, RAG, Tool Calling, Mahesh Inder Founder',
+    canonical: `${BASE_URL}/work/withlove-ai-agent`,
+    ogType: 'article',
+  },
+  'work/kokaihop-3': {
+    title: 'Kokaihop 3.0 API Rebuild | Mahesh Inder',
+    description: 'Full API rebuild at To The New. 2,000 concurrent users, 20ms ElasticSearch search, RabbitMQ, Node cluster mode. Apollo Server + GraphQL.',
+    keywords: 'Kokaihop, To The New, Mahesh Inder, GraphQL Engineer, ElasticSearch, RabbitMQ, Full Stack Engineer',
+    canonical: `${BASE_URL}/work/kokaihop-3`,
+    ogType: 'article',
   },
   runner: {
     title: 'Mahesh Inder | Marathon Runner Dubai, Burj2Burj Finisher',

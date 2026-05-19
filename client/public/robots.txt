@@ -1,8 +1,83 @@
+# Mahesh Inder portfolio — open to crawlers, friendly to AI agents.
+
 User-agent: *
 Allow: /
-
 Disallow: /api/
 Disallow: /_*
+
+# OpenAI — ChatGPT browse, search, and training crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+# Anthropic — Claude
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+
+# Google — generative AI extension to Googlebot
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+
+# Apple — Apple Intelligence and Siri grounding
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /api/
+
+# Common Crawl — feeds many open models
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+
+# Meta — Llama family
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /api/
+
+User-agent: FacebookBot
+Allow: /
+Disallow: /api/
+
+# Bytespider
+User-agent: Bytespider
+Allow: /
+Disallow: /api/
+
+# Mistral
+User-agent: MistralAI-User
+Allow: /
+Disallow: /api/
+
+# DuckDuckGo
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /api/
 
 Sitemap: https://maheshinder.in/sitemap.xml
 Host: https://maheshinder.in

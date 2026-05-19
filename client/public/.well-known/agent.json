@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "0.1",
+  "name": "Mahesh Inder",
+  "displayName": "Mahesh Inder, Full Stack and AI Engineer",
+  "description": "Personal AI agent for Mahesh Inder, a Full Stack Engineer and AI Engineer based in Dubai. Answers questions about his work, projects, and availability. Can take messages and surface available booking slots from his real calendar.",
+  "url": "https://maheshinder.in/ask",
+  "homepage": "https://maheshinder.in",
+  "contact": "mahesh.inder85@gmail.com",
+  "owner": {
+    "name": "Mahesh Inder",
+    "url": "https://maheshinder.in",
+    "location": "Dubai, UAE"
+  },
+  "documentation": "https://maheshinder.in/llms.txt",
+  "categories": [
+    "Personal portfolio",
+    "AI agent",
+    "Conversational AI",
+    "Engineer profile"
+  ],
+  "languages": ["en"],
+  "capabilities": {
+    "chat": true,
+    "messages": true,
+    "booking": true,
+    "streaming": false
+  },
+  "endpoints": {
+    "chat": "https://maheshinder.in/api/chat",
+    "leaveMessage": "https://maheshinder.in/api/messages",
+    "availableSlots": "https://maheshinder.in/api/booking/slots"
+  },
+  "tools": [
+    {
+      "name": "chat",
+      "description": "Send a question to Mahesh Inder's AI assistant. The assistant knows his work history, projects, skills, availability, and writing voice. Returns a text reply and may surface structured suggestions for booking or contact.",
+      "method": "POST",
+      "url": "https://maheshinder.in/api/chat",
+      "inputSchema": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": { "type": "string", "maxLength": 500, "description": "The user question or message. Keep it under 500 characters." },
+          "sessionId": { "type": "string", "description": "Optional session id to maintain conversation continuity." },
+          "history": { "type": "array", "description": "Optional prior turns of the conversation as [{role, content}]." },
+          "bookerTimezone": { "type": "string", "description": "IANA timezone of the visitor, used when surfacing booking slots." }
+        }
+      }
+    },
+    {
+      "name": "leave_message",
+      "description": "Save a contact message for Mahesh Inder to read later. Use when the visitor wants to reach him asynchronously rather than chat.",
+      "method": "POST",
+      "url": "https://maheshinder.in/api/messages",
+      "inputSchema": {
+        "type": "object",
+        "required": ["name", "email", "message"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 100 },
+          "email": { "type": "string", "maxLength": 200, "format": "email" },
+          "message": { "type": "string", "maxLength": 2000 }
+        }
+      }
+    },
+    {
+      "name": "get_available_slots",
+      "description": "Fetch the next set of available booking slots from Mahesh Inder's real Google Calendar. Slots are returned with both UTC and visitor timezone formatting. No LLM call in this path, slots are deterministic.",
+      "method": "GET",
+      "url": "https://maheshinder.in/api/booking/slots",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tz": { "type": "string", "description": "IANA timezone of the booker, default UTC." }
+        }
+      }
+    }
+  ],
+  "links": {
+    "homepage": "https://maheshinder.in",
+    "work": "https://maheshinder.in/work",
+    "ask": "https://maheshinder.in/ask",
+    "sitemap": "https://maheshinder.in/sitemap.xml",
+    "llms": "https://maheshinder.in/llms.txt"
+  },
+  "sameAs": [
+    "https://github.com/indered",
+    "https://www.linkedin.com/in/mahesh-inder/",
+    "https://www.instagram.com/mahesh.inder_/"
+  ]
+}

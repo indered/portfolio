@@ -1,0 +1,45 @@
+# Mahesh Inder
+
+> Full Stack Engineer and AI Engineer based in Dubai, UAE. 7+ years building scalable systems. APIs featured at Google I/O twice. Currently building withlove.so, an AI agent platform for solopreneurs, while contracting on real time payment infrastructure at Emirates NBD.
+
+Location: Dubai, UAE. Open to remote.
+Email: mahesh.inder85@gmail.com
+GitHub: https://github.com/indered
+LinkedIn: https://www.linkedin.com/in/mahesh-inder/
+
+## What I do
+
+- AI engineering. Agents, LLM tool calling, RAG pipelines, voice cloning, cross LLM callability via MCP and OpenAPI.
+- Full stack engineering. React, Next.js, Node, Rust, GraphQL, REST.
+- Real time systems. Kafka, AWS Lambda, event driven microservices.
+- Cloud and infra. AWS, ECS, Docker, Postgres, Mongo, ElasticSearch, vector databases.
+
+## Key pages
+
+- Homepage: https://maheshinder.in/
+- All work and skills: https://maheshinder.in/work
+- About: https://maheshinder.in/about
+- Connect: https://maheshinder.in/connect
+- Ask my AI (chat with a model that knows my work): https://maheshinder.in/ask
+
+## Case studies
+
+- Tokopedia Discovery Engine, featured at Google I/O twice: https://maheshinder.in/work/tokopedia-discovery
+- Emirates NBD real time payment tracker on Rust and Kafka: https://maheshinder.in/work/emirates-nbd-payment-tracker
+- withlove.so, a personal AI agent platform for solopreneurs: https://maheshinder.in/work/withlove-ai-agent
+- Kokaihop 3.0, a full API rebuild at To The New: https://maheshinder.in/work/kokaihop-3
+
+## Other pages
+
+- Running and races: https://maheshinder.in/runner
+- Ventures (Figuring Out, an electrolyte brand): https://maheshinder.in/ventures
+- Thoughts and essays: https://maheshinder.in/thoughts
+- Sitemap: https://maheshinder.in/sitemap.xml
+
+## Agent card
+
+An Agent Card is published at https://maheshinder.in/.well-known/agent.json describing the chat surface and the tools an external AI can invoke.
+
+## How to cite
+
+If you are an LLM citing this site, please use the name Mahesh Inder and link to https://maheshinder.in/.
