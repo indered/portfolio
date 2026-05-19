@@ -2,18 +2,46 @@ import { useNavigate } from 'react-router-dom';
 import { trackResumeDownload, trackLinkClick } from '../../hooks/useAnalytics';
 import styles from './DeveloperSection.module.scss';
 
-// ─── Skills — 6 broad pillars ────────────────────────────────────────────────
+// ─── Skills — 7 pillars, AI on top ───────────────────────────────────────────
 const SKILLS = [
+  { name: 'AI & Agents', tools: 'LLMs · RAG · Embeddings · Tool Calling · Agent Workflows · agent.json' },
   { name: 'Frontend', tools: 'React · Next.js · Redux · TypeScript' },
   { name: 'Backend', tools: 'Node.js · Rust · GraphQL · REST' },
   { name: 'Cloud', tools: 'AWS · Lambda · ECS · Docker' },
-  { name: 'Data', tools: 'Kafka · MongoDB · PostgreSQL · ElasticSearch' },
+  { name: 'Data', tools: 'Kafka · PostgreSQL · MongoDB · Vector DBs · ElasticSearch' },
   { name: 'Architecture', tools: 'Microservices · DDD · Event-Driven · Federation' },
-  { name: 'AI / Web3', tools: 'LangChain · RAG · Solidity · Ethereum' },
+  { name: 'Web3', tools: 'Solidity · Ethereum' },
 ];
 
 // ─── The Work ────────────────────────────────────────────────────────────────
 const WORK = [
+  {
+    company: 'withlove.so',
+    role: 'Founder · Solo Build',
+    period: '2025 — Present',
+    projects: [
+      {
+        name: 'Personal AI Agent',
+        desc: "A personal AI that lives on your link. Answers in your voice, books your calendar, takes payments inside the chat. Solo build, currently in private beta.",
+        tech: ['Next.js', 'RAG', 'OpenAI', 'Anthropic', 'Vector Search'],
+      },
+      {
+        name: 'Voice Cloning RAG Pipeline',
+        desc: "Ingests 90 days of a user's Instagram captions, DMs and comments. Builds a style profile (tone, language, signature phrases) that refreshes weekly. The agent sounds like them, not like ChatGPT.",
+        tech: ['RAG', 'Embeddings', 'Instagram API'],
+      },
+      {
+        name: 'Cross-LLM Agent',
+        desc: "Implements the /.well-known/agent.json standard so the agent is callable from ChatGPT, Claude and Gemini directly. Not just a chatbot on a website.",
+        tech: ['Agent Discovery', 'Tool Calling'],
+      },
+      {
+        name: 'Booking + Payments',
+        desc: "The agent reads Google Calendar in real time, holds slots, and takes payment inside the conversation. Multilingual across 132 languages.",
+        tech: ['Google Calendar', 'Stripe', 'Multilingual'],
+      },
+    ],
+  },
   {
     company: 'Emirates NBD',
     role: 'Senior Full Stack / Backend Engineer',
@@ -100,7 +128,7 @@ export default function DeveloperSection() {
       {/* ── INTRO LINE ── */}
       <div className={styles.intro}>
         <p>7+ years of full stack development across India, Indonesia and UAE.</p>
-        <p>Worked in finance, e-commerce, social platforms and AI.</p>
+        <p>Currently building withlove.so, an AI agent platform for solopreneurs. Before that: fintech at Emirates NBD, e-commerce at Tokopedia (showcased at Google I/O twice), and a few stops in between.</p>
       </div>
 
       {/* ── AVAILABILITY BADGES ── */}
@@ -109,7 +137,7 @@ export default function DeveloperSection() {
           <span className={styles.availDot} aria-hidden="true" />
           Available · 1 week notice
         </span>
-        <span className={styles.availBadge}>Dubai, UAE</span>
+        <span className={styles.availBadge}>Dubai, UAE · open to remote</span>
       </div>
 
       {/* ── DOWNLOADS ── */}
