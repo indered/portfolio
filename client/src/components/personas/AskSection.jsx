@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { trackPageView, trackAskEvent } from '../../hooks/useAnalytics';
@@ -35,12 +35,31 @@ async function fetchWithRetry(url, opts = {}, { retries = 1, backoffMs = 500 } =
   }
   throw lastErr;
 }
-const SUGGESTIONS = [
+const SUGGESTION_POOL = [
+  'Is he open to new roles right now?',
+  "What's his notice period?",
+  'Expected compensation range?',
+  'Open to remote or relocation outside Dubai?',
+  'Years of experience and current title?',
+  'Main tech stack and strongest areas?',
+  'Can I get his resume?',
+  'Visa status and work authorization?',
+  'Full-time, contract, or both?',
+  'What kind of role is he looking for next?',
   'What does he build at Emirates NBD?',
   'Has he led a team or is he IC only?',
   'How did he go from clubs to running half marathons?',
-  BOOKING_CHIP,
 ];
+
+function pickSuggestions(count = 6) {
+  const pool = [...SUGGESTION_POOL];
+  const out = [];
+  while (out.length < count && pool.length) {
+    const i = Math.floor(Math.random() * pool.length);
+    out.push(pool.splice(i, 1)[0]);
+  }
+  return [...out, BOOKING_CHIP];
+}
 
 function formatTime(ts) {
   if (!ts) return '';
@@ -79,6 +98,7 @@ export default function AskSection() {
   const [searchParams] = useSearchParams();
   const sharedSessionId = searchParams.get('s');
   const chatSessionId = useRef(getChatSessionId(sharedSessionId));
+  const suggestions = useMemo(() => pickSuggestions(6), []);
   const [messages, setMessages] = useState(() => {
     try {
       const saved = sessionStorage.getItem(`_chat_${chatSessionId.current}`);
@@ -642,7 +662,7 @@ export default function AskSection() {
         <div className={styles.inputWrap}>
           {noUserMessagesYet && !loading && (
             <div className={styles.suggestions}>
-              {SUGGESTIONS.map((text, i) => (
+              {suggestions.map((text, i) => (
                 <button
                   key={i}
                   className={styles.chip}
