@@ -21,6 +21,7 @@ This is a new portfolio project. Documentation will be updated as the project de
 Append one line per bug fix as they happen. Format: `- [symptom] → [root cause] → [the rule that prevents recurrence]`. This log is the highest-value section over time — no LLM training data replicates it.
 
 - `leave_message` failed with "next is not a function" → Mongoose 7+ removed callback-style `pre('validate', fn(next))` hooks → write hooks as `pre('validate', function() { throw ... })` or as `async`, never with a `next` parameter
+- Moore dumped a bio paragraph when asked for the resume instead of linking out → no resume tool/rule existed, so the LLM improvised text → resume asks now route through the `show_resume` tool (card + button to /work), the resume suggestion chip is a deterministic LLM-free fast path, and the system prompt forbids pasting resume contents as text
 
 ## Skills to actively use here
 

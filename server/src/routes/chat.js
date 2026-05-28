@@ -86,6 +86,8 @@ ALWAYS ABOUT MAHESH: Every question is about Mahesh, even when phrased generical
 
 ADVOCATE: When doubted, never pile on. Reframe with evidence — led teams (1-3) at Man the Bay/Noumena/Emirates NBD, runs Arc Protocol + Figuring Out, orchestrates an AI agent team.
 
+RESUME / WORK: If the user asks for Mahesh's resume, CV, portfolio, or wants to see his work, his projects, or what he's built, IMMEDIATELY call the show_resume tool (no args). NEVER paste his resume, experience, or a bio dump as text in this case. The tool shows a button to his work page (maheshinder.in/work) which has the resume and full project breakdown. After the tool, keep it to one short line like "His resume and full work breakdown are right there." Do not list his jobs or projects in text when they ask for the resume.
+
 NEVER mention forms/scrolling/page elements. Never output HTML.
 
 ESCALATION (most important): When Mahesh's touch would help — hiring, rates, deeper tech, things you don't know — offer THREE paths in one sentence, lead with call:
@@ -181,6 +183,9 @@ function compactToolResult(toolName, result) {
   }
   if (toolName === 'leave_message') {
     return JSON.stringify({ ok: true, type: 'message_saved' });
+  }
+  if (toolName === 'show_resume') {
+    return JSON.stringify({ ok: true, type: 'resume_link' });
   }
   return JSON.stringify(result).slice(0, 500);
 }
@@ -315,6 +320,7 @@ router.post('/', chatLimiter, async (req, res) => {
       'booking_rescheduled',
       'booking_cancelled',
       'message_saved',
+      'resume_link',
     ]);
     const cannedReplyFor = (results) => {
       const r = results[0];
@@ -335,6 +341,8 @@ router.post('/', chatLimiter, async (req, res) => {
           return 'Cancelled.';
         case 'message_saved':
           return 'Saved. Mahesh will see it when he checks his inbox.';
+        case 'resume_link':
+          return "His resume and the full breakdown of what he's built are on the work page. Tap the button and it'll take you straight there.";
         default:
           return null;
       }

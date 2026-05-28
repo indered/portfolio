@@ -92,6 +92,18 @@ export const customerTools = [
   {
     type: 'function',
     function: {
+      name: 'show_resume',
+      description:
+        "Use whenever the user asks for Mahesh's resume, CV, portfolio, or wants to see his work, his projects, or what he's built. Surfaces a button that takes them to his work page (maheshinder.in/work), which holds the resume and the full project breakdown. Takes no arguments. NEVER paste resume or experience details as text — call this tool instead.",
+      parameters: {
+        type: 'object',
+        properties: {},
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
       name: 'leave_message',
       description:
         "Save a message for Mahesh to read later in his inbox. Use this when the user wants to send a note, introduction, feedback, or async thought — and doesn't want (or need) a live call. At minimum you need either a name OR an email. The message content is always required. Keep asking conversationally until you have the message + at least one identifier.",
@@ -130,6 +142,8 @@ export async function executeCustomerTool(name, args, ctx = {}) {
         return await handleCancelMeeting(safeArgs);
       case 'leave_message':
         return await handleLeaveMessage(safeArgs, ctx);
+      case 'show_resume':
+        return handleShowResume();
       default:
         return { ok: false, error: `Unknown tool: ${name}` };
     }
@@ -364,6 +378,17 @@ async function handleLeaveMessage(args, ctx) {
   } catch (e) {
     return { ok: false, error: `Could not save: ${e.message}` };
   }
+}
+
+// Pure UI tool: no DB, no external call. Just tells the frontend to render a
+// button that links to the work page (resume + full project breakdown live there).
+function handleShowResume() {
+  return {
+    ok: true,
+    type: 'resume_link',
+    url: '/work',
+    message: "Resume and the full work breakdown are on Mahesh's work page.",
+  };
 }
 
 async function handleCancelMeeting(args) {

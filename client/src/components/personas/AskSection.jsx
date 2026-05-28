@@ -12,6 +12,7 @@ const BOOKER_TIMEZONE =
     : 'UTC';
 
 const BOOKING_CHIP = 'Book a 30-min call with Mahesh';
+const RESUME_CHIP = 'Can I get his resume?';
 
 // Render free tier spins down after 15 min idle. Cold boots take 8-15s.
 // One silent retry on 5xx covers ~all transient failures without bothering the user.
@@ -359,6 +360,25 @@ export default function AskSection() {
     inputRef.current?.focus();
   }, [loading]);
 
+  // Fast path for the "Can I get his resume?" chip. Deterministic, zero LLM,
+  // zero chance of a flaky model dumping a bio instead of the link. Injects the
+  // resume card straight into the chat with a button to the work page.
+  const resumeDirect = useCallback(() => {
+    if (loading) return;
+    if (!isTrustedDevice) trackAskEvent('resume_shown', { via: 'chip' });
+    setMessages(prev => [
+      ...prev,
+      { role: 'user', content: RESUME_CHIP, time: Date.now() },
+      {
+        role: 'assistant',
+        content: "His resume and the full breakdown of what he's built live on the work page. Tap the button and it'll take you straight there.",
+        time: Date.now(),
+        toolOutputs: [{ tool: 'show_resume', result: { ok: true, type: 'resume_link', url: '/work' } }],
+      },
+    ]);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }, [loading, isTrustedDevice]);
+
   const send = useCallback(async (text) => {
     const msg = (text || input).trim();
     if (!msg || loading) return;
@@ -467,6 +487,8 @@ export default function AskSection() {
                     trackAskEvent('booking_confirmed', { slot: r.booking?.slot?.hostDisplay });
                   } else if (t === 'book_meeting' && r.type === 'booking_pending') {
                     trackAskEvent('booking_pending', { slot: r.booking?.slot?.hostDisplay });
+                  } else if (t === 'show_resume' && r.ok) {
+                    trackAskEvent('resume_shown', { via: 'chat' });
                   } else if (t === 'leave_message' && r.ok) {
                     trackAskEvent('message_saved', {});
                   } else if (t === 'cancel_meeting' && r.ok) {
@@ -673,6 +695,7 @@ export default function AskSection() {
                       idleTimerRef.current = null;
                     }
                     if (text === BOOKING_CHIP) bookDirect();
+                    else if (text === RESUME_CHIP) resumeDirect();
                     else send(text);
                   }}
                   style={{ animationDelay: `${0.1 + i * 0.08}s` }}
