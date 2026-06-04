@@ -19,6 +19,13 @@ const SEO_CONFIG = {
     canonical: `${BASE_URL}/work`,
     ogType: 'profile',
   },
+  resume: {
+    title: 'Mahesh Inder Resume | Full Stack & AI Engineer',
+    description: 'View or download the resume for Mahesh Inder, a Full Stack and AI Engineer based in Dubai.',
+    keywords: 'Mahesh Inder Resume, Mahesh Inder CV, Full Stack Engineer Resume Dubai, AI Engineer Resume',
+    canonical: `${BASE_URL}/resume`,
+    ogType: 'profile',
+  },
   'work/tokopedia-discovery': {
     title: 'Tokopedia Discovery Engine | Mahesh Inder',
     description: 'How I helped build product discovery APIs at Tokopedia that got featured at Google I/O twice. 87ms TTFB, React, Node, GraphQL, Go.',

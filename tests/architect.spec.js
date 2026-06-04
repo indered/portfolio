@@ -33,13 +33,13 @@ test.describe('Work (/work) Page', () => {
   });
 
   test('resume download button has correct href', async ({ page }) => {
-    const resumeLink = page.locator('a[href="/mahesh-inder-resume.pdf"]').first();
+    const resumeLink = page.locator('a[href="/resume/download"]').first();
     await expect(resumeLink).toBeVisible({ timeout: 6000 });
-    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Resume.pdf');
+    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Full_Stack_AI.pdf');
   });
 
-  test('skills section renders 6 skill cards', async ({ page }) => {
-    const skillNames = ['Frontend', 'Backend', 'Cloud', 'Data', 'Architecture', 'AI / Web3'];
+  test('skills section renders skill cards', async ({ page }) => {
+    const skillNames = ['AI & Agents', 'Frontend', 'Backend', 'Cloud', 'Data', 'Architecture', 'Web3'];
     for (const name of skillNames) {
       await expect(page.getByRole('heading', { level: 3, name })).toBeVisible({ timeout: 6000 });
     }

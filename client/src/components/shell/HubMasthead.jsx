@@ -192,13 +192,21 @@ export default function HubMasthead({ visible }) {
                   transition={{ duration: 0.18, ease: 'easeOut' }}
                 >
                   <a
-                    href="/mahesh-inder-resume.pdf"
-                    download="Mahesh_Inder_Resume.pdf"
+                    href="/resume"
+                    className={styles.menuItem}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <IconBriefcase />
+                    View resume
+                  </a>
+                  <a
+                    href="/resume/download"
+                    download="Mahesh_Inder_Full_Stack_AI.pdf"
                     className={styles.menuItem}
                     onClick={() => { trackResumeDownload(); setMenuOpen(false); }}
                   >
                     <IconDownload />
-                    Resume
+                    Download PDF
                   </a>
                 </motion.div>
               )}

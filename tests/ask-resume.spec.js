@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // When someone asks for the resume, Moore must NOT dump a bio. It must surface
-// a button that takes them to the work page (resume + full project breakdown).
+// a button that takes them to the resume page.
 test.describe('Ask (/ask) resume redirect', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.clear());
@@ -9,13 +9,13 @@ test.describe('Ask (/ask) resume redirect', () => {
     await page.route('**/api/chat/intro', (route) => route.abort());
   });
 
-  test('typed resume request renders a button that links to /work', async ({ page }) => {
+  test('typed resume request renders a button that links to /resume', async ({ page }) => {
     // Mock the chat stream: a show_resume tool output + a short in-voice line.
     await page.route('**/api/chat', (route) => {
       const body = [
-        'data: {"toolOutput":{"tool":"show_resume","result":{"ok":true,"type":"resume_link","url":"/work"}}}',
+        'data: {"toolOutput":{"tool":"show_resume","result":{"ok":true,"type":"resume_link","url":"/resume"}}}',
         '',
-        'data: {"token":"His resume and full work breakdown are right there."}',
+        'data: {"token":"His resume is ready to view or download."}',
         '',
         'data: [DONE]',
         '',
@@ -34,21 +34,21 @@ test.describe('Ask (/ask) resume redirect', () => {
     await input.fill('Can I get his resume?');
     await page.locator('button[aria-label="Send"]').click();
 
-    // The redirect button shows and points at the work page.
-    const workBtn = page.locator('a:has-text("View resume + work")');
-    await expect(workBtn).toBeVisible({ timeout: 8000 });
-    await expect(workBtn).toHaveAttribute('href', /\/work$/);
+    // The redirect button shows and points at the resume page.
+    const resumeBtn = page.locator('a:has-text("View resume")');
+    await expect(resumeBtn).toBeVisible({ timeout: 8000 });
+    await expect(resumeBtn).toHaveAttribute('href', /\/resume$/);
 
     // And Moore did not paste a bio dump in the bubble.
     await expect(page.locator('body')).not.toContainText('Emirates NBD now');
   });
 
-  test('clicking the redirect button navigates to /work', async ({ page }) => {
+  test('clicking the redirect button navigates to /resume', async ({ page }) => {
     await page.route('**/api/chat', (route) => {
       const body = [
-        'data: {"toolOutput":{"tool":"show_resume","result":{"ok":true,"type":"resume_link","url":"/work"}}}',
+        'data: {"toolOutput":{"tool":"show_resume","result":{"ok":true,"type":"resume_link","url":"/resume"}}}',
         '',
-        'data: {"token":"On the work page."}',
+        'data: {"token":"Resume is ready."}',
         '',
         'data: [DONE]',
         '',
@@ -61,9 +61,9 @@ test.describe('Ask (/ask) resume redirect', () => {
     await page.locator('input[placeholder*="Ask anything about"]').fill('resume please');
     await page.locator('button[aria-label="Send"]').click();
 
-    const workBtn = page.locator('a:has-text("View resume + work")');
-    await expect(workBtn).toBeVisible({ timeout: 8000 });
-    await workBtn.click();
-    await expect(page).toHaveURL(/\/work$/);
+    const resumeBtn = page.locator('a:has-text("View resume")');
+    await expect(resumeBtn).toBeVisible({ timeout: 8000 });
+    await resumeBtn.click();
+    await expect(page).toHaveURL(/\/resume$/);
   });
 });

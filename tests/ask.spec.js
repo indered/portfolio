@@ -17,15 +17,8 @@ test.describe('Ask (/ask) Page', () => {
   });
 
   test('suggestion chips are visible', async ({ page }) => {
-    const suggestions = [
-      'What does he build at Emirates NBD?',
-      'Has he led a team or is he IC only?',
-      'How did he go from clubs to running half marathons?',
-      'Book a 30-min call with Mahesh',
-    ];
-    for (const text of suggestions) {
-      await expect(page.locator(`button:has-text("${text}")`)).toBeVisible({ timeout: 4000 });
-    }
+    await expect(page.locator('button[class*="chip"]')).toHaveCount(7);
+    await expect(page.getByRole('button', { name: 'Book a 30-min call with Mahesh' })).toBeVisible({ timeout: 4000 });
   });
 
   test('chat input is visible, focusable and accepts text', async ({ page }) => {
@@ -48,8 +41,9 @@ test.describe('Ask (/ask) Page', () => {
   });
 
   test('resume download link exists in footer', async ({ page }) => {
-    const resumeLink = page.locator('a:has-text("Resume")');
+    const resumeLink = page.getByRole('link', { name: 'Download resume' });
     await expect(resumeLink).toBeVisible();
-    await expect(resumeLink).toHaveAttribute('href', /resume\.pdf$/);
+    await expect(resumeLink).toHaveAttribute('href', '/resume/download');
+    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Full_Stack_AI.pdf');
   });
 });

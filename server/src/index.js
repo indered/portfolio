@@ -68,6 +68,17 @@ app.use('/api/booking', bookingRoutes); // Direct slots endpoint (no LLM)
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.join(__dirname, '../../client/dist');
+  const resumePath = path.join(clientDist, 'mahesh-inder-resume.pdf');
+
+  app.get('/resume', (_req, res) => {
+    res.setHeader('Content-Disposition', 'inline; filename="Mahesh_Inder_Full_Stack_AI.pdf"');
+    res.sendFile(resumePath);
+  });
+
+  app.get('/resume/download', (_req, res) => {
+    res.download(resumePath, 'Mahesh_Inder_Full_Stack_AI.pdf');
+  });
+
   app.use(express.static(clientDist));
 
   // SPA fallback — try prerendered HTML first, then index.html

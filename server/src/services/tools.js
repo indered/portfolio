@@ -94,7 +94,7 @@ export const customerTools = [
     function: {
       name: 'show_resume',
       description:
-        "Use whenever the user asks for Mahesh's resume, CV, portfolio, or wants to see his work, his projects, or what he's built. Surfaces a button that takes them to his work page (maheshinder.in/work), which holds the resume and the full project breakdown. Takes no arguments. NEVER paste resume or experience details as text — call this tool instead.",
+        "Use whenever the user asks for Mahesh's resume, CV, portfolio, or wants to see his work, his projects, or what he's built. Surfaces a button that takes them to the resume page (maheshinder.in/resume), which has view and download options. Takes no arguments. NEVER paste resume or experience details as text — call this tool instead.",
       parameters: {
         type: 'object',
         properties: {},
@@ -381,13 +381,13 @@ async function handleLeaveMessage(args, ctx) {
 }
 
 // Pure UI tool: no DB, no external call. Just tells the frontend to render a
-// button that links to the work page (resume + full project breakdown live there).
+// button that links to the resume page.
 function handleShowResume() {
   return {
     ok: true,
     type: 'resume_link',
-    url: '/work',
-    message: "Resume and the full work breakdown are on Mahesh's work page.",
+    url: '/resume',
+    message: 'Resume view and download are ready.',
   };
 }
 

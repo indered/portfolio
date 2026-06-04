@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styles from './BookingCard.module.scss';
 
 export default function BookingCard({ toolOutput, onSlotPick, selectedStartUtc }) {
@@ -173,16 +172,16 @@ export default function BookingCard({ toolOutput, onSlotPick, selectedStartUtc }
     );
   }
 
-  // Resume / work page redirect
+  // Resume page redirect
   if (tool === 'show_resume' && result.type === 'resume_link') {
     return (
       <div className={styles.resumeCard}>
         <p className={styles.resumeText}>
-          His resume and the full breakdown of what he's built live on the work page.
+          His resume is ready to view or download.
         </p>
-        <Link to={result.url || '/work'} className={styles.resumeBtn}>
-          View resume + work →
-        </Link>
+        <a href={result.url || '/resume'} className={styles.resumeBtn}>
+          View resume
+        </a>
       </div>
     );
   }

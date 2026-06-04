@@ -277,9 +277,9 @@ test.describe('Ask page - Booking flow', () => {
     await mockChatRoute(page, () => streamTokens('hello'));
     await page.goto('/ask');
     await page.waitForTimeout(1000);
-    const resumeLink = page.locator('a:has-text("Resume")');
+    const resumeLink = page.getByRole('link', { name: 'Download resume' });
     await expect(resumeLink).toBeVisible();
-    await expect(resumeLink).toHaveAttribute('href', /resume\.pdf$/);
-    await expect(resumeLink).toHaveAttribute('download', '');
+    await expect(resumeLink).toHaveAttribute('href', '/resume/download');
+    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Full_Stack_AI.pdf');
   });
 });

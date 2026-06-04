@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { trackPageView, trackAskEvent } from '../../hooks/useAnalytics';
+import { trackPageView, trackAskEvent, trackResumeDownload } from '../../hooks/useAnalytics';
 import { useSEO } from '../../hooks/useSEO';
 import BookingCard from './BookingCard';
 import styles from './AskSection.module.scss';
@@ -362,7 +362,7 @@ export default function AskSection() {
 
   // Fast path for the "Can I get his resume?" chip. Deterministic, zero LLM,
   // zero chance of a flaky model dumping a bio instead of the link. Injects the
-  // resume card straight into the chat with a button to the work page.
+  // resume card straight into the chat with a button to the resume page.
   const resumeDirect = useCallback(() => {
     if (loading) return;
     if (!isTrustedDevice) trackAskEvent('resume_shown', { via: 'chip' });
@@ -371,9 +371,9 @@ export default function AskSection() {
       { role: 'user', content: RESUME_CHIP, time: Date.now() },
       {
         role: 'assistant',
-        content: "His resume and the full breakdown of what he's built live on the work page. Tap the button and it'll take you straight there.",
+        content: 'His resume is ready to view or download.',
         time: Date.now(),
-        toolOutputs: [{ tool: 'show_resume', result: { ok: true, type: 'resume_link', url: '/work' } }],
+        toolOutputs: [{ tool: 'show_resume', result: { ok: true, type: 'resume_link', url: '/resume' } }],
       },
     ]);
     setTimeout(() => inputRef.current?.focus(), 50);
@@ -761,11 +761,12 @@ export default function AskSection() {
             <p className={styles.disclaimer}>Answers based on Mahesh's resume and work history. Works in any language.</p>
             <div className={styles.footerActions}>
               <a
-                href="/mahesh-inder-resume.pdf"
-                download
+                href="/resume/download"
+                download="Mahesh_Inder_Full_Stack_AI.pdf"
                 className={styles.actionBtn}
+                onClick={trackResumeDownload}
               >
-                Resume ↓
+                Download resume
               </a>
               {messages.length > 0 && (
                 <button className={styles.actionBtn} onClick={copyConversation}>
