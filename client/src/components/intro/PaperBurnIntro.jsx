@@ -2,7 +2,6 @@ import { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import styles from './PaperBurnIntro.module.scss';
 
-const LETTER_FADE_IN = 600;
 const HOLD = 1800;
 const MERGE_DURATION = 1.8;
 const EXPAND_DURATION = 1.2;
@@ -16,38 +15,80 @@ const SAYINGS = [
   'the only thing faster than my code is how quickly they stop replying.',
 ];
 
+function splitReceiptLines(text) {
+  const sentenceParts = text
+    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((part) => part.trim())
+    .filter(Boolean) || [text];
+
+  const baseParts = sentenceParts.length > 1
+    ? sentenceParts
+    : text.split(/,\s+/).map((part, index, arr) => (
+        index < arr.length - 1 ? `${part},` : part
+      ));
+
+  return baseParts.flatMap((part) => {
+    if (part.length <= 34) return [part];
+
+    const lines = [];
+    let line = '';
+    for (const word of part.split(/\s+/)) {
+      const next = line ? `${line} ${word}` : word;
+      if (next.length > 34 && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = next;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  });
+}
+
 export default function PaperBurnIntro({ onComplete }) {
   const wrapperRef = useRef(null);
   const dotRef = useRef(null);
   const lettersRef = useRef([]);
+  const lineInnerRefs = useRef([]);
   const textContainerRef = useRef(null);
   const completedRef = useRef(false);
 
   const [text] = useState(() => SAYINGS[Math.floor(Math.random() * SAYINGS.length)]);
+  const lines = splitReceiptLines(text);
+  const letterCount = lines.reduce((sum, line) => sum + line.length, 0);
 
   // Reset refs array to match current text length
-  lettersRef.current.length = text.length;
+  lettersRef.current.length = letterCount;
+  lineInnerRefs.current.length = lines.length;
 
   const setLetterRef = useCallback((el, i) => {
     if (el) lettersRef.current[i] = el;
   }, []);
 
+  const setLineInnerRef = useCallback((el, i) => {
+    if (el) lineInnerRefs.current[i] = el;
+  }, []);
+
   const runAnimation = useCallback(() => {
     const wrapper = wrapperRef.current;
-    const letters = lettersRef.current;
+    const letters = lettersRef.current.filter(Boolean);
+    const lineInners = lineInnerRefs.current.filter(Boolean);
     const textContainer = textContainerRef.current;
     const dot = dotRef.current;
     if (!wrapper || letters.length === 0 || !dot) return;
 
-    // Phase 1: Fade in letters
-    gsap.fromTo(letters,
-      { opacity: 0, y: 8 },
+    gsap.set(letters, { opacity: 1, x: 0, y: 0, scale: 1, color: '#1a1a2e' });
+
+    // Phase 1: print each receipt row upward, then hand off to the collapse.
+    gsap.fromTo(lineInners,
+      { opacity: 0, yPercent: 115 },
       {
         opacity: 1,
-        y: 0,
-        duration: 0.5,
-        stagger: 0.025,
-        ease: 'power2.out',
+        yPercent: 0,
+        duration: 0.58,
+        stagger: 0.16,
+        ease: 'power3.out',
         onComplete: () => {
           gsap.delayedCall(HOLD / 1000, () => startMerge());
         }
@@ -122,17 +163,32 @@ export default function PaperBurnIntro({ onComplete }) {
     });
   }, [runAnimation]);
 
+  let letterIndex = 0;
+
   return (
     <div ref={wrapperRef} className={styles.wrapper}>
       <div ref={textContainerRef} className={styles.textContainer}>
-        {text.split('').map((char, i) => (
-          <span
-            key={i}
-            ref={(el) => setLetterRef(el, i)}
-            className={`${styles.letter} ${char === ' ' ? styles.space : ''}`}
-          >
-            {char === ' ' ? '\u00A0' : char}
-          </span>
+        {lines.map((line, lineIndex) => (
+          <div key={`${line}-${lineIndex}`} className={styles.receiptLine}>
+            <span
+              ref={(el) => setLineInnerRef(el, lineIndex)}
+              className={styles.receiptLineInner}
+            >
+              {line.split('').map((char) => {
+                const i = letterIndex;
+                letterIndex += 1;
+                return (
+                  <span
+                    key={i}
+                    ref={(el) => setLetterRef(el, i)}
+                    className={`${styles.letter} ${char === ' ' ? styles.space : ''}`}
+                  >
+                    {char === ' ' ? '\u00A0' : char}
+                  </span>
+                );
+              })}
+            </span>
+          </div>
         ))}
       </div>
       <div ref={dotRef} className={styles.dot} />

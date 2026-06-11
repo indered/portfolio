@@ -10,6 +10,7 @@ test.describe('Skip-to-solar-system button', () => {
 
   test('renders during intro with the correct label', async ({ page }) => {
     await page.goto('/');
+    await expect(page.locator('[class*="receiptLine"]').first()).toBeVisible({ timeout: 4000 });
     const skip = page.locator('button', { hasText: /skip to solar system/i });
     await expect(skip).toBeVisible({ timeout: 4000 });
   });

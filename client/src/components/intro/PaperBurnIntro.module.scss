@@ -11,13 +11,28 @@
 
 .textContainer {
   display: flex;
-  flex-wrap: nowrap;    // never break mid-word on any screen size
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 96vw;
-  gap: 0;
+  gap: 0.42em;
   z-index: 2;
   position: relative;
+}
+
+.receiptLine {
+  max-width: 96vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.receiptLineInner {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  will-change: transform, opacity;
 }
 
 .letter {
@@ -28,7 +43,7 @@
   letter-spacing: 0.14em;
   text-transform: lowercase;
   display: inline-block;
-  opacity: 0;
+  opacity: 1;
   will-change: transform, opacity, color;
   white-space: nowrap;
 
