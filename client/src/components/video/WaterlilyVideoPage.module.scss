@@ -306,14 +306,14 @@
   }
 }
 
-.playerMount {
+.playerShell {
   --player-scale: 1.12;
   width: 100%;
-  aspect-ratio: 16 / 13.9;
-  min-height: 432px;
+  aspect-ratio: 16 / 11.6;
   overflow: hidden;
   border-radius: 18px;
   background: #010204;
+  position: relative;
 
   @media (max-width: 980px) {
     --player-scale: 1.16;
@@ -327,7 +327,10 @@
     border-radius: 16px;
   }
 
+  :global(> div),
   :global(iframe) {
+    position: absolute;
+    inset: 0;
     width: calc(100% * var(--player-scale));
     height: calc(100% * var(--player-scale));
     border: 0;
@@ -336,6 +339,11 @@
         calc((100% - (100% * var(--player-scale))) / 2)
       );
   }
+}
+
+.playerHost {
+  width: 100%;
+  height: 100%;
 }
 
 .infoCard,

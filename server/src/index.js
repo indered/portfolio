@@ -44,6 +44,9 @@ app.use(
         "connect-src": ["'self'", "https://www.youtube.com", "https://s.ytimg.com"],
       },
     },
+    referrerPolicy: {
+      policy: 'strict-origin-when-cross-origin',
+    },
   })
 );
 app.use(cors());

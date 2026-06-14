@@ -172,6 +172,7 @@ export default function WaterlilyVideoPage() {
   useNoIndex();
 
   const playerHostId = useMemo(() => `youtube-player-${VIDEO_ID}`, []);
+  const playerShellRef = useRef(null);
   const [error, setError] = useState('');
   const [liked, setLiked] = useState(() => {
     try {
@@ -196,16 +197,23 @@ export default function WaterlilyVideoPage() {
         if (!isMounted) return;
         playerRef.current = new YT.Player(playerHostId, {
           videoId: VIDEO_ID,
+          host: 'https://www.youtube.com',
           playerVars: {
             autoplay: 0,
             modestbranding: 1,
             playsinline: 1,
             rel: 0,
             origin: window.location.origin,
+            widget_referrer: `${window.location.origin}${window.location.pathname}`,
           },
           events: {
             onReady: () => {
               if (!isMounted) return;
+              const iframe = playerShellRef.current?.querySelector('iframe');
+              if (iframe) {
+                iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+              }
               if (!hasTrackedImpressionRef.current) {
                 hasTrackedImpressionRef.current = true;
                 trackEvent('video_impression', {
@@ -270,9 +278,12 @@ export default function WaterlilyVideoPage() {
 
               lastPlaybackStateRef.current = nextState;
             },
-            onError: () => {
+            onError: (event) => {
               if (!isMounted) return;
-              setError('The video did not load here. Opening it on YouTube still works.');
+              const message = event?.data === 153
+                ? 'This browser is blocking the YouTube embed. Opening it on YouTube still works.'
+                : 'The video did not load here. Opening it on YouTube still works.';
+              setError(message);
             },
           },
         });
@@ -364,7 +375,9 @@ export default function WaterlilyVideoPage() {
         <section className={styles.content}>
           <div className={styles.playerColumn}>
             <div className={styles.playerSurface}>
-              <div id={playerHostId} className={styles.playerMount} />
+              <div className={styles.playerShell} ref={playerShellRef}>
+                <div id={playerHostId} className={styles.playerHost} />
+              </div>
             </div>
 
             <div className={styles.playerActions}>
