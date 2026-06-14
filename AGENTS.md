@@ -35,6 +35,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/waterlily-video` worked on localhost but showed a blank player in production → the Express `helmet` CSP blocked YouTube's iframe/API while the Vite dev server had no such restriction → any third-party embed that works locally must be checked against production CSP before shipping
 - `/waterlily-video` first painted at one height and then snapped smaller when YouTube loaded → the embed API replaced the sized host node, so the placeholder box and final iframe were not using the same layout shell → third-party media players should mount inside a permanent wrapper that owns sizing before and after hydration
 - `/video-stats` kept showing Mahesh's own mobile and desktop test sessions → IP exclusions alone missed rotating network addresses and device-level repeats → self-traffic filters should support both stable fingerprints and known IPs, and old rows should be purged once the exclusion list is updated
+- `/waterlily-video` got visually oversized on desktop after refactoring the player shell → the stable wrapper fixed the loading jump but kept an overly tall desktop aspect ratio → after stabilizing embeds, re-check the final steady-state proportions against the approved screenshot before shipping
 
 ## Skills to actively use here
 
