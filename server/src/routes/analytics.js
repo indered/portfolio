@@ -6,9 +6,22 @@ import { lookupIp } from '../services/ipLookup.js';
 const router = Router();
 
 const EXCLUDE_IPS = [
+  '127.0.0.1',
+  '::1',
+  '::ffff:127.0.0.1',
   '49.43.112.234',
   '2405:201:601b:e86d:d935:805b:f264:6b8a',
+  '49.43.112.74',
+  '117.99.81.228',
+  '117.99.80.201',
   ...(process.env.EXCLUDE_IPS || '').split(',').map(s => s.trim()).filter(Boolean),
+];
+
+const EXCLUDE_FINGERPRINTS = [
+  'f14e03e2',
+  '04ca7782',
+  'a94d5291',
+  ...(process.env.EXCLUDE_FINGERPRINTS || '').split(',').map(s => s.trim()).filter(Boolean),
 ];
 
 // /architect is an alias for /work — treat them as one so stats don't split.
@@ -42,11 +55,10 @@ function formatRelativeTime(from, to = new Date()) {
 }
 
 function withExcludedIps(filter = {}) {
-  if (!EXCLUDE_IPS.length) return filter;
-  return {
-    ...filter,
-    ip: { $nin: EXCLUDE_IPS },
-  };
+  const next = { ...filter };
+  if (EXCLUDE_IPS.length) next.ip = { $nin: EXCLUDE_IPS };
+  if (EXCLUDE_FINGERPRINTS.length) next.fingerprint = { $nin: EXCLUDE_FINGERPRINTS };
+  return next;
 }
 
 // POST /api/analytics/event
@@ -58,6 +70,7 @@ router.post('/event', async (req, res) => {
 
   const { type, route, planet, duration, sessionId, device, referrer, returnVisitor, meta, fingerprint } = req.body;
   if (!type || !sessionId) return;
+  if (typeof fingerprint === 'string' && EXCLUDE_FINGERPRINTS.includes(fingerprint.slice(0, 40))) return;
 
   // Fire and forget — don't block on the IP lookup; write the event either way
   let enrich = null;

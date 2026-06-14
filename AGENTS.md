@@ -34,6 +34,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/video-stats` still counted Mahesh's own visits after launch → ingress excluded self IPs, but the reporting query did not defensively filter stored self-traffic → private analytics views should reuse the self-IP exclusion rule at read time too
 - `/waterlily-video` worked on localhost but showed a blank player in production → the Express `helmet` CSP blocked YouTube's iframe/API while the Vite dev server had no such restriction → any third-party embed that works locally must be checked against production CSP before shipping
 - `/waterlily-video` first painted at one height and then snapped smaller when YouTube loaded → the embed API replaced the sized host node, so the placeholder box and final iframe were not using the same layout shell → third-party media players should mount inside a permanent wrapper that owns sizing before and after hydration
+- `/video-stats` kept showing Mahesh's own mobile and desktop test sessions → IP exclusions alone missed rotating network addresses and device-level repeats → self-traffic filters should support both stable fingerprints and known IPs, and old rows should be purged once the exclusion list is updated
 
 ## Skills to actively use here
 
