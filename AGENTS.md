@@ -32,6 +32,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/waterlily-video` showed heavy black side bands around the embedded player → the iframe was sized to fit instead of being zoomed and cropped for the page layout → media embeds on showcase pages should be tuned per breakpoint, not left at default iframe framing
 - `/waterlily-video` let the questions panel push the video off screen on desktop → the sidebar used normal page flow instead of a bounded internal scroll region → long desktop side panels beside pinned media should get their own max-height and overflow handling
 - `/video-stats` still counted Mahesh's own visits after launch → ingress excluded self IPs, but the reporting query did not defensively filter stored self-traffic → private analytics views should reuse the self-IP exclusion rule at read time too
+- `/waterlily-video` worked on localhost but showed a blank player in production → the Express `helmet` CSP blocked YouTube's iframe/API while the Vite dev server had no such restriction → any third-party embed that works locally must be checked against production CSP before shipping
 
 ## Skills to actively use here
 

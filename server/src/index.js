@@ -33,7 +33,19 @@ app.set('trust proxy', 1);
 connectDB();
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "script-src": ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://s.ytimg.com"],
+        "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+        "img-src": ["'self'", "data:", "blob:", "https://i.ytimg.com", "https://*.ytimg.com"],
+        "connect-src": ["'self'", "https://www.youtube.com", "https://s.ytimg.com"],
+      },
+    },
+  })
+);
 app.use(cors());
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true }));
