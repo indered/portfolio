@@ -286,6 +286,7 @@ router.get('/video-stats', requireAuth, async (req, res) => {
     const pageViewFilter = withExcludedIps({ type: 'page_view', route, createdAt: { $gte: since } });
     const playFilter = withExcludedIps({ type: 'video_play', route, 'meta.videoSlug': slug, createdAt: { $gte: since } });
     const completeFilter = withExcludedIps({ type: 'video_complete', route, 'meta.videoSlug': slug, createdAt: { $gte: since } });
+    const likeFilter = withExcludedIps({ type: 'video_like_toggle', route, 'meta.videoSlug': slug, createdAt: { $gte: since } });
 
     const [
       pageViews,
@@ -294,6 +295,9 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       uniquePlaySessions,
       uniqueViewers,
       completionSessions,
+      totalLikeToggles,
+      uniqueLikeSessions,
+      currentLikesRaw,
       topViewCountriesRaw,
       topViewCitiesRaw,
       dailyViewsRaw,
@@ -306,6 +310,8 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       topReferrersRaw,
       recentPlaysRaw,
       lastPlay,
+      recentLikesRaw,
+      lastLike,
     ] = await Promise.all([
       AnalyticsEvent.countDocuments(pageViewFilter),
       AnalyticsEvent.distinct('sessionId', pageViewFilter).then((items) => items.length),
@@ -313,6 +319,20 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       AnalyticsEvent.distinct('sessionId', playFilter).then((items) => items.length),
       AnalyticsEvent.distinct('fingerprint', { ...playFilter, fingerprint: { $ne: null } }).then((items) => items.length),
       AnalyticsEvent.distinct('sessionId', completeFilter).then((items) => items.length),
+      AnalyticsEvent.countDocuments(likeFilter),
+      AnalyticsEvent.distinct('sessionId', likeFilter).then((items) => items.length),
+      AnalyticsEvent.aggregate([
+        { $match: likeFilter },
+        { $sort: { sessionId: 1, createdAt: -1 } },
+        {
+          $group: {
+            _id: '$sessionId',
+            liked: { $first: '$meta.liked' },
+          },
+        },
+        { $match: { liked: true } },
+        { $count: 'count' },
+      ]),
       AnalyticsEvent.aggregate([
         { $match: { ...pageViewFilter, country: { $ne: null } } },
         { $group: { _id: '$country', count: { $sum: 1 } } },
@@ -386,6 +406,12 @@ router.get('/video-stats', requireAuth, async (req, res) => {
         .select('createdAt country city region device referrer meta')
         .lean(),
       AnalyticsEvent.findOne(playFilter).sort({ createdAt: -1 }).select('createdAt').lean(),
+      AnalyticsEvent.find(likeFilter)
+        .sort({ createdAt: -1 })
+        .limit(20)
+        .select('createdAt country city region device meta')
+        .lean(),
+      AnalyticsEvent.findOne(likeFilter).sort({ createdAt: -1 }).select('createdAt').lean(),
     ]);
 
     const playRate = uniquePageSessions > 0
@@ -404,6 +430,10 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       totalPlays,
       uniquePlaySessions,
       uniqueViewers,
+      currentLikes: currentLikesRaw[0]?.count || 0,
+      totalLikeToggles,
+      uniqueLikeSessions,
+      lastLikeAgo: lastLike?.createdAt ? formatRelativeTime(lastLike.createdAt, now) : null,
       lastViewAgo: lastView?.createdAt ? formatRelativeTime(lastView.createdAt, now) : null,
       playRate,
       completionRate,
@@ -455,6 +485,17 @@ router.get('/video-stats', requireAuth, async (req, res) => {
         startedAt: `${Math.round(item.meta?.currentSecond || 0)}s`,
       })),
       lastPlayAgo: lastPlay?.createdAt ? formatRelativeTime(lastPlay.createdAt, now) : null,
+      recentLikes: recentLikesRaw.map((item) => ({
+        id: `${item._id}`,
+        when: new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+          timeZone: 'Asia/Kolkata',
+        }).format(item.createdAt),
+        location: [item.city, item.region, item.country].filter(Boolean).join(', ') || 'Unknown',
+        device: item.device || 'unknown',
+        action: item.meta?.liked ? 'Liked' : 'Unliked',
+      })),
     });
   } catch (err) {
     res.status(500).json({ error: 'Video stats unavailable' });

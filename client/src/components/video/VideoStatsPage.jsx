@@ -201,6 +201,8 @@ export default function VideoStatsPage() {
             <MetricCard label="Page visits" value={data.pageViews} hint={`${data.uniquePageSessions} unique sessions`} />
             <MetricCard label="Plays" value={data.totalPlays} hint={`${data.uniquePlaySessions} play sessions`} />
             <MetricCard label="Unique viewers" value={data.uniqueViewers} />
+            <MetricCard label="Current likes" value={data.currentLikes} hint={`${data.uniqueLikeSessions} like sessions`} />
+            <MetricCard label="Like toggles" value={data.totalLikeToggles} hint={data.lastLikeAgo || 'No likes yet'} />
             <MetricCard label="Last view" value={data.lastViewAgo || 'No views yet'} />
             <MetricCard label="Play rate" value={`${data.playRate}%`} hint="Sessions that pressed play" />
             <MetricCard label="Completion rate" value={`${data.completionRate}%`} hint="Play sessions that finished" />
@@ -308,6 +310,36 @@ export default function VideoStatsPage() {
               </div>
             ) : (
               <p className={styles.empty}>No plays yet.</p>
+            )}
+          </section>
+
+          <section className={styles.panel}>
+            <h2 className={styles.panelTitle}>Recent likes</h2>
+            {data.recentLikes?.length ? (
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>When</th>
+                      <th>Location</th>
+                      <th>Device</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.recentLikes.map((like) => (
+                      <tr key={like.id}>
+                        <td>{like.when}</td>
+                        <td>{like.location}</td>
+                        <td>{like.device}</td>
+                        <td>{like.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className={styles.empty}>No like activity yet.</p>
             )}
           </section>
         </>
