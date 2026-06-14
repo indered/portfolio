@@ -31,6 +31,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/waterlily-video` duplicated quick links on mobile and crowded the page below the player → the desktop quick-link row was kept unchanged at small breakpoints → mobile-only secondary actions should collapse into the top `More` menu when the video is the main focus
 - `/waterlily-video` showed heavy black side bands around the embedded player → the iframe was sized to fit instead of being zoomed and cropped for the page layout → media embeds on showcase pages should be tuned per breakpoint, not left at default iframe framing
 - `/waterlily-video` let the questions panel push the video off screen on desktop → the sidebar used normal page flow instead of a bounded internal scroll region → long desktop side panels beside pinned media should get their own max-height and overflow handling
+- `/video-stats` still counted Mahesh's own visits after launch → ingress excluded self IPs, but the reporting query did not defensively filter stored self-traffic → private analytics views should reuse the self-IP exclusion rule at read time too
 
 ## Skills to actively use here
 

@@ -41,6 +41,14 @@ function formatRelativeTime(from, to = new Date()) {
   return rtf.format(diffDays, 'day');
 }
 
+function withExcludedIps(filter = {}) {
+  if (!EXCLUDE_IPS.length) return filter;
+  return {
+    ...filter,
+    ip: { $nin: EXCLUDE_IPS },
+  };
+}
+
 // POST /api/analytics/event
 router.post('/event', async (req, res) => {
   res.status(202).json({ ok: true });
@@ -261,10 +269,10 @@ router.get('/video-stats', requireAuth, async (req, res) => {
     const since = new Date(now - windowDays * 24 * 60 * 60 * 1000);
     const slug = String(req.query.slug || 'waterlily-video');
     const route = slug.startsWith('/') ? slug : `/${slug}`;
-    const pageFilter = { route, createdAt: { $gte: since } };
-    const pageViewFilter = { type: 'page_view', ...pageFilter };
-    const playFilter = { type: 'video_play', route, 'meta.videoSlug': slug, createdAt: { $gte: since } };
-    const completeFilter = { type: 'video_complete', route, 'meta.videoSlug': slug, createdAt: { $gte: since } };
+    const pageFilter = withExcludedIps({ route, createdAt: { $gte: since } });
+    const pageViewFilter = withExcludedIps({ type: 'page_view', route, createdAt: { $gte: since } });
+    const playFilter = withExcludedIps({ type: 'video_play', route, 'meta.videoSlug': slug, createdAt: { $gte: since } });
+    const completeFilter = withExcludedIps({ type: 'video_complete', route, 'meta.videoSlug': slug, createdAt: { $gte: since } });
 
     const [
       pageViews,
@@ -349,7 +357,7 @@ router.get('/video-stats', requireAuth, async (req, res) => {
         { $limit: 8 },
       ]),
       AnalyticsEvent.aggregate([
-        { $match: { type: 'video_progress', route, 'meta.videoSlug': slug, createdAt: { $gte: since } } },
+        { $match: withExcludedIps({ type: 'video_progress', route, 'meta.videoSlug': slug, createdAt: { $gte: since } }) },
         { $group: { _id: '$meta.milestone', count: { $sum: 1 } } },
         { $sort: { _id: 1 } },
       ]),
