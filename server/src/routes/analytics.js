@@ -21,6 +21,26 @@ function normalizePlanet(planet) {
   return planet;
 }
 
+function requireAuth(req, res, next) {
+  const pin = req.headers['x-pin'] || req.query.pin;
+  if (!pin || pin !== process.env.INBOX_PIN) {
+    return res.status(401).json({ error: 'Invalid PIN.' });
+  }
+  next();
+}
+
+function formatRelativeTime(from, to = new Date()) {
+  const diffMinutes = Math.round((from.getTime() - to.getTime()) / (60 * 1000));
+  const absMinutes = Math.abs(diffMinutes);
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+  if (absMinutes < 60) return rtf.format(diffMinutes, 'minute');
+  const diffHours = Math.round(diffMinutes / 60);
+  if (Math.abs(diffHours) < 48) return rtf.format(diffHours, 'hour');
+  const diffDays = Math.round(diffHours / 24);
+  return rtf.format(diffDays, 'day');
+}
+
 // POST /api/analytics/event
 router.post('/event', async (req, res) => {
   res.status(202).json({ ok: true });
@@ -231,6 +251,192 @@ router.get('/stats', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Stats unavailable' });
+  }
+});
+
+router.get('/video-stats', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const windowDays = 90;
+    const since = new Date(now - windowDays * 24 * 60 * 60 * 1000);
+    const slug = String(req.query.slug || 'waterlily-video');
+    const route = slug.startsWith('/') ? slug : `/${slug}`;
+    const pageFilter = { route, createdAt: { $gte: since } };
+    const pageViewFilter = { type: 'page_view', ...pageFilter };
+    const playFilter = { type: 'video_play', route, 'meta.videoSlug': slug, createdAt: { $gte: since } };
+    const completeFilter = { type: 'video_complete', route, 'meta.videoSlug': slug, createdAt: { $gte: since } };
+
+    const [
+      pageViews,
+      uniquePageSessions,
+      totalPlays,
+      uniquePlaySessions,
+      uniqueViewers,
+      completionSessions,
+      topViewCountriesRaw,
+      topViewCitiesRaw,
+      dailyViewsRaw,
+      viewHoursRaw,
+      recentViewsRaw,
+      lastView,
+      topPlayCountriesRaw,
+      topPlayCitiesRaw,
+      progressMilestonesRaw,
+      topReferrersRaw,
+      recentPlaysRaw,
+      lastPlay,
+    ] = await Promise.all([
+      AnalyticsEvent.countDocuments(pageViewFilter),
+      AnalyticsEvent.distinct('sessionId', pageViewFilter).then((items) => items.length),
+      AnalyticsEvent.countDocuments(playFilter),
+      AnalyticsEvent.distinct('sessionId', playFilter).then((items) => items.length),
+      AnalyticsEvent.distinct('fingerprint', { ...playFilter, fingerprint: { $ne: null } }).then((items) => items.length),
+      AnalyticsEvent.distinct('sessionId', completeFilter).then((items) => items.length),
+      AnalyticsEvent.aggregate([
+        { $match: { ...pageViewFilter, country: { $ne: null } } },
+        { $group: { _id: '$country', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: { ...pageViewFilter, city: { $ne: null } } },
+        {
+          $group: {
+            _id: {
+              city: '$city',
+              country: '$country',
+            },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: pageViewFilter },
+        { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: pageViewFilter },
+        { $group: { _id: { $hour: '$createdAt' }, count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+      AnalyticsEvent.find(pageViewFilter)
+        .sort({ createdAt: -1 })
+        .limit(20)
+        .select('createdAt country city region device referrer')
+        .lean(),
+      AnalyticsEvent.findOne(pageViewFilter).sort({ createdAt: -1 }).select('createdAt').lean(),
+      AnalyticsEvent.aggregate([
+        { $match: { ...playFilter, country: { $ne: null } } },
+        { $group: { _id: '$country', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: { ...playFilter, city: { $ne: null } } },
+        {
+          $group: {
+            _id: {
+              city: '$city',
+              country: '$country',
+            },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'video_progress', route, 'meta.videoSlug': slug, createdAt: { $gte: since } } },
+        { $group: { _id: '$meta.milestone', count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: { ...playFilter, referrer: { $ne: null } } },
+        { $group: { _id: '$referrer', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.find(playFilter)
+        .sort({ createdAt: -1 })
+        .limit(20)
+        .select('createdAt country city region device referrer meta')
+        .lean(),
+      AnalyticsEvent.findOne(playFilter).sort({ createdAt: -1 }).select('createdAt').lean(),
+    ]);
+
+    const playRate = uniquePageSessions > 0
+      ? Math.round((uniquePlaySessions / uniquePageSessions) * 100)
+      : 0;
+    const completionRate = uniquePlaySessions > 0
+      ? Math.round((completionSessions / uniquePlaySessions) * 100)
+      : 0;
+
+    res.json({
+      slug,
+      route,
+      windowDays,
+      pageViews,
+      uniquePageSessions,
+      totalPlays,
+      uniquePlaySessions,
+      uniqueViewers,
+      lastViewAgo: lastView?.createdAt ? formatRelativeTime(lastView.createdAt, now) : null,
+      playRate,
+      completionRate,
+      topViewCountries: topViewCountriesRaw.map((item) => ({ label: item._id, count: item.count })),
+      topViewCities: topViewCitiesRaw.map((item) => ({
+        label: [item._id.city, item._id.country].filter(Boolean).join(', '),
+        count: item.count,
+      })),
+      dailyViews: dailyViewsRaw.map((item) => ({
+        label: item._id,
+        shortLabel: item._id.slice(5),
+        count: item.count,
+      })),
+      hourlyViews: viewHoursRaw.map((item) => ({
+        label: `${String(item._id).padStart(2, '0')}:00`,
+        count: item.count,
+      })),
+      recentViews: recentViewsRaw.map((item) => ({
+        id: `${item._id}`,
+        when: new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+          timeZone: 'Asia/Kolkata',
+        }).format(item.createdAt),
+        location: [item.city, item.region, item.country].filter(Boolean).join(', ') || 'Unknown',
+        device: item.device || 'unknown',
+        referrer: item.referrer || 'Direct',
+      })),
+      topPlayCountries: topPlayCountriesRaw.map((item) => ({ label: item._id, count: item.count })),
+      topPlayCities: topPlayCitiesRaw.map((item) => ({
+        label: [item._id.city, item._id.country].filter(Boolean).join(', '),
+        count: item.count,
+      })),
+      progressMilestones: progressMilestonesRaw.map((item) => ({
+        label: `${item._id}%`,
+        count: item.count,
+      })),
+      topReferrers: topReferrersRaw.map((item) => ({ label: item._id, count: item.count })),
+      recentPlays: recentPlaysRaw.map((item) => ({
+        id: `${item._id}`,
+        when: new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+          timeZone: 'Asia/Kolkata',
+        }).format(item.createdAt),
+        location: [item.city, item.region, item.country].filter(Boolean).join(', ') || 'Unknown',
+        device: item.device || 'unknown',
+        referrer: item.referrer || 'Direct',
+        startedAt: `${Math.round(item.meta?.currentSecond || 0)}s`,
+      })),
+      lastPlayAgo: lastPlay?.createdAt ? formatRelativeTime(lastPlay.createdAt, now) : null,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Video stats unavailable' });
   }
 });
 

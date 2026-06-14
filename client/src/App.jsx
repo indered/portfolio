@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { TokenProvider } from './context/TokenContext';
@@ -13,6 +13,8 @@ const CursorShowcase = lazy(() => import('./components/layout/CursorShowcase'));
 const AskSection = lazy(() => import('./components/personas/AskSection'));
 const MessagesSection = lazy(() => import('./components/personas/MessagesSection'));
 const AssistantSection = lazy(() => import('./components/personas/AssistantSection'));
+const WaterlilyVideoPage = lazy(() => import('./components/video/WaterlilyVideoPage'));
+const VideoStatsPage = lazy(() => import('./components/video/VideoStatsPage'));
 
 // Case study pages (crawl-friendly, standalone routes)
 const TokopediaDiscovery = lazy(() => import('./components/case-studies/TokopediaDiscovery'));
@@ -31,6 +33,27 @@ const PERSONA_ROUTES = [
   { path: '/thoughts', persona: 'thoughts' },
 ];
 
+function ResumeViewRedirect() {
+  return (
+    <iframe
+      src="/mahesh-inder-resume.pdf"
+      title="Mahesh Inder resume"
+      style={{ width: '100vw', height: '100vh', border: 0, display: 'block', background: '#0b1020' }}
+    />
+  );
+}
+
+function ResumeDownloadRedirect() {
+  useEffect(() => {
+    const link = document.createElement('a');
+    link.href = '/mahesh-inder-resume.pdf';
+    link.download = 'Mahesh_Inder_Full_Stack_AI.pdf';
+    link.click();
+  }, []);
+
+  return null;
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -48,9 +71,13 @@ function App() {
           <Route path="/stats" element={<Suspense fallback={null}><StatsSection /></Suspense>} />
           <Route path="/live" element={<Suspense fallback={null}><LiveSection /></Suspense>} />
           <Route path="/cursors/:id?" element={<Suspense fallback={null}><CursorShowcase /></Suspense>} />
+          <Route path="/resume" element={<ResumeViewRedirect />} />
+          <Route path="/resume/download" element={<ResumeDownloadRedirect />} />
           <Route path="/ask" element={<Suspense fallback={null}><AskSection /></Suspense>} />
           <Route path="/inbox" element={<Suspense fallback={null}><MessagesSection /></Suspense>} />
           <Route path="/me" element={<Suspense fallback={null}><AssistantSection /></Suspense>} />
+          <Route path="/waterlily-video" element={<Suspense fallback={null}><WaterlilyVideoPage /></Suspense>} />
+          <Route path="/video-stats" element={<Suspense fallback={null}><VideoStatsPage /></Suspense>} />
           <Route path="/work/tokopedia-discovery" element={<Suspense fallback={null}><TokopediaDiscovery /></Suspense>} />
           <Route path="/work/emirates-nbd-payment-tracker" element={<Suspense fallback={null}><EmiratesNbdPaymentTracker /></Suspense>} />
           <Route path="/work/withlove-ai-agent" element={<Suspense fallback={null}><WithloveAiAgent /></Suspense>} />

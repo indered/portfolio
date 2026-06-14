@@ -26,6 +26,20 @@ const SEO_CONFIG = {
     canonical: `${BASE_URL}/resume`,
     ogType: 'profile',
   },
+  'waterlily-video': {
+    title: 'Waterlily Interview Video | Mahesh Inder',
+    description: 'Watch Mahesh Inder’s interview video prepared for Waterlily.',
+    keywords: 'Mahesh Inder Waterlily interview video',
+    canonical: `${BASE_URL}/waterlily-video`,
+    ogType: 'video.other',
+  },
+  'video-stats': {
+    title: 'Waterlily Video Stats | Mahesh Inder',
+    description: 'Private analytics for the Waterlily interview video.',
+    keywords: 'Mahesh Inder private video analytics',
+    canonical: `${BASE_URL}/video-stats`,
+    ogType: 'website',
+  },
   'work/tokopedia-discovery': {
     title: 'Tokopedia Discovery Engine | Mahesh Inder',
     description: 'How I helped build product discovery APIs at Tokopedia that got featured at Google I/O twice. 87ms TTFB, React, Node, GraphQL, Go.',

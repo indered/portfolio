@@ -86,6 +86,10 @@ export function trackPageView(route) {
   send({ type: 'page_view', route });
 }
 
+export function trackEvent(type, data = {}) {
+  send({ type, ...data });
+}
+
 export function trackPlanetClick(planet) {
   send({ type: 'planet_click', planet });
 }

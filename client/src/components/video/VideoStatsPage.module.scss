@@ -1,0 +1,293 @@
+.page {
+  min-height: 100vh;
+  background: #fafaf8;
+  color: #111111;
+  padding: 28px 18px 56px;
+}
+
+.gate,
+.header,
+.metricGrid,
+.panelGrid,
+.loading,
+.error {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gate {
+  padding-top: 12vh;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.02;
+  color: #111111;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 40rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.form {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pinInput,
+.submitButton,
+.ghostButton {
+  min-height: 46px;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.pinInput {
+  width: min(320px, 100%);
+  border: 1px solid #d1d5db;
+  padding: 0 14px;
+  background: #ffffff;
+}
+
+.submitButton,
+.ghostButton {
+  border: 1px solid #111111;
+  padding: 0 16px;
+  background: #111111;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.ghostButton {
+  background: transparent;
+  color: #111111;
+}
+
+.loading,
+.error {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d4d4d4;
+  border: 1px solid #d4d4d4;
+  margin-bottom: 20px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 960px) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.metricValue {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.metricLabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.metricHint {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.panelGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  width: 100%;
+  max-width: 1080px;
+  border: 1px solid #d4d4d4;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.panelTitle {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #111111;
+}
+
+.empty {
+  margin: 0;
+  color: #6b7280;
+}
+
+.barList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(100px, 180px) minmax(0, 1fr) 44px;
+  gap: 12px;
+  align-items: center;
+}
+
+.barLabel,
+.barCount {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.barLabel {
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  min-width: 4px;
+  background: #2563eb;
+}
+
+.miniBars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
+  gap: 10px;
+  align-items: end;
+  min-height: 180px;
+}
+
+.miniBarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.miniBarCol {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 3px;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.miniBarFill {
+  width: 100%;
+  min-height: 8px;
+  border-radius: 4px 4px 0 0;
+  background: #2563eb;
+}
+
+.miniBarLabel,
+.miniBarCount {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #6b7280;
+}
+
+.miniBarLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+  }
+
+  th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+}
