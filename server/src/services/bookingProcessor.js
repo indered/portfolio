@@ -3,25 +3,36 @@
 // Lets the chat respond instantly without waiting on Google's API.
 
 import Booking from '../models/Booking.js';
-import { createEvent } from './googleCalendar.js';
+import { classifyCalendarWriteError, createEvent } from './googleCalendar.js';
 
 const MAX_ATTEMPTS = 5;
 
 export async function processPendingBookings() {
-  const pending = await Booking.find({
-    status: 'pending',
-    attempts: { $lt: MAX_ATTEMPTS },
-  })
-    .sort({ createdAt: 1 })
-    .limit(20)
-    .lean();
-
-  if (pending.length === 0) return { processed: 0, succeeded: 0, failed: 0 };
-
+  let processed = 0;
   let succeeded = 0;
   let failed = 0;
 
-  for (const b of pending) {
+  for (let i = 0; i < 20; i++) {
+    const b = await Booking.findOneAndUpdate(
+      {
+        status: 'pending',
+        attempts: { $lt: MAX_ATTEMPTS },
+      },
+      {
+        $set: {
+          status: 'processing',
+          updatedAt: new Date(),
+        },
+      },
+      {
+        sort: { createdAt: 1 },
+        new: true,
+      },
+    ).lean();
+
+    if (!b) break;
+    processed++;
+
     try {
       const eventData = await createEvent({
         startUtc: b.startTimeUtc,
@@ -41,8 +52,9 @@ export async function processPendingBookings() {
       });
       succeeded++;
     } catch (err) {
+      const classification = classifyCalendarWriteError(err);
       const newAttempts = (b.attempts || 0) + 1;
-      const reachedMax = newAttempts >= MAX_ATTEMPTS;
+      const reachedMax = newAttempts >= MAX_ATTEMPTS || !classification.retryable;
       await Booking.findByIdAndUpdate(b._id, {
         $set: {
           status: reachedMax ? 'failed' : 'pending',
@@ -56,6 +68,6 @@ export async function processPendingBookings() {
     }
   }
 
-  console.log(`[bookingProcessor] processed=${pending.length} succeeded=${succeeded} failed=${failed}`);
-  return { processed: pending.length, succeeded, failed };
+  console.log(`[bookingProcessor] processed=${processed} succeeded=${succeeded} failed=${failed}`);
+  return { processed, succeeded, failed };
 }

@@ -7,6 +7,33 @@ let oauth2Client = null;
 let calendar = null;
 let gmail = null;
 
+export function classifyCalendarWriteError(error) {
+  const message = String(error?.message || error || '').toLowerCase();
+  const nonRetryableMarkers = [
+    'invalid_grant',
+    'invalid_client',
+    'unauthorized_client',
+    'access_denied',
+    'insufficient authentication scopes',
+    'oauth not configured',
+    'refresh token',
+    'invalid credentials',
+  ];
+
+  if (nonRetryableMarkers.some((marker) => message.includes(marker))) {
+    return {
+      retryable: false,
+      userMessage:
+        'Booking is temporarily unavailable right now because the calendar connection needs attention. No invite was created. Please try again later or leave a message instead.',
+    };
+  }
+
+  return {
+    retryable: true,
+    userMessage: 'Could not create the calendar invite right now.',
+  };
+}
+
 function getOAuth() {
   if (oauth2Client) return oauth2Client;
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -85,7 +112,7 @@ export async function findSuggestedSlots(count = 4, fromUtc = new Date()) {
 
   // ONE Mongo query for all confirmed/pending bookings in the range
   const mongoBookings = await Booking.find({
-    status: { $in: ['confirmed', 'pending'] },
+    status: { $in: ['confirmed', 'pending', 'processing'] },
     startTimeUtc: { $lt: rangeEnd.toUTC().toJSDate() },
     endTimeUtc: { $gt: rangeStart.toUTC().toJSDate() },
   }, { startTimeUtc: 1, endTimeUtc: 1 }).lean();

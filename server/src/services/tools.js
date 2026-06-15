@@ -5,6 +5,7 @@ import {
   createEvent,
   updateEvent,
   deleteEvent,
+  classifyCalendarWriteError,
 } from './googleCalendar.js';
 import { validateSlot, MEETING_DURATION_MIN } from './validation.js';
 import { formatSlotDual, parseBookerInput } from './timezone.js';
@@ -246,7 +247,12 @@ async function handleBookMeeting(args, bookerTz, ctx) {
       synchronous = true;
     }
   } catch (e) {
-    // Sync attempt failed — fall through to pending
+    const classification = classifyCalendarWriteError(e);
+    if (!classification.retryable) {
+      console.error('book_meeting hard failure:', e.message);
+      return { ok: false, error: classification.userMessage };
+    }
+    // Sync attempt failed transiently — fall through to pending
     console.error('book_meeting sync attempt failed:', e.message);
   }
 

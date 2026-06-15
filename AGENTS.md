@@ -37,6 +37,8 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/video-stats` kept showing Mahesh's own mobile and desktop test sessions → IP exclusions alone missed rotating network addresses and device-level repeats → self-traffic filters should support both stable fingerprints and known IPs, and old rows should be purged once the exclusion list is updated
 - `/waterlily-video` got visually oversized on desktop after refactoring the player shell → the stable wrapper fixed the loading jump but kept an overly tall desktop aspect ratio → after stabilizing embeds, re-check the final steady-state proportions against the approved screenshot before shipping
 - `/video-stats` tracked likes in analytics but showed no like reporting → the backend and UI only summarized views and plays → whenever a new interaction event is recorded, add its reporting path and dashboard surface in the same change
+- the booking confirmation on `/ask` looked unreadable in the dark theme → the success-state gradient overwrote the shared card background and kept dark text colors → confirmation states on dark surfaces need their own explicit background and contrast-safe text tokens
+- `/ask` said a booking was on the way when Google OAuth was broken → hard calendar auth failures were downgraded into `pending` bookings and the retry worker could keep stale jobs alive → only queue truly retryable booking errors, and atomically claim pending jobs before processing them
 
 ## Skills to actively use here
 

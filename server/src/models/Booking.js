@@ -10,7 +10,7 @@ const bookingSchema = new mongoose.Schema({
   googleMeetLink: { type: String },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled', 'rescheduled', 'failed'],
+    enum: ['pending', 'processing', 'confirmed', 'cancelled', 'rescheduled', 'failed'],
     default: 'pending',
     index: true,
   },
