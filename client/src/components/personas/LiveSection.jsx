@@ -11,52 +11,6 @@ function Stat({ label, value, sub }) {
   );
 }
 
-function Bar({ label, count, max }) {
-  const pct = max > 0 ? (count / max) * 100 : 0;
-  return (
-    <div className={styles.bar}>
-      <span className={styles.barLabel}>{label}</span>
-      <div className={styles.barTrack}>
-        <div className={styles.barFill} style={{ width: `${pct}%` }} />
-      </div>
-      <span className={styles.barCount}>{count}</span>
-    </div>
-  );
-}
-
-function HistoryTable({ rows, empty }) {
-  if (!rows?.length) return <p className={styles.empty}>{empty}</p>;
-
-  return (
-    <div className={styles.tableWrap}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>When</th>
-            <th>Area</th>
-            <th>Source</th>
-            <th>Route</th>
-            <th>Pages</th>
-            <th>Device</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              <td>{row.when}</td>
-              <td>{row.area}</td>
-              <td><span className={styles.sourceTag}>{row.source}</span></td>
-              <td>{row.route}</td>
-              <td>{row.pages}</td>
-              <td>{row.device}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 export default function LiveSection() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,13 +43,11 @@ export default function LiveSection() {
   if (!data) return <div className={styles.page}><p className={styles.loading}>Stats unavailable</p></div>;
 
   const maxDaily = Math.max(...(data.dailyVisits?.map((visit) => visit.count) || [1]));
-  const maxSource = Math.max(...(data.topSources?.map((item) => item.count) || [1]));
-  const maxArea = Math.max(...(data.topAreas?.map((item) => item.count) || [1]));
 
   return (
     <div className={styles.page} role="main">
       <h2 className={styles.title}>Live</h2>
-      <p className={styles.subtitle}>Visitors, sources, and places. Updates every 30 seconds.</p>
+      <p className={styles.subtitle}>Public view of site activity. Updates every 30 seconds.</p>
 
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>Overview</h3>
@@ -106,8 +58,6 @@ export default function LiveSection() {
           <Stat label="Avg session" value={`${data.avgDuration}s`} />
           <Stat label="Page views" value={data.totalPageViews?.toLocaleString() || 0} />
           <Stat label="Return visitors" value={`${data.returnVisitorRate || 0}%`} />
-          <Stat label="Top source" value={data.topSources?.[0]?.label || 'direct'} sub={`${data.topSources?.[0]?.count || 0} visits`} />
-          <Stat label="Top area" value={data.topAreas?.[0]?.label || 'Unknown'} sub={`${data.topAreas?.[0]?.count || 0} visits`} />
         </div>
       </section>
 
@@ -125,31 +75,6 @@ export default function LiveSection() {
             </div>
           ))}
         </div>
-      </section>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Sources</h3>
-        <div className={styles.bars}>
-          {(data.topSources || []).map((item) => (
-            <Bar key={item.label} label={item.label} count={item.count} max={maxSource} />
-          ))}
-          {(!data.topSources?.length) && <p className={styles.empty}>No source data yet.</p>}
-        </div>
-      </section>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Areas</h3>
-        <div className={styles.bars}>
-          {(data.topAreas || []).map((item) => (
-            <Bar key={item.label} label={item.label} count={item.count} max={maxArea} />
-          ))}
-          {(!data.topAreas?.length) && <p className={styles.empty}>No area data yet.</p>}
-        </div>
-      </section>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Visitor history</h3>
-        <HistoryTable rows={data.recentVisitors} empty="No visitor history yet." />
       </section>
     </div>
   );
