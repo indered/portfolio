@@ -40,6 +40,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - the booking confirmation on `/ask` looked unreadable in the dark theme → the success-state gradient overwrote the shared card background and kept dark text colors → confirmation states on dark surfaces need their own explicit background and contrast-safe text tokens
 - `/ask` said a booking was on the way when Google OAuth was broken → hard calendar auth failures were downgraded into `pending` bookings and the retry worker could keep stale jobs alive → only queue truly retryable booking errors, and atomically claim pending jobs before processing them
 - `/stats` and `/live` showed only "Stats unavailable" in local dev → a stale listener kept port 5001 from reaching the portfolio API, and the client treated any response as success → kill conflicting listeners before restarting the stack, and fail fast on non-OK analytics responses.
+- `/stats` ignored `?src=` tags entirely → the page never mounted the analytics hook, so the source param was never sent with page views → every attributable route needs to call `useAnalytics`.
 
 ## Skills to actively use here
 

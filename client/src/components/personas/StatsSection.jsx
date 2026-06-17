@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import styles from './StatsSection.module.scss';
 
 function Stat({ label, value, sub }) {
@@ -60,6 +61,8 @@ function HistoryTable({ rows, empty }) {
 export default function StatsSection() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useAnalytics('/stats');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'light');

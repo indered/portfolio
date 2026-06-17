@@ -24,6 +24,7 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - Moore dumped a bio paragraph when asked for the resume instead of linking out → no resume tool/rule existed, so the LLM improvised text → resume asks now route through the `show_resume` tool (card + button to /resume), the resume suggestion chip is a deterministic LLM-free fast path, and the system prompt forbids pasting resume contents as text
 - `/ask` rendered as a blank black page after adding the resume footer link → `trackResumeDownload` was used without being imported → any new analytics helper used in JSX must be imported and smoke-tested in the browser
 - `/stats` and `/live` showed only "Stats unavailable" in local dev → a stale listener kept port 5001 from reaching the portfolio API, and the client treated any response as success → kill conflicting listeners before restarting the stack, and fail fast on non-OK analytics responses.
+- `/stats` ignored `?src=` tags entirely → the page never mounted the analytics hook, so the source param was never sent with page views → every attributable route needs to call `useAnalytics`.
 
 ## Skills to actively use here
 
