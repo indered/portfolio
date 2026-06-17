@@ -29,6 +29,42 @@ function getReferrer() {
   } catch { return null; }
 }
 
+function normalizeSourceToken(value) {
+  if (!value) return null;
+  const token = String(value).trim().toLowerCase().replace(/^[-_]+/, '');
+  if (!token) return null;
+  if (token.includes('instagram.com') || token.includes('instagr.am') || ['ig', 'instagram', 'insta'].includes(token)) return 'ig';
+  if (token.includes('linkedin.com') || ['linkedin', 'li'].includes(token)) return 'linkedin';
+  if (token.includes('wellfound.com') || token.includes('angel.co') || ['wellfound', 'angel', 'angellist', 'wf'].includes(token)) return 'wellfound';
+  if (token.includes('github.com') || ['github', 'gh'].includes(token)) return 'github';
+  if (token.includes('youtube.com') || token.includes('youtu.be') || ['youtube', 'yt'].includes(token)) return 'youtube';
+  if (token.includes('google.') || ['google', 'g'].includes(token)) return 'google';
+  if (['direct', 'none', 'organic'].includes(token)) return 'direct';
+  if (['internal', 'site', 'self'].includes(token)) return 'internal';
+  return token.replace(/\s+/g, '-');
+}
+
+function getSourceFromReferrer() {
+  const ref = getReferrer();
+  if (!ref) return 'direct';
+
+  try {
+    const host = ref.toLowerCase().replace(/^www\./, '');
+    const siteHost = window.location.hostname.toLowerCase().replace(/^www\./, '');
+    if (host === siteHost || host.endsWith(`.${siteHost}`)) return 'internal';
+    if (host.includes('instagram.com') || host === 'instagr.am') return 'ig';
+    if (host.includes('linkedin.com')) return 'linkedin';
+    if (host.includes('wellfound.com') || host.includes('angel.co')) return 'wellfound';
+    if (host.includes('github.com')) return 'github';
+    if (host.includes('youtube.com') || host === 'youtu.be') return 'youtube';
+    if (host.includes('google.')) return 'google';
+    if (host.includes('x.com') || host.includes('twitter.com')) return 'x';
+    return host.split('.')[0] || 'other';
+  } catch {
+    return 'other';
+  }
+}
+
 function isReturnVisitor() {
   const key = '_rv';
   if (localStorage.getItem(key)) return true;
@@ -55,6 +91,21 @@ function captureUtm() {
   }
 }
 
+function captureSource() {
+  try {
+    const cached = sessionStorage.getItem('_src');
+    if (cached) return cached;
+
+    const params = new URLSearchParams(window.location.search);
+    const explicit = params.get('src') || params.get('source') || params.get('via') || params.get('utm_source');
+    const source = normalizeSourceToken(explicit) || getSourceFromReferrer() || 'direct';
+    sessionStorage.setItem('_src', source);
+    return source;
+  } catch {
+    return 'direct';
+  }
+}
+
 function send(data) {
   const utm = captureUtm();
   const meta = { ...(data.meta || {}) };
@@ -68,6 +119,7 @@ function send(data) {
     meta: Object.keys(meta).length ? meta : undefined,
     sessionId: getSessionId(),
     device: getDevice(),
+    source: captureSource(),
     fingerprint: getFingerprint(),
     referrer: data.referrer !== undefined ? data.referrer : getReferrer(),
     returnVisitor: isReturnVisitor(),

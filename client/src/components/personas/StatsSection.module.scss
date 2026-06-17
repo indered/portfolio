@@ -227,3 +227,47 @@ $bar-bg: #eee;
   color: $mid;
   font-weight: 600;
 }
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid $rule;
+    font-size: 0.9rem;
+    vertical-align: top;
+  }
+
+  th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $light;
+  }
+
+  td {
+    color: $dark;
+  }
+}
+
+.sourceTag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(74, 158, 255, 0.1);
+  color: $accent;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

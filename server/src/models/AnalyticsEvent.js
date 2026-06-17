@@ -17,6 +17,7 @@ const analyticsEventSchema = new mongoose.Schema({
   asn: { type: String, default: null },
   fingerprint: { type: String, default: null, index: true },
   ip: { type: String, default: null },
+  source: { type: String, default: null, index: true },
   referrer: { type: String, default: null },
   returnVisitor: { type: Boolean, default: false },
   meta: { type: Object, default: null },

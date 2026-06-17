@@ -1,26 +1,61 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { PLANET_CONFIG } from '../../lib/constants';
+import { useState, useEffect } from 'react';
 import styles from './LiveSection.module.scss';
 
-const MiniPlanet = lazy(() => import('./MiniPlanet'));
+function Stat({ label, value, sub }) {
+  return (
+    <div className={styles.stat}>
+      <span className={styles.statValue}>{value}</span>
+      <span className={styles.statLabel}>{label}</span>
+      {sub && <span className={styles.statSub}>{sub}</span>}
+    </div>
+  );
+}
 
-const ROUTE_NAMES = {
-  '/about': 'About', '/work': 'Work', '/connect': 'Connect',
-  '/runner': 'The Long Run', '/ventures': 'Ventures', '/thoughts': 'The Thinker',
-  '/ask': 'Ask',
-};
+function Bar({ label, count, max }) {
+  const pct = max > 0 ? (count / max) * 100 : 0;
+  return (
+    <div className={styles.bar}>
+      <span className={styles.barLabel}>{label}</span>
+      <div className={styles.barTrack}>
+        <div className={styles.barFill} style={{ width: `${pct}%` }} />
+      </div>
+      <span className={styles.barCount}>{count}</span>
+    </div>
+  );
+}
 
-const ROUTE_TO_ID = {
-  '/about': 'about', '/work': 'work', '/connect': 'connect',
-  '/runner': 'runner', '/ventures': 'ventures', '/thoughts': 'thoughts',
-  '/ask': 'ask',
-};
+function HistoryTable({ rows, empty }) {
+  if (!rows?.length) return <p className={styles.empty}>{empty}</p>;
 
-const DEVICE_VIBE = {
-  desktop: 'Proper sit-down-and-browse types',
-  mobile: 'Scrolling in bed or on the bus',
-  tablet: 'The rare iPad connoisseur',
-};
+  return (
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>When</th>
+            <th>Area</th>
+            <th>Source</th>
+            <th>Route</th>
+            <th>Pages</th>
+            <th>Device</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.id}>
+              <td>{row.when}</td>
+              <td>{row.area}</td>
+              <td><span className={styles.sourceTag}>{row.source}</span></td>
+              <td>{row.route}</td>
+              <td>{row.pages}</td>
+              <td>{row.device}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export default function LiveSection() {
   const [data, setData] = useState(null);
@@ -32,11 +67,20 @@ export default function LiveSection() {
 
   useEffect(() => {
     fetch('/api/analytics/stats')
-      .then(r => r.json())
-      .then(d => { setData(d); setLoading(false); })
+      .then((r) => {
+        if (!r.ok) throw new Error('Stats unavailable');
+        return r.json();
+      })
+      .then((d) => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
     const interval = setInterval(() => {
-      fetch('/api/analytics/stats').then(r => r.json()).then(setData).catch(() => {});
+      fetch('/api/analytics/stats')
+        .then((r) => {
+          if (!r.ok) throw new Error('Stats unavailable');
+          return r.json();
+        })
+        .then(setData)
+        .catch(() => {});
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -44,148 +88,69 @@ export default function LiveSection() {
   if (loading) return <div className={styles.page}><p className={styles.loading}>Crunching numbers...</p></div>;
   if (!data) return <div className={styles.page}><p className={styles.loading}>Stats unavailable</p></div>;
 
-  const hotPlanet = data.planetPopularity?.[0];
-  const totalClicks = (data.planetPopularity || []).reduce((s, p) => s + p.count, 0);
-  const topVisitor = (data.nightOwls || 0) > (data.earlyBirds || 0) ? 'Night Owls' : 'Early Birds';
+  const maxDaily = Math.max(...(data.dailyVisits?.map((visit) => visit.count) || [1]));
+  const maxSource = Math.max(...(data.topSources?.map((item) => item.count) || [1]));
+  const maxArea = Math.max(...(data.topAreas?.map((item) => item.count) || [1]));
 
   return (
     <div className={styles.page} role="main">
-
       <h2 className={styles.title}>Live</h2>
-      <p className={styles.subtitle}>What's happening on this solar system</p>
+      <p className={styles.subtitle}>Visitors, sources, and places. Updates every 30 seconds.</p>
 
-      {/* Big numbers */}
-      <div className={styles.bigNumbers}>
-        <div className={styles.bigCard}>
-          <span className={styles.bigValue}>{data.totalPageViews?.toLocaleString() || 0}</span>
-          <span className={styles.bigLabel}>Pages explored</span>
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Overview</h3>
+        <div className={styles.statGrid}>
+          <Stat label="Today" value={data.todaySessions} />
+          <Stat label="This week" value={data.weekSessions} />
+          <Stat label="30 days" value={data.totalSessions} />
+          <Stat label="Avg session" value={`${data.avgDuration}s`} />
+          <Stat label="Page views" value={data.totalPageViews?.toLocaleString() || 0} />
+          <Stat label="Return visitors" value={`${data.returnVisitorRate || 0}%`} />
+          <Stat label="Top source" value={data.topSources?.[0]?.label || 'direct'} sub={`${data.topSources?.[0]?.count || 0} visits`} />
+          <Stat label="Top area" value={data.topAreas?.[0]?.label || 'Unknown'} sub={`${data.topAreas?.[0]?.count || 0} visits`} />
         </div>
-        <div className={styles.bigCard}>
-          <span className={styles.bigValue}>{totalClicks}</span>
-          <span className={styles.bigLabel}>Planet clicks</span>
-        </div>
-        <div className={styles.bigCard}>
-          <span className={styles.bigValue}>{data.resumeDownloads || 0}</span>
-          <span className={styles.bigLabel}>Resume downloads</span>
-        </div>
-        <div className={styles.bigCard}>
-          <span className={styles.bigValue}>{data.linkedInClicks || 0}</span>
-          <span className={styles.bigLabel}>LinkedIn clicks</span>
-        </div>
-      </div>
+      </section>
 
-      {/* Planet leaderboard with 3D models */}
-      {data.planetPopularity?.length > 0 && (
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Planet Leaderboard</h3>
-          <div className={styles.leaderboard}>
-            {data.planetPopularity.map((p, i) => {
-              const personaId = ROUTE_TO_ID[p._id];
-              const config = personaId ? PLANET_CONFIG[personaId] : null;
-              return (
-                <div key={p._id} className={`${styles.leaderRow} ${i === 0 ? styles.leaderRowHot : ''}`}>
-                  <span className={styles.leaderRank}>#{i + 1}</span>
-                  <div className={styles.leaderPlanet}>
-                    {config && (
-                      <Suspense fallback={<div className={styles.planetPlaceholder} style={{ background: config.meshColor }} />}>
-                        <MiniPlanet color={config.meshColor} emissive={config.emissive} size={config.size} />
-                      </Suspense>
-                    )}
-                  </div>
-                  <div className={styles.leaderInfo}>
-                    <span className={styles.leaderName}>
-                      {ROUTE_NAMES[p._id] || p._id}
-                      {i === 0 && <span className={styles.hotTag}>HOT</span>}
-                    </span>
-                    <span className={styles.leaderRoute}>{p._id}</span>
-                  </div>
-                  <span className={styles.leaderCount}>{p.count}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Time per planet */}
-      {data.planetTime?.length > 0 && (
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Where People Spend Time</h3>
-          <div className={styles.planetBars}>
-            {data.planetTime.map(p => (
-              <div key={p._id} className={styles.planetBar}>
-                <span className={styles.planetName}>{ROUTE_NAMES[p._id] || p._id}</span>
-                <div className={styles.barTrack}>
-                  <div className={styles.barFill}
-                    style={{ width: `${(p.avg / Math.max(...data.planetTime.map(x => x.avg))) * 100}%` }} />
-                </div>
-                <span className={styles.planetTime}>{Math.round(p.avg)}s avg</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Speed run */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Speed Run</h3>
-        <p className={styles.funFact}>
-          {data.speedRunRecord
-            ? <>Fastest to visit all 6 planets: <strong>{data.speedRunRecord}s</strong>. Can you beat it?</>
-            : <>Nobody has visited all 6 planets in one session yet. Be the first.</>
-          }
-        </p>
-      </div>
-
-      {/* When do people visit */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>When Do People Visit?</h3>
-        <div className={styles.timeGrid}>
-          <div className={styles.timeCard}><span className={styles.timeEmoji}>🌙</span><span className={styles.timeValue}>{data.nightOwls || 0}</span><span className={styles.timeLabel}>Night Owls</span></div>
-          <div className={styles.timeCard}><span className={styles.timeEmoji}>🌅</span><span className={styles.timeValue}>{data.earlyBirds || 0}</span><span className={styles.timeLabel}>Early Birds</span></div>
-          <div className={styles.timeCard}><span className={styles.timeEmoji}>☀️</span><span className={styles.timeValue}>{data.afternoon || 0}</span><span className={styles.timeLabel}>Afternoon</span></div>
-          <div className={styles.timeCard}><span className={styles.timeEmoji}>🌆</span><span className={styles.timeValue}>{data.evening || 0}</span><span className={styles.timeLabel}>Evening</span></div>
-        </div>
-        <p className={styles.funFact}>Most visitors are <strong>{topVisitor}</strong>.</p>
-      </div>
-
-      {/* Devices */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Devices</h3>
-        <div className={styles.deviceList}>
-          {(data.deviceSplit || []).map(d => (
-            <div key={d._id} className={styles.deviceRow}>
-              <span className={styles.deviceName}>{d._id}</span>
-              <span className={styles.deviceCount}>{d.count}</span>
-              <span className={styles.deviceVibe}>{DEVICE_VIBE[d._id] || ''}</span>
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Daily visitors</h3>
+        <div className={styles.dailyChart}>
+          {(data.dailyVisits || []).map((visit) => (
+            <div key={visit._id} className={styles.dailyBar}>
+              <div
+                className={styles.dailyFill}
+                style={{ height: `${Math.max(4, (visit.count / maxDaily) * 100)}%` }}
+              />
+              <span className={styles.dailyLabel}>{visit._id.slice(5)}</span>
+              <span className={styles.dailyCount}>{visit.count}</span>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Fun numbers */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Fun Numbers</h3>
-        <div className={styles.bigNumbers}>
-          <div className={styles.bigCard}>
-            <span className={styles.bigValue}>{data.returnVisitorRate || 0}%</span>
-            <span className={styles.bigLabel}>Return visitors</span>
-          </div>
-          <div className={styles.bigCard}>
-            <span className={styles.bigValue}>{data.starsDiscovered || 0}</span>
-            <span className={styles.bigLabel}>Stars clicked</span>
-          </div>
-          <div className={styles.bigCard}>
-            <span className={styles.bigValue}>{data.scrollDistanceKm || 0} km</span>
-            <span className={styles.bigLabel}>Scroll distance</span>
-          </div>
-          <div className={styles.bigCard}>
-            <span className={styles.bigValue}>{data.hubBounceRate || 0}%</span>
-            <span className={styles.bigLabel}>Hub bounce</span>
-          </div>
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Sources</h3>
+        <div className={styles.bars}>
+          {(data.topSources || []).map((item) => (
+            <Bar key={item.label} label={item.label} count={item.count} max={maxSource} />
+          ))}
+          {(!data.topSources?.length) && <p className={styles.empty}>No source data yet.</p>}
         </div>
-      </div>
+      </section>
 
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Areas</h3>
+        <div className={styles.bars}>
+          {(data.topAreas || []).map((item) => (
+            <Bar key={item.label} label={item.label} count={item.count} max={maxArea} />
+          ))}
+          {(!data.topAreas?.length) && <p className={styles.empty}>No area data yet.</p>}
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Visitor history</h3>
+        <HistoryTable rows={data.recentVisitors} empty="No visitor history yet." />
+      </section>
     </div>
   );
 }

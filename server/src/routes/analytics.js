@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import Conversation from '../models/Conversation.js';
 import { lookupIp } from '../services/ipLookup.js';
@@ -24,6 +25,11 @@ const EXCLUDE_FINGERPRINTS = [
   ...(process.env.EXCLUDE_FINGERPRINTS || '').split(',').map(s => s.trim()).filter(Boolean),
 ];
 
+const SITE_HOST = (process.env.SITE_HOST || 'maheshinder.in')
+  .replace(/^https?:\/\//, '')
+  .replace(/^www\./, '')
+  .toLowerCase();
+
 // /architect is an alias for /work — treat them as one so stats don't split.
 function normalizeRoute(route) {
   if (route === '/architect') return '/work';
@@ -32,6 +38,85 @@ function normalizeRoute(route) {
 function normalizePlanet(planet) {
   if (planet === 'architect' || planet === '/architect') return '/work';
   return planet;
+}
+
+function cleanToken(value) {
+  return String(value || '').trim().toLowerCase().replace(/^[-_]+/, '');
+}
+
+function normalizeTrafficSource(rawSource, referrer = null) {
+  const token = cleanToken(rawSource);
+  if (token) {
+    if (token.includes('instagram.com') || token.includes('instagr.am') || ['ig', 'instagram', 'insta'].includes(token)) return 'ig';
+    if (token.includes('linkedin.com') || ['linkedin', 'li'].includes(token)) return 'linkedin';
+    if (token.includes('wellfound.com') || token.includes('angel.co') || ['wellfound', 'angel', 'angellist', 'wf'].includes(token)) return 'wellfound';
+    if (token.includes('github.com') || ['github', 'gh'].includes(token)) return 'github';
+    if (token.includes('youtube.com') || token.includes('youtu.be') || ['youtube', 'yt'].includes(token)) return 'youtube';
+    if (token.includes('google.') || ['google', 'g'].includes(token)) return 'google';
+    if (['direct', 'none', 'organic'].includes(token)) return 'direct';
+    if (['internal', 'site', 'self'].includes(token)) return 'internal';
+    return token.replace(/\s+/g, '-');
+  }
+
+  if (!referrer) return 'direct';
+  try {
+    const host = new URL(referrer).hostname.toLowerCase().replace(/^www\./, '');
+    if (host === SITE_HOST || host.endsWith(`.${SITE_HOST}`)) return 'internal';
+    if (host.includes('instagram.com') || host === 'instagr.am') return 'ig';
+    if (host.includes('linkedin.com')) return 'linkedin';
+    if (host.includes('wellfound.com') || host.includes('angel.co')) return 'wellfound';
+    if (host.includes('github.com')) return 'github';
+    if (host.includes('youtube.com') || host === 'youtu.be') return 'youtube';
+    if (host.includes('google.')) return 'google';
+    if (host.includes('x.com') || host.includes('twitter.com')) return 'x';
+    return 'other';
+  } catch {
+    return 'other';
+  }
+}
+
+function formatAreaLabel({ city, region, country }) {
+  return [city, region, country].filter(Boolean).join(', ') || 'Unknown';
+}
+
+function sourceExpr() {
+  return {
+    $ifNull: [
+      '$source',
+      { $ifNull: ['$meta.utm_source', { $ifNull: ['$referrer', 'direct'] }] },
+    ],
+  };
+}
+
+function visitorHistoryAggregation(pageFilter, includeEngagement = false) {
+  const base = [
+    { $match: pageFilter },
+    { $sort: { createdAt: 1 } },
+    {
+      $group: {
+        _id: '$sessionId',
+        firstSeen: { $first: '$createdAt' },
+        lastSeen: { $last: '$createdAt' },
+        source: { $first: sourceExpr() },
+        country: { $first: '$country' },
+        city: { $first: '$city' },
+        region: { $first: '$region' },
+        device: { $first: '$device' },
+        route: { $first: '$route' },
+        referrer: { $first: '$referrer' },
+        pageViews: { $sum: 1 },
+      },
+    },
+    { $sort: { lastSeen: -1 } },
+    { $limit: 20 },
+  ];
+
+  if (!includeEngagement) return base;
+
+  base[2].$group.views = {
+    $sum: { $cond: [{ $eq: ['$type', 'page_view'] }, 1, 0] },
+  };
+  return base;
 }
 
 function requireAuth(req, res, next) {
@@ -61,6 +146,10 @@ function withExcludedIps(filter = {}) {
   return next;
 }
 
+function isAnalyticsDbReady() {
+  return mongoose.connection.readyState === 1;
+}
+
 // POST /api/analytics/event
 router.post('/event', async (req, res) => {
   res.status(202).json({ ok: true });
@@ -68,13 +157,18 @@ router.post('/event', async (req, res) => {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
   if (EXCLUDE_IPS.length && EXCLUDE_IPS.includes(clientIp)) return;
 
-  const { type, route, planet, duration, sessionId, device, referrer, returnVisitor, meta, fingerprint } = req.body;
+  const { type, route, planet, duration, sessionId, device, source, referrer, returnVisitor, meta, fingerprint } = req.body;
   if (!type || !sessionId) return;
   if (typeof fingerprint === 'string' && EXCLUDE_FINGERPRINTS.includes(fingerprint.slice(0, 40))) return;
 
   // Fire and forget — don't block on the IP lookup; write the event either way
   let enrich = null;
   try { enrich = await lookupIp(clientIp); } catch {}
+
+  const normalizedSource = normalizeTrafficSource(
+    source || meta?.source_code || meta?.utm_source,
+    referrer,
+  );
 
   AnalyticsEvent.create({
     type,
@@ -83,6 +177,7 @@ router.post('/event', async (req, res) => {
     duration: duration || null,
     sessionId,
     device: device || 'desktop',
+    source: normalizedSource,
     // Prefer CDN-provided geo (Cloudflare/Vercel) when present, fall back to ipinfo
     country: req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || enrich?.country || null,
     city: req.headers['cf-ipcity'] || req.headers['x-vercel-ip-city'] || enrich?.city || null,
@@ -101,6 +196,10 @@ router.post('/event', async (req, res) => {
 // GET /api/analytics/stats — single endpoint, everything
 router.get('/stats', async (req, res) => {
   try {
+    if (!isAnalyticsDbReady()) {
+      return res.status(503).json({ error: 'Stats unavailable' });
+    }
+
     const now = new Date();
     const d30 = new Date(now - 30 * 24 * 60 * 60 * 1000);
     const d7 = new Date(now - 7 * 24 * 60 * 60 * 1000);
@@ -113,6 +212,7 @@ router.get('/stats', async (req, res) => {
       totalStars, totalPageViews, resumeDownloads,
       speedRunRecord, planetTime, peakHours,
       returnRate, linkedInClicks,
+      topSourcesRaw, topAreasRaw, recentVisitorsRaw,
       askStats,
     ] = await Promise.all([
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: d30 } }).then(r => r.length),
@@ -222,6 +322,42 @@ router.get('/stats', async (req, res) => {
 
       AnalyticsEvent.countDocuments({ type: 'link_click', 'meta.label': 'LinkedIn' }),
 
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view', createdAt: { $gte: d30 } } },
+        { $group: { _id: sourceExpr(), count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view', createdAt: { $gte: d30 } } },
+        { $group: { _id: { city: '$city', region: '$region', country: '$country' }, count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view', createdAt: { $gte: d30 } } },
+        { $sort: { createdAt: 1 } },
+        {
+          $group: {
+            _id: '$sessionId',
+            firstSeen: { $first: '$createdAt' },
+            lastSeen: { $last: '$createdAt' },
+            source: { $first: sourceExpr() },
+            country: { $first: '$country' },
+            city: { $first: '$city' },
+            region: { $first: '$region' },
+            device: { $first: '$device' },
+            route: { $first: '$route' },
+            referrer: { $first: '$referrer' },
+            pageViews: { $sum: 1 },
+          },
+        },
+        { $sort: { lastSeen: -1 } },
+        { $limit: 20 },
+      ]),
+
       // /ask chat activity: total conversations + total user questions exchanged
       Conversation.aggregate([
         { $project: {
@@ -264,6 +400,28 @@ router.get('/stats', async (req, res) => {
       nightOwls, earlyBirds, afternoon, evening,
       returnVisitorRate: returnRate,
       linkedInClicks, scrollDistanceKm,
+      topSources: topSourcesRaw.map((item) => ({
+        label: normalizeTrafficSource(item._id),
+        count: item.count,
+      })),
+      topAreas: topAreasRaw.map((item) => ({
+        label: formatAreaLabel(item._id),
+        count: item.count,
+      })),
+      recentVisitors: recentVisitorsRaw.map((item) => ({
+        id: `${item._id}`,
+        when: new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+          timeZone: 'Asia/Kolkata',
+        }).format(item.firstSeen),
+        area: formatAreaLabel(item),
+        source: normalizeTrafficSource(item.source, item.referrer),
+        device: item.device || 'unknown',
+        route: item.route || '/',
+        pages: item.pageViews || 0,
+        lastSeenAgo: item.lastSeen ? formatRelativeTime(item.lastSeen, now) : null,
+      })),
       askConversations: ask.conversations || 0,
       askQuestions: ask.questions || 0,
       askMessages: ask.messages || 0,
@@ -277,6 +435,10 @@ router.get('/stats', async (req, res) => {
 
 router.get('/video-stats', requireAuth, async (req, res) => {
   try {
+    if (!isAnalyticsDbReady()) {
+      return res.status(503).json({ error: 'Video stats unavailable' });
+    }
+
     const now = new Date();
     const windowDays = 90;
     const since = new Date(now - windowDays * 24 * 60 * 60 * 1000);
@@ -312,6 +474,9 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       lastPlay,
       recentLikesRaw,
       lastLike,
+      topSourcesRaw,
+      topAreasRaw,
+      recentVisitorsRaw,
     ] = await Promise.all([
       AnalyticsEvent.countDocuments(pageViewFilter),
       AnalyticsEvent.distinct('sessionId', pageViewFilter).then((items) => items.length),
@@ -412,6 +577,45 @@ router.get('/video-stats', requireAuth, async (req, res) => {
         .select('createdAt country city region device meta')
         .lean(),
       AnalyticsEvent.findOne(likeFilter).sort({ createdAt: -1 }).select('createdAt').lean(),
+      AnalyticsEvent.aggregate([
+        { $match: pageViewFilter },
+        { $group: { _id: sourceExpr(), count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: pageViewFilter },
+        { $group: { _id: { city: '$city', region: '$region', country: '$country' }, count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+      AnalyticsEvent.aggregate([
+        { $match: withExcludedIps({ route, createdAt: { $gte: since } }) },
+        { $sort: { createdAt: 1 } },
+        {
+          $group: {
+            _id: '$sessionId',
+            firstSeen: { $first: '$createdAt' },
+            lastSeen: { $last: '$createdAt' },
+            source: { $first: sourceExpr() },
+            country: { $first: '$country' },
+            city: { $first: '$city' },
+            region: { $first: '$region' },
+            device: { $first: '$device' },
+            pageViews: {
+              $sum: { $cond: [{ $eq: ['$type', 'page_view'] }, 1, 0] },
+            },
+            plays: {
+              $sum: { $cond: [{ $eq: ['$type', 'video_play'] }, 1, 0] },
+            },
+            likes: {
+              $sum: { $cond: [{ $eq: ['$type', 'video_like_toggle'] }, 1, 0] },
+            },
+          },
+        },
+        { $sort: { lastSeen: -1 } },
+        { $limit: 20 },
+      ]),
     ]);
 
     const playRate = uniquePageSessions > 0
@@ -466,6 +670,29 @@ router.get('/video-stats', requireAuth, async (req, res) => {
       topPlayCities: topPlayCitiesRaw.map((item) => ({
         label: [item._id.city, item._id.country].filter(Boolean).join(', '),
         count: item.count,
+      })),
+      topSources: topSourcesRaw.map((item) => ({
+        label: normalizeTrafficSource(item._id),
+        count: item.count,
+      })),
+      topAreas: topAreasRaw.map((item) => ({
+        label: formatAreaLabel(item._id),
+        count: item.count,
+      })),
+      recentVisitors: recentVisitorsRaw.map((item) => ({
+        id: `${item._id}`,
+        when: new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+          timeZone: 'Asia/Kolkata',
+        }).format(item.firstSeen),
+        area: formatAreaLabel(item),
+        source: normalizeTrafficSource(item.source, item.referrer),
+        device: item.device || 'unknown',
+        views: item.pageViews || 0,
+        plays: item.plays || 0,
+        likes: item.likes || 0,
+        lastSeenAgo: item.lastSeen ? formatRelativeTime(item.lastSeen, now) : null,
       })),
       progressMilestones: progressMilestonesRaw.map((item) => ({
         label: `${item._id}%`,
