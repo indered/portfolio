@@ -126,6 +126,10 @@ $bar-bg: #eee;
   white-space: nowrap;
 }
 
+.routeLabel {
+  text-transform: none;
+}
+
 .barTrack {
   height: 8px;
   background: $bar-bg;

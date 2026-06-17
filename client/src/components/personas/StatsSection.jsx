@@ -25,6 +25,19 @@ function Bar({ label, count, max }) {
   );
 }
 
+function RouteBar({ label, count, max }) {
+  const pct = max > 0 ? (count / max) * 100 : 0;
+  return (
+    <div className={styles.bar}>
+      <span className={`${styles.barLabel} ${styles.routeLabel}`}>{label}</span>
+      <div className={styles.barTrack}>
+        <div className={styles.barFill} style={{ width: `${pct}%` }} />
+      </div>
+      <span className={styles.barCount}>{count}</span>
+    </div>
+  );
+}
+
 function HistoryTable({ rows, empty }) {
   if (!rows?.length) return <p className={styles.empty}>{empty}</p>;
 
@@ -94,6 +107,7 @@ export default function StatsSection() {
   const maxDaily = Math.max(...(data.dailyVisits?.map((visit) => visit.count) || [1]));
   const maxSource = Math.max(...(data.topSources?.map((item) => item.count) || [1]));
   const maxArea = Math.max(...(data.topAreas?.map((item) => item.count) || [1]));
+  const maxRoute = Math.max(...(data.topRoutes?.map((item) => item.count) || [1]));
 
   return (
     <div className={styles.page} role="main">
@@ -127,6 +141,16 @@ export default function StatsSection() {
               <span className={styles.dailyCount}>{visit.count}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Routes</h3>
+        <div className={styles.bars}>
+          {(data.topRoutes || []).map((item) => (
+            <RouteBar key={item.label} label={item.label} count={item.count} max={maxRoute} />
+          ))}
+          {(!data.topRoutes?.length) && <p className={styles.empty}>No route data yet.</p>}
         </div>
       </section>
 

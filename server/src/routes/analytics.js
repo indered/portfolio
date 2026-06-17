@@ -212,7 +212,7 @@ router.get('/stats', async (req, res) => {
       totalStars, totalPageViews, resumeDownloads,
       speedRunRecord, planetTime, peakHours,
       returnRate, linkedInClicks,
-      topSourcesRaw, topAreasRaw, recentVisitorsRaw,
+      topSourcesRaw, topAreasRaw, topRoutesRaw, recentVisitorsRaw,
       askStats,
     ] = await Promise.all([
       AnalyticsEvent.distinct('sessionId', { createdAt: { $gte: d30 } }).then(r => r.length),
@@ -338,6 +338,23 @@ router.get('/stats', async (req, res) => {
 
       AnalyticsEvent.aggregate([
         { $match: { type: 'page_view', createdAt: { $gte: d30 } } },
+        { $addFields: {
+          normalizedRoute: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$route', '/architect'] }, then: '/work' },
+              ],
+              default: '$route',
+            },
+          },
+        }},
+        { $group: { _id: '$normalizedRoute', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]),
+
+      AnalyticsEvent.aggregate([
+        { $match: { type: 'page_view', createdAt: { $gte: d30 } } },
         { $sort: { createdAt: 1 } },
         {
           $group: {
@@ -406,6 +423,10 @@ router.get('/stats', async (req, res) => {
       })),
       topAreas: topAreasRaw.map((item) => ({
         label: formatAreaLabel(item._id),
+        count: item.count,
+      })),
+      topRoutes: topRoutesRaw.map((item) => ({
+        label: item._id || '/',
         count: item.count,
       })),
       recentVisitors: recentVisitorsRaw.map((item) => ({
