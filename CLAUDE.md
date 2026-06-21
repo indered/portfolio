@@ -27,6 +27,8 @@ Append one line per bug fix as they happen. Format: `- [symptom] → [root cause
 - `/stats` ignored `?src=` tags entirely → the page never mounted the analytics hook, so the source param was never sent with page views → every attributable route needs to call `useAnalytics`.
 - `/live` showed private source, area, and visitor history panels on a public page → it reused the private stats shell instead of a public-only layout → public live pages should stay summary-only and leave drill-down data to `/stats`.
 - `/stats` lost its route breakdown → the dashboard kept only source and area bars after cleanup → private analytics pages should keep route, source, and area aggregates together.
+- The survey ping cron behaved differently from the portfolio keep-alive job → it used a separate start condition and fetch shape → keep background pings in the same startup pattern when they serve the same deployment purpose.
+- The survey service had distinct frontend and backend health URLs → a single ping target would miss one half of the app → keep both health checks explicit when pinging an external service.
 
 ## Skills to actively use here
 
