@@ -6,6 +6,51 @@ export default function FiguringOutSection() {
 
       <h2 className={styles.pageTitle}>Ventures</h2>
 
+      {/* ═══ MAHESH STUDIO ═══ */}
+      <section className={styles.venture}>
+        <div className={styles.ventureHeader}>
+          <span className={styles.status}>Now Live</span>
+          <h3 className={styles.ventureName}>
+            <a href="https://studio.maheshinder.in/?src=portfolio-ventures" target="_blank" rel="noopener noreferrer">
+              Mahesh Studio
+            </a>
+          </h3>
+          <p className={styles.ventureType}>Digital solutions studio</p>
+        </div>
+
+        <p className={styles.story}>
+          Websites, web apps, mobile apps, integrations and AI for small and mid-size businesses.
+          One senior engineer, a team of AI agents, and prices that make sense for a small business.
+        </p>
+
+        <div className={styles.cards}>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Anything Digital</h4>
+            <p className={styles.cardDesc}>Sites, apps, integrations and AI, all from one place.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Fair Prices</h4>
+            <p className={styles.cardDesc}>Big agency quality without the big agency bill.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Proven Code</h4>
+            <p className={styles.cardDesc}>Work that already runs at Emirates NBD, Tokopedia, Kokaihop and more.</p>
+          </div>
+        </div>
+
+        <a
+          href="https://studio.maheshinder.in/?src=portfolio-ventures"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.cta}
+        >
+          studio.maheshinder.in
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </a>
+      </section>
+
       {/* ═══ WITHLOVE ═══ */}
       <section className={styles.venture}>
         <div className={styles.ventureHeader}>

@@ -80,6 +80,8 @@ Engineering degree from Noida, Uttar Pradesh, India (Computer Science)
 
 ## Side Ventures
 
+Mahesh Studio (studio.maheshinder.in) - Digital solutions studio, live now. Websites, web apps, mobile apps, integrations and AI for small and mid-size businesses, led by Mahesh with a team of AI agents. Fair prices aimed at small businesses.
+
 Arc Protocol - Deep Tech startup in DIFC, Dubai (Pre-seed, Active)
 - Decentralised AI compute meets on-chain energy markets
 - "The next wave of AI won't run in a data centre. It'll run on Arc."
