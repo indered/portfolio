@@ -51,6 +51,52 @@ export default function FiguringOutSection() {
         </a>
       </section>
 
+      {/* ═══ WRENTRACK ═══ */}
+      <section className={styles.venture}>
+        <div className={styles.ventureHeader}>
+          <span className={styles.status}>Now Live</span>
+          <h3 className={styles.ventureName}>
+            <a href="https://wrentrack.com/?src=portfolio-ventures" target="_blank" rel="noopener noreferrer">
+              wrentrack
+            </a>
+          </h3>
+          <p className={styles.ventureType}>Property tech</p>
+        </div>
+
+        <p className={styles.story}>
+          A rent tracker for landlords. Every property, every tenant and every rent in one place,
+          so you can see who has paid and what you have earned at a glance. No more spreadsheets
+          called FINAL_v7.
+        </p>
+
+        <div className={styles.cards}>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Who Has Paid</h4>
+            <p className={styles.cardDesc}>Mark rent as paid and spot what is late or coming due.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Every Space</h4>
+            <p className={styles.cardDesc}>Split a property into rooms, flats, shops or parking, each with its own tenant and rent.</p>
+          </div>
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Free To Start</h4>
+            <p className={styles.cardDesc}>Free for the first 100 landlords.</p>
+          </div>
+        </div>
+
+        <a
+          href="https://wrentrack.com/?src=portfolio-ventures"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.cta}
+        >
+          wrentrack.com
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </a>
+      </section>
+
       {/* ═══ WITHLOVE ═══ */}
       <section className={styles.venture}>
         <div className={styles.ventureHeader}>
