@@ -280,6 +280,6 @@ test.describe('Ask page - Booking flow', () => {
     const resumeLink = page.getByRole('link', { name: 'Download resume' });
     await expect(resumeLink).toBeVisible();
     await expect(resumeLink).toHaveAttribute('href', '/resume/download');
-    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Full_Stack_AI.pdf');
+    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Resume.pdf');
   });
 });

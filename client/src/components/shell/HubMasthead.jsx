@@ -201,7 +201,7 @@ export default function HubMasthead({ visible }) {
                   </a>
                   <a
                     href="/resume/download"
-                    download="Mahesh_Inder_Full_Stack_AI.pdf"
+                    download="Mahesh_Inder_Resume.pdf"
                     className={styles.menuItem}
                     onClick={() => { trackResumeDownload(); setMenuOpen(false); }}
                   >

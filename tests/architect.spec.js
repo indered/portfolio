@@ -35,7 +35,7 @@ test.describe('Work (/work) Page', () => {
   test('resume download button has correct href', async ({ page }) => {
     const resumeLink = page.locator('a[href="/resume/download"]').first();
     await expect(resumeLink).toBeVisible({ timeout: 6000 });
-    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Full_Stack_AI.pdf');
+    await expect(resumeLink).toHaveAttribute('download', 'Mahesh_Inder_Resume.pdf');
   });
 
   test('skills section renders skill cards', async ({ page }) => {

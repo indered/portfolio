@@ -762,7 +762,7 @@ export default function AskSection() {
             <div className={styles.footerActions}>
               <a
                 href="/resume/download"
-                download="Mahesh_Inder_Full_Stack_AI.pdf"
+                download="Mahesh_Inder_Resume.pdf"
                 className={styles.actionBtn}
                 onClick={trackResumeDownload}
               >

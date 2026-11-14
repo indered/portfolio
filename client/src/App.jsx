@@ -47,7 +47,7 @@ function ResumeDownloadRedirect() {
   useEffect(() => {
     const link = document.createElement('a');
     link.href = '/mahesh-inder-resume.pdf';
-    link.download = 'Mahesh_Inder_Full_Stack_AI.pdf';
+    link.download = 'Mahesh_Inder_Resume.pdf';
     link.click();
   }, []);
 

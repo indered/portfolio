@@ -87,12 +87,12 @@ if (process.env.NODE_ENV === 'production') {
   const resumePath = path.join(clientDist, 'mahesh-inder-resume.pdf');
 
   app.get('/resume', (_req, res) => {
-    res.setHeader('Content-Disposition', 'inline; filename="Mahesh_Inder_Full_Stack_AI.pdf"');
+    res.setHeader('Content-Disposition', 'inline; filename="Mahesh_Inder_Resume.pdf"');
     res.sendFile(resumePath);
   });
 
   app.get('/resume/download', (_req, res) => {
-    res.download(resumePath, 'Mahesh_Inder_Full_Stack_AI.pdf');
+    res.download(resumePath, 'Mahesh_Inder_Resume.pdf');
   });
 
   app.use(express.static(clientDist));
